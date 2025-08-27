@@ -140,6 +140,7 @@ CompanyRouter.get(
 CompanyRouter.get(
   '/reckoning/:company/:monthIndex',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
   async (req, res) => {
     try {
       const company = req.params.company || '';
