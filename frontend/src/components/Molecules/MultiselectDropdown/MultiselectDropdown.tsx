@@ -11,6 +11,7 @@ function MultiselectDropdown({
   inputKey,
   inputValue,
   handleInputValue,
+  isBigger,
   isSquare,
 }) {
   const selectInputRef = useRef(null);
@@ -66,7 +67,13 @@ function MultiselectDropdown({
       {isSelectOpen && (
         <>
           <Overlay closeFunction={setIsSelectOpen} />
-          <div className={styles.selectContainer}>{children}</div>
+          <div
+            className={`${
+              isBigger ? styles.biggerSelectContainer : styles.selectContainer
+            }`}
+          >
+            {children}
+          </div>
         </>
       )}
     </button>

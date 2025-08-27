@@ -148,6 +148,7 @@ function ClientsView() {
                 inputKey="client"
                 inputValue={selectFilterValue.client}
                 handleInputValue={handleFilterDropdownInputValue}
+                isBigger={false}
                 isSquare={false}
               >
                 {companies.map((cp) => {

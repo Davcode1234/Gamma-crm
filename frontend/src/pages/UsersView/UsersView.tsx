@@ -211,6 +211,7 @@ function UsersView() {
             inputKey="role"
             inputValue={selectFilterValue}
             handleInputValue={handleFilterDropdownInputValue}
+            isBigger
             isSquare
           >
             {filteredRolesForDropdown.map((role) => {

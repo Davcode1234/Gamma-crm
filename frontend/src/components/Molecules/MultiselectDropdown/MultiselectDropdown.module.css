@@ -58,7 +58,8 @@
   margin: 0;
 }
 
-.selectContainer {
+.selectContainer,
+.biggerSelectContainer {
   width: 75%;
   top: 40px;
   left: -2px;
@@ -73,6 +74,10 @@
   cursor: default;
   box-shadow: 0 0px 3px var(--color-shadow);
   animation: appear 0.3s ease forwards;
+}
+
+.biggerSelectContainer {
+  width: 90%;
 }
 
 .selectContainer::-webkit-scrollbar {

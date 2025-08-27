@@ -307,6 +307,7 @@ function AddStudioTaskModalContent({
                 inputKey="user"
                 inputValue={selectFilterValue.user}
                 handleInputValue={handleFilterDropdownInputValue}
+                isBigger={false}
                 isSquare
               >
                 {filteredUsersForDropdown.map((userOnDrop) => {
