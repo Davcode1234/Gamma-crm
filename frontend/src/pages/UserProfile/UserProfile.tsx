@@ -1,8 +1,13 @@
-import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getUserById, User } from '../../services/users-service';
 import styles from './UserProfile.module.css';
+
+import ViewContainer from '../../components/Atoms/ViewContainer/ViewContainer';
+
+import BackButton from '../../components/Atoms/BackButton/BackButton';
+import ListContainer from '../../components/Atoms/ListContainer/ListContainer';
+import ProfileTopBar from '../../components/Atoms/ProfileTopBar/ProfileTopBar';
 
 function UserProfile() {
   const params = useParams();
@@ -25,17 +30,17 @@ function UserProfile() {
   }, [params.id]);
 
   return (
-    <div className={styles.userProfileContainer}>
-      <Link to="/użytkownicy" className={styles.backButton}>
-        <Icon
-          icon="ion:arrow-back-outline"
-          color="#f68c1e"
-          width="40"
-          height="40"
-        />
-      </Link>
-      {user.length > 0 && <h2 key={user[0]._id}>{user[0].name}</h2>}
-    </div>
+    <ViewContainer>
+      <ListContainer>
+        <ProfileTopBar>
+          <div className={styles.topBarContainer}>
+            <BackButton path="użytkownicy" />
+            <h2>{user.length > 0 && user[0].name}</h2>
+          </div>
+        </ProfileTopBar>
+        <p>W produkcji</p>
+      </ListContainer>
+    </ViewContainer>
   );
 }
 

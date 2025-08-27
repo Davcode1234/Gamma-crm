@@ -1,19 +1,5 @@
-.userProfileContainer {
-  width: 80%;
-  max-height: 750px;
-  margin: 0 auto;
+.topBarContainer {
   display: flex;
-  justify-content: center;
-  transform: translateY(125px);
-}
-
-.backButton {
-  position: absolute;
-  left: 0;
-  top: 30px;
-  transition: all 0.3s ease;
-}
-
-.backButton:hover {
-  transform: translateX(-10px);
+  gap: 10px;
+  margin-left: 65px;
 }

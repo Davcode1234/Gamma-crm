@@ -16,6 +16,7 @@ import DateFormatter from '../../../utils/dateFormatter';
 import DeleteButton from '../../Atoms/DeleteButton/DeleteButton';
 import SaveButton from '../../Atoms/SaveButton/SaveButton';
 import Select from '../../Atoms/Select/Select';
+import ProfileTopBar from '../../Atoms/ProfileTopBar/ProfileTopBar';
 
 function ClientProfileViewComponent({
   loadingState,
@@ -73,7 +74,7 @@ function ClientProfileViewComponent({
   if (!loadingState.isError && !loadingState.isLoading && clientData) {
     return (
       <div className={styles.container}>
-        <div className={styles.clientProfileTopBar}>
+        <ProfileTopBar>
           <div className={styles.clientNameWrapper}>
             <BackButton path="klienci" />
             <h2>{clientData.name}</h2>
@@ -87,7 +88,8 @@ function ClientProfileViewComponent({
               </DeleteButton>
             </div>
           </div>
-        </div>
+        </ProfileTopBar>
+
         <div className={styles.columnsWrapper}>
           <div className={styles.leftColumn}>
             <div className={styles.infoInputsWrapper}>

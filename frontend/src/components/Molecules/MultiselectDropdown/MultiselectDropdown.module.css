@@ -84,12 +84,16 @@
   display: none;
 }
 
-.selectFilterInput {
+.selectFilterInput,
+.biggerSelectFilterInput {
   z-index: 900;
   left: 5px;
   position: absolute;
   border: none;
   width: 75%;
+}
+.biggerSelectFilterInput {
+  width: 90%;
 }
 
 @keyframes rotateUp {

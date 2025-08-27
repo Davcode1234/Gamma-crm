@@ -47,7 +47,11 @@ function MultiselectDropdown({
           <input
             type="text"
             ref={selectInputRef}
-            className={styles.selectFilterInput}
+            className={`${
+              isBigger
+                ? styles.biggerSelectFilterInput
+                : styles.selectFilterInput
+            }`}
             value={inputValue}
             onChange={(e) => handleInputValue(e, inputKey)}
             onClick={() => setIsSelectOpen(true)}
