@@ -9,6 +9,7 @@ type SignUpProps = {
   name: string;
   password: string;
   phone: number;
+  roles: string[];
 };
 
 export async function signUp({
@@ -19,6 +20,7 @@ export async function signUp({
   password,
   job,
   img,
+  roles,
 }: SignUpProps): Promise<void> {
   const formInfo = {
     name,
@@ -28,6 +30,7 @@ export async function signUp({
     password,
     job,
     img,
+    roles,
   };
 
   const response = await fetch(
