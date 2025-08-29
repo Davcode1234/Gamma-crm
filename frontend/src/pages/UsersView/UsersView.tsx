@@ -20,6 +20,9 @@ import InfoBar from '../../components/Atoms/InfoBar/InfoBar';
 import ControlBar from '../../components/Atoms/ControlBar/ControlBar';
 import ControlBarTitle from '../../components/Atoms/ControlBar/Title/ControlBarTitle';
 import CTA from '../../components/Atoms/CTA/CTA';
+import MultiselectDropdown from '../../components/Molecules/MultiselectDropdown/MultiselectDropdown';
+import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterCheckbox';
+import useMultiSelect from '../../hooks/useMultiSelect';
 
 const createUserSchema = Yup.object({
   name: Yup.string().required('Imie jest wymagane'),
@@ -38,6 +41,16 @@ function UsersView() {
 
   const { showModal, exitAnim, openModal, closeModal } = useModal();
 
+  const {
+    isSelectOpen,
+    setIsSelectOpen,
+    selectFilterValue,
+    handleFilterDropdownInputValue,
+    assignedRoles,
+    filteredRolesForDropdown,
+    handleRoleAssign,
+  } = useMultiSelect([]);
+
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -47,6 +60,7 @@ function UsersView() {
       password: '',
       job: '',
       img: 'https://res.cloudinary.com/dpktrptfr/image/upload/v1701779173/Windows_10_Default_Profile_Picture.svg_o9zszg.png',
+      roles: [],
     },
     validationSchema: createUserSchema,
     onSubmit: (values) => {
@@ -67,6 +81,7 @@ function UsersView() {
         password,
         job,
         img,
+        roles: assignedRoles,
       }).catch(() => {
         formik.setStatus('error');
       });
@@ -154,25 +169,6 @@ function UsersView() {
           </FormControl>
           <FormControl>
             <Input
-              id="phone"
-              type="phone"
-              name="phone"
-              className={
-                formik.touched.phone && formik.errors.phone
-                  ? `${styles.errorBorder}`
-                  : `${inputStyle.input}`
-              }
-              placeholder="Telefon"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.phone}
-            />
-            {formik.touched.phone && formik.errors.phone ? (
-              <p className={styles.error}>{formik.errors.phone}</p>
-            ) : null}
-          </FormControl>
-          <FormControl>
-            <Input
               id="password"
               type="password"
               name="password"
@@ -190,6 +186,48 @@ function UsersView() {
               <p className={styles.error}>{formik.errors.password}</p>
             ) : null}
           </FormControl>
+          <MultiselectDropdown
+            isSelectOpen={isSelectOpen}
+            setIsSelectOpen={setIsSelectOpen}
+            label="Rola"
+            inputKey="role"
+            inputValue={selectFilterValue}
+            handleInputValue={handleFilterDropdownInputValue}
+            isBigger
+            isSquare
+          >
+            {filteredRolesForDropdown.map((role) => {
+              return (
+                <FilterCheckbox
+                  key={role}
+                  name={role}
+                  isSelected={assignedRoles.includes(role)}
+                  toggleCompany={handleRoleAssign}
+                  filterVariable={role}
+                />
+              );
+            })}
+          </MultiselectDropdown>
+          <FormControl>
+            <Input
+              id="phone"
+              type="phone"
+              name="phone"
+              className={
+                formik.touched.phone && formik.errors.phone
+                  ? `${styles.errorBorder}`
+                  : `${inputStyle.input}`
+              }
+              placeholder="Telefon"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.phone}
+            />
+            {formik.touched.phone && formik.errors.phone ? (
+              <p className={styles.error}>{formik.errors.phone}</p>
+            ) : null}
+          </FormControl>
+
           <FormControl>
             <Input
               id="job"

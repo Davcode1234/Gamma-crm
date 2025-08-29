@@ -11,6 +11,7 @@ function MultiselectDropdown({
   inputKey,
   inputValue,
   handleInputValue,
+  isBigger,
   isSquare,
 }) {
   const selectInputRef = useRef(null);
@@ -46,7 +47,11 @@ function MultiselectDropdown({
           <input
             type="text"
             ref={selectInputRef}
-            className={styles.selectFilterInput}
+            className={`${
+              isBigger
+                ? styles.biggerSelectFilterInput
+                : styles.selectFilterInput
+            }`}
             value={inputValue}
             onChange={(e) => handleInputValue(e, inputKey)}
             onClick={() => setIsSelectOpen(true)}
@@ -66,7 +71,13 @@ function MultiselectDropdown({
       {isSelectOpen && (
         <>
           <Overlay closeFunction={setIsSelectOpen} />
-          <div className={styles.selectContainer}>{children}</div>
+          <div
+            className={`${
+              isBigger ? styles.biggerSelectContainer : styles.selectContainer
+            }`}
+          >
+            {children}
+          </div>
         </>
       )}
     </button>

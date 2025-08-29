@@ -598,6 +598,7 @@ function UpdateTaskModalContent({
             inputKey="user"
             inputValue={selectFilterValue.user}
             handleInputValue={handleFilterDropdownInputValue}
+            isBigger={false}
             isSquare={false}
           >
             {filteredUsersForDropdown.map((user) => {

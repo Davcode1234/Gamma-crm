@@ -270,6 +270,7 @@ function UpdateCompanyModalContent({
                   inputKey="user"
                   inputValue={selectFilterValue.user}
                   handleInputValue={handleFilterDropdownInputValue}
+                  isBigger={false}
                   isSquare
                 >
                   {filteredUsersForDropdown.map((u) => {

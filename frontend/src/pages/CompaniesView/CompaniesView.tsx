@@ -23,6 +23,8 @@ import AddCompanyForm from '../../components/Organisms/AddCompanyForm/AddCompany
 import CompanyTile from '../../components/Organisms/CompanyTile/CompanyTile';
 import SearchInput from '../../components/Atoms/ControlBar/SearchInput/SearchInput';
 import Select from '../../components/Atoms/Select/Select';
+import useAuth from '../../hooks/useAuth';
+import hasRole from '../../utils/hasRole';
 
 const initialCompanyObject = {
   name: '',
@@ -45,6 +47,7 @@ function CompaniesView() {
   });
   const latestInputValue = useRef('');
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const getMatchingCompanies = debounce(async ({ inputValue }) => {
     if (inputValue !== latestInputValue.current) return;
@@ -191,13 +194,16 @@ function CompaniesView() {
         </div>
 
         <div className={styles.buttonsWrapper}>
-          <CTA
-            onClick={() => {
-              openModal();
-            }}
-          >
-            Dodaj Firme
-          </CTA>
+          {hasRole(user, ['admin']) && (
+            <CTA
+              onClick={() => {
+                openModal();
+              }}
+            >
+              Dodaj Firme
+            </CTA>
+          )}
+
           <CTA onClick={() => {}}>Filtry</CTA>
         </div>
       </ControlBar>
@@ -232,6 +238,8 @@ function CompaniesView() {
                     key={company._id}
                     company={company}
                     index={index}
+                    user={user}
+                    hasRole={hasRole}
                   />
                 );
               })}

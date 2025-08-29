@@ -11,7 +11,7 @@
   background-color: transparent;
   cursor: pointer;
   position: relative;
-  padding-left: 10px;
+  /* padding-left: 10px; */
 }
 
 .squareButton {
@@ -58,7 +58,8 @@
   margin: 0;
 }
 
-.selectContainer {
+.selectContainer,
+.biggerSelectContainer {
   width: 75%;
   top: 40px;
   left: -2px;
@@ -75,16 +76,24 @@
   animation: appear 0.3s ease forwards;
 }
 
+.biggerSelectContainer {
+  width: 90%;
+}
+
 .selectContainer::-webkit-scrollbar {
   display: none;
 }
 
-.selectFilterInput {
+.selectFilterInput,
+.biggerSelectFilterInput {
   z-index: 900;
   left: 5px;
   position: absolute;
   border: none;
   width: 75%;
+}
+.biggerSelectFilterInput {
+  width: 90%;
 }
 
 @keyframes rotateUp {

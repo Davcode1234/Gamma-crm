@@ -8,6 +8,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  LabelList,
 } from 'recharts';
 
 import { useState } from 'react';
@@ -33,6 +34,75 @@ function ClientsPerMonthsChart({
     setSelectValue(e.target.value);
   };
 
+  const renderCustomizedLabel = ({ x, y, width, value }) => {
+    const cx = x + width / 2;
+
+    const raw =
+      typeof value === 'string' && value.includes(' ')
+        ? value.split(' ')[1]
+        : String(value ?? '');
+
+    const MAX_LETTERS = 10;
+    const letters =
+      raw.length > MAX_LETTERS
+        ? [...raw.slice(0, MAX_LETTERS - 1), '…']
+        : [...raw];
+
+    const badgeW = 17;
+    const lineH = 10;
+    const padY = 6;
+    const badgeH = Math.max(20, letters.length * lineH + padY * 2);
+
+    const gap = 6;
+    const top = y - gap;
+
+    const bx = cx - badgeW / 2;
+    let by = top - badgeH;
+    let showNotch = true;
+
+    if (by < 4) {
+      by = y + 2;
+      showNotch = false;
+    }
+
+    return (
+      <g style={{ pointerEvents: 'none' }}>
+        {showNotch && (
+          <path
+            d={`M ${cx - 4} ${top - 2} L ${cx} ${top + 3} L ${cx + 4} ${
+              top - 2
+            } Z`}
+            fill="#1f2937"
+          />
+        )}
+
+        <rect
+          x={bx}
+          y={by}
+          width={badgeW}
+          height={badgeH}
+          rx={8}
+          ry={8}
+          fill="#1f2937"
+        />
+
+        <text
+          x={cx}
+          fill="#fff"
+          fontSize={10} // smaller font
+          fontWeight={600} // lighter
+          textAnchor="middle"
+          dominantBaseline="middle"
+        >
+          {letters.map((ch, i) => (
+            <tspan key={i} x={cx} y={by + padY + i * lineH + lineH / 2}>
+              {ch}
+            </tspan>
+          ))}
+        </text>
+      </g>
+    );
+  };
   const chartTitle = isYearly
     ? `Podsumowanie klientów - ${year}`
     : `Podsumowanie klientów - ${selectedMonth}`;
@@ -71,7 +141,9 @@ function ClientsPerMonthsChart({
               activeBar={<Rectangle fill="#f68c1e" stroke="#f68c1e" />}
               animationBegin={0}
               animationDuration={500}
-            />
+            >
+              <LabelList dataKey="_id" content={renderCustomizedLabel} />
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       ) : (
