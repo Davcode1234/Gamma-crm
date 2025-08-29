@@ -8,10 +8,23 @@ import ViewContainer from '../../components/Atoms/ViewContainer/ViewContainer';
 import BackButton from '../../components/Atoms/BackButton/BackButton';
 import ListContainer from '../../components/Atoms/ListContainer/ListContainer';
 import ProfileTopBar from '../../components/Atoms/ProfileTopBar/ProfileTopBar';
+import MultiselectDropdown from '../../components/Molecules/MultiselectDropdown/MultiselectDropdown';
+import useMultiSelect from '../../hooks/useMultiSelect';
+import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterCheckbox';
 
 function UserProfile() {
   const params = useParams();
   const [user, setUser] = useState<User[]>([]);
+
+  const {
+    isSelectOpen,
+    setIsSelectOpen,
+    selectFilterValue,
+    handleFilterDropdownInputValue,
+    assignedRoles,
+    filteredRolesForDropdown,
+    handleRoleAssign,
+  } = useMultiSelect(user);
 
   useEffect(() => {
     getUserById(params.id)
@@ -36,6 +49,30 @@ function UserProfile() {
           <div className={styles.topBarContainer}>
             <BackButton path="użytkownicy" />
             <h2>{user.length > 0 && user[0].name}</h2>
+            <div className={styles.multiSelectWrapper}>
+              <MultiselectDropdown
+                isSelectOpen={isSelectOpen}
+                setIsSelectOpen={setIsSelectOpen}
+                label="Rola"
+                inputKey="role"
+                inputValue={selectFilterValue}
+                handleInputValue={handleFilterDropdownInputValue}
+                isBigger={false}
+                isSquare={false}
+              >
+                {filteredRolesForDropdown.map((role) => {
+                  return (
+                    <FilterCheckbox
+                      key={role}
+                      name={role}
+                      isSelected={assignedRoles.includes(role)}
+                      toggleCompany={handleRoleAssign}
+                      filterVariable={role}
+                    />
+                  );
+                })}
+              </MultiselectDropdown>
+            </div>
           </div>
         </ProfileTopBar>
         <p>W produkcji</p>

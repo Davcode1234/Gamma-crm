@@ -1,5 +1,10 @@
 .topBarContainer {
   display: flex;
+  align-items: center;
   gap: 10px;
   margin-left: 65px;
+}
+
+.multiSelectWrapper {
+  width: 110px;
 }

@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { getAllUsers } from '../../services/users-service';
 import styles from './UsersView.module.css';
 import SkeletonUsersLoading from '../../components/Organisms/SkeletonUsersLoading/SkeletonUsersLoading';
@@ -22,6 +22,7 @@ import ControlBarTitle from '../../components/Atoms/ControlBar/Title/ControlBarT
 import CTA from '../../components/Atoms/CTA/CTA';
 import MultiselectDropdown from '../../components/Molecules/MultiselectDropdown/MultiselectDropdown';
 import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterCheckbox';
+import useMultiSelect from '../../hooks/useMultiSelect';
 
 const createUserSchema = Yup.object({
   name: Yup.string().required('Imie jest wymagane'),
@@ -36,12 +37,19 @@ const createUserSchema = Yup.object({
 });
 
 function UsersView() {
-  const [assignedRoles, setAssignedRoles] = useState(['grafik']);
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
-  const [selectFilterValue, setSelectFilterValue] = useState('');
   const { signUp } = useAuth();
 
   const { showModal, exitAnim, openModal, closeModal } = useModal();
+
+  const {
+    isSelectOpen,
+    setIsSelectOpen,
+    selectFilterValue,
+    handleFilterDropdownInputValue,
+    assignedRoles,
+    filteredRolesForDropdown,
+    handleRoleAssign,
+  } = useMultiSelect([]);
 
   const formik = useFormik({
     initialValues: {
@@ -88,32 +96,6 @@ function UsersView() {
       dispatch({ type: 'SET_USERS', payload: allUsers });
     });
   }, [dispatch]);
-
-  const handleFilterDropdownInputValue = (e) => {
-    const { value } = e.target;
-    setSelectFilterValue(value);
-  };
-
-  const roles = ['admin', 'grafik'];
-
-  const filteredRolesForDropdown = roles.filter((r) => {
-    return r
-      .toLocaleLowerCase()
-      .includes(selectFilterValue.toLocaleLowerCase());
-  });
-
-  const handleRoleAssign = (role) => {
-    if (assignedRoles.some((roleToCheck) => roleToCheck === role)) {
-      setAssignedRoles(assignedRoles.filter((part) => part !== role));
-
-      setIsSelectOpen(true);
-    } else {
-      setAssignedRoles((prev) => {
-        return [...prev, role];
-      });
-      setIsSelectOpen(true);
-    }
-  };
 
   return (
     <>

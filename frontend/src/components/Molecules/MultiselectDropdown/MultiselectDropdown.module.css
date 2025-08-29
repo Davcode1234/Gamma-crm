@@ -11,7 +11,7 @@
   background-color: transparent;
   cursor: pointer;
   position: relative;
-  padding-left: 10px;
+  /* padding-left: 10px; */
 }
 
 .squareButton {
