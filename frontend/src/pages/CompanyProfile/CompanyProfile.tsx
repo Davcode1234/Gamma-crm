@@ -220,7 +220,7 @@ function CompanyProfile() {
       'Numer_karty',
       'Autor',
       'Firma',
-      'Godziny',
+      'Sum',
       'Przychód', // <- calculated
       'Opis',
       'Komentarz',
@@ -278,18 +278,17 @@ function CompanyProfile() {
     ws['!cols'] = [
       { wch: 8 }, // Data
       { wch: 18 }, // Klient
-      { wch: 28 }, // Tytuł
-      { wch: 12 }, // Numer_karty
+      { wch: 35 }, // Tytuł
+      { wch: 11 }, // Numer_karty
       { wch: 18 }, // Autor
       { wch: 18 }, // Firma
-      { wch: 10 }, // Godziny
+      { wch: 5 }, // Godziny
       { wch: 12 }, // Przychód
-      { wch: 30 }, // Opis
+      { wch: 35 }, // Opis
       { wch: 24 }, // Komentarz
-      { wch: 12 }, // Rozliczone
+      { wch: 10 }, // Rozliczone
     ];
 
-    // Number formats (optional)
     // AutoFilter over the header+data rows (A3:K[lastDataRow])
     ws['!autofilter'] = { ref: `A3:K${lastDataRow}` };
 
