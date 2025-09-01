@@ -193,25 +193,118 @@ function CompanyProfile() {
     return reckoningTasks;
   };
 
-  const exportToExcel = (tasks) => {
-    const currentDate = new Date();
-    const dayIndex = currentDate.getDate();
-    const monthIndex = currentDate.getMonth();
-    const year = currentDate.getFullYear();
-    const worksheet = XLSX.utils.json_to_sheet(tasks);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, `${company.name}`);
+  const exportToExcel = (
+    rows: Array<{
+      Data: string;
+      Klient: string;
+      Tytuł: string;
+      Numer_karty: number | string;
+      Autor: string;
+      Firma: string;
+      Godziny: number;
+      Opis: string;
+      Komentarz: string;
+      Rozliczone: boolean;
+    }>
+  ) => {
+    if (!rows || rows.length === 0) return;
 
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: 'xlsx',
-      type: 'array',
+    const rate = Number(company?.hourRate ?? 0);
+    const title = `${company?.name ?? ''} — ${selectedMonth} ${selectedYear}`;
+
+    // Build AoA so we can insert formulas easily
+    const header = [
+      'Data',
+      'Klient',
+      'Tytuł',
+      'Numer_karty',
+      'Autor',
+      'Firma',
+      'Godziny',
+      'Przychód', // <- calculated
+      'Opis',
+      'Komentarz',
+      'Rozliczone',
+    ];
+
+    const aoa: any[][] = [];
+    aoa.push([title]); // Row 1: title
+    aoa.push([]); // Row 2: spacer
+    aoa.push(header); // Row 3: header
+
+    // Data rows start at row 4
+    rows.forEach((r, i) => {
+      const excelRowIndex = 4 + i; // 1-based index in Excel
+      aoa.push([
+        r.Data,
+        r.Klient,
+        r.Tytuł,
+        r.Numer_karty,
+        r.Autor,
+        r.Firma,
+        r.Godziny,
+        { f: `G${excelRowIndex}*${rate}` }, // Przychód = Godziny * rate
+        r.Opis,
+        r.Komentarz,
+        r.Rozliczone ? 'TAK' : 'NIE',
+      ]);
     });
 
-    const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    const firstDataRow = 4;
+    const lastDataRow = firstDataRow + rows.length - 1;
 
+    // SUM row
+    aoa.push([]);
+    aoa.push([
+      '',
+      '',
+      '',
+      '',
+      '',
+      'SUMA:',
+      { f: `SUM(G${firstDataRow}:G${lastDataRow})` }, // sum Godziny
+      { f: `SUM(H${firstDataRow}:H${lastDataRow})` }, // sum Przychód
+      '',
+      '',
+      '',
+    ]);
+
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+
+    // Merge the title across all columns (A1:K1)
+    ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: header.length - 1 } }];
+
+    // Column widths
+    ws['!cols'] = [
+      { wch: 8 }, // Data
+      { wch: 18 }, // Klient
+      { wch: 28 }, // Tytuł
+      { wch: 12 }, // Numer_karty
+      { wch: 18 }, // Autor
+      { wch: 18 }, // Firma
+      { wch: 10 }, // Godziny
+      { wch: 12 }, // Przychód
+      { wch: 30 }, // Opis
+      { wch: 24 }, // Komentarz
+      { wch: 12 }, // Rozliczone
+    ];
+
+    // Number formats (optional)
+    // AutoFilter over the header+data rows (A3:K[lastDataRow])
+    ws['!autofilter'] = { ref: `A3:K${lastDataRow}` };
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, company?.name ?? 'Dane');
+
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+    const now = new Date();
     saveAs(
-      data,
-      `${company.name}_${dayIndex}_${monthIndex + 1}_${year}_zlecenia.xlsx`
+      blob,
+      `${company?.name ?? 'firma'}_${now.getDate()}_${
+        now.getMonth() + 1
+      }_${now.getFullYear()}_zlecenia.xlsx`
     );
   };
 
