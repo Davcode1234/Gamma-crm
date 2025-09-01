@@ -121,7 +121,7 @@ function CompanyProfileControlBar({
   // };
 
   const dataForExcel = () => {
-    return tasks.flatMap((task) =>
+    const arr = tasks.flatMap((task) =>
       task.participants.flatMap((participant) => {
         const author = {
           _id: participant._id,
@@ -157,6 +157,16 @@ function CompanyProfileControlBar({
           });
       })
     );
+
+    return arr.sort((a, b) => {
+      const [dayA, monthA] = a.Data.split('.').map(Number);
+      const [dayB, monthB] = b.Data.split('.').map(Number);
+
+      const dateA = new Date(2025, monthA - 1, dayA);
+      const dateB = new Date(2025, monthB - 1, dayB);
+
+      return dateA.getTime() - dateB.getTime();
+    });
   };
 
   return (
