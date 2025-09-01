@@ -143,14 +143,15 @@ function CompanyProfileControlBar({
             const month = String(currentMonthIndex + 1).padStart(2, '0');
 
             return {
+              Data: `${day}.${month}`,
+              Klient: task.clientPerson,
+              Tytuł: task.title,
               Numer_karty: task.searchID,
               Autor: author.name,
-              Data: `${day}.${month}`,
               Firma: task.client,
-              Klient: task.clientPerson,
               Godziny: hour.hourNum,
-              Tytuł: task.title,
               Opis: task.description,
+              Komentarz: task.comment,
               Rozliczone: task.isSettled,
             };
           });
