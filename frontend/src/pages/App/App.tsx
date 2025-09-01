@@ -17,6 +17,7 @@ import Dashboard from '../Dashboard/Dashboard';
 import ClientsView from '../ClientsView/ClientsView';
 import ClientProfile from '../ClientProfile/ClientProfile';
 import RouteProtection from '../../components/Templates/RouteProtection/RouteProtection';
+import hasRole from '../../utils/hasRole';
 
 function App() {
   const { user } = useAuth();
@@ -27,7 +28,16 @@ function App() {
         <Route path="*" element={<HomePage />} />
         <Route path="/403" element={<NotAllowedPage />} />
         <Route path="/signin" element={<Navigate to="/pulpit" />} />
-        <Route path="/" element={<Navigate to="/pulpit" />} />
+        <Route
+          path="/"
+          element={
+            hasRole(user, ['admin']) ? (
+              <Navigate to="/pulpit" />
+            ) : (
+              <Navigate to="/zlecenia" />
+            )
+          }
+        />
         <Route
           path="/pulpit"
           element={
