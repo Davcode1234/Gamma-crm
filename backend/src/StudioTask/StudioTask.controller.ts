@@ -30,6 +30,40 @@ export const StudioTaskController = {
     return String(lastItem.searchID);
   },
 
+  async getPlackerTasks() {
+    const plackerTasks = await StudioTaskModel.aggregate([
+      {
+        $unwind: '$participants',
+      },
+      {
+        $group: {
+          _id: '$participants.name',
+          tasks: {
+            $push: {
+              _id: '$_id',
+              searchID: '$searchID',
+              reckoTaskID: '$reckoTaskID',
+              title: '$title',
+              client: '$client',
+              clientPerson: '$clientPerson',
+              status: '$status',
+              index: '$index',
+              startDate: '$startDate',
+              deadline: '$deadline',
+              author: '$author',
+              taskType: '$taskType',
+              description: '$description',
+            },
+          },
+        },
+      },
+      { $group: { _id: null, pairs: { $push: { k: '$_id', v: '$tasks' } } } },
+      { $replaceRoot: { newRoot: { $arrayToObject: '$pairs' } } },
+    ]);
+
+    return await plackerTasks;
+  },
+
   async addStudioTask(studioTask) {
     await StudioTaskModel.validate(studioTask);
     return await StudioTaskModel.create(studioTask);
