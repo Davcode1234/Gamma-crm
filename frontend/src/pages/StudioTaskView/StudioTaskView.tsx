@@ -140,74 +140,9 @@ function StudioTaskView() {
     objectKey: 'participants',
   });
 
-  // const handleLoadingStateChange = (key, val) => {
-  //   setLoadingState((prev) => ({
-  //     ...prev,
-  //     [key]: val,
-  //   }));
-  // };
-
-  // const handleFormChange = (e, key) => {
-  //   setFormValue((prev) => ({
-  //     ...prev,
-  //     [key]: e.target.value,
-  //   }));
-  // };
-
   const handleViewChange = (e) => {
     setViewVariable(e.target.value);
   };
-
-  // const createTaskHandler = async () => {
-  //   try {
-  //     handleLoadingStateChange('isLoading', true);
-  //     const searchID = generateSearchID();
-  //     const currentDate = new Date();
-  //     const statusValue: StudioTaskTypes['status'] =
-  //       formValue.status as StudioTaskTypes['status'];
-
-  //     let indexOfNewTask;
-  //     if (tasksByStatus[statusValue].length > 0) {
-  //       indexOfNewTask =
-  //         tasksByStatus[statusValue][tasksByStatus[statusValue].length - 1]
-  //           .index + 1;
-  //     }
-  //     if (tasksByStatus[statusValue].length === 0) {
-  //       indexOfNewTask = tasksByStatus[statusValue].length + 1;
-  //     }
-  //     const response = await addStudioTask({
-  //       searchID,
-  //       reckoTaskID: '',
-  //       title: formValue.title,
-  //       client: formValue.client,
-  //       clientPerson: formValue.clientPerson,
-  //       status: statusValue,
-  //       index: indexOfNewTask,
-  //       author: user[0],
-  //       taskType: formValue.taskType,
-  //       participants: formValue.participants,
-  //       description: formValue.description,
-  //       subtasks: [],
-  //       deadline: formValue.deadline,
-  //       startDate: currentDate,
-  //     });
-
-  //     if (response !== null) {
-  //       handleLoadingStateChange('finalMessage', 'Zlecenie utworzone!');
-  //       setFormValue(initialTaskObject);
-  //       socket.emit('taskAdded', response); // Emit updated tasks
-  //       dispatch({ type: 'CREATE_STUDIOTASK', payload: response });
-  //     } else {
-  //       handleLoadingStateChange('finalMessage', 'Coś poszło nie tak :(');
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     handleLoadingStateChange('isLoading', false);
-  //   } finally {
-  //     handleLoadingStateChange('isLoading', false);
-  //     handleLoadingStateChange('isFinalMessage', true);
-  //   }
-  // };
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -317,12 +252,6 @@ function StudioTaskView() {
       .toLocaleLowerCase()
       .includes(selectFilterValue.company.toLocaleLowerCase());
   });
-
-  // const filteredUsersToAddForDropdown = users.filter((c) => {
-  //   return c.name
-  //     .toLocaleLowerCase()
-  //     .includes(selectFilterValue.company.toLocaleLowerCase());
-  // });
 
   return (
     <>

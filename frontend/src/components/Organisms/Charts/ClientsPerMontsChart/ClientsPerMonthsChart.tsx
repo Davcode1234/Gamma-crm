@@ -33,7 +33,6 @@ function ClientsPerMonthsChart({
     e.preventDefault();
     setSelectValue(e.target.value);
   };
-
   const renderCustomizedLabel = ({ x, y, width, value }) => {
     const cx = x + width / 2;
 
@@ -86,20 +85,28 @@ function ClientsPerMonthsChart({
           fill="#1f2937"
         />
 
-        <text
-          x={cx}
-          fill="#fff"
-          fontSize={10} // smaller font
-          fontWeight={600} // lighter
-          textAnchor="middle"
-          dominantBaseline="middle"
-        >
-          {letters.map((ch, i) => (
-            <tspan key={i} x={cx} y={by + padY + i * lineH + lineH / 2}>
-              {ch}
-            </tspan>
-          ))}
-        </text>
+        {letters.map((ch, i) => {
+          return (
+            <text
+              key={i}
+              x={cx}
+              y={by + badgeH / 2}
+              fill="#fff"
+              fontSize={10}
+              fontWeight={500}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              style={{
+                writingMode: 'vertical-rl', // stack top→bottom
+                textOrientation: 'sideways', // rotate each glyph 90°
+                letterSpacing: '2px', // tweak spacing uniformly
+                // fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+              }}
+            >
+              {raw}
+            </text>
+          );
+        })}
       </g>
     );
   };
