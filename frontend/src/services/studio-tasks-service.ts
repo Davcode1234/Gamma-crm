@@ -54,6 +54,31 @@ export async function getAllStudioTasks() {
   }
 }
 
+export async function getPlackerTasks() {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/studiotasks/placker`,
+      {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (response.ok) {
+      return await response.json();
+    }
+    throw new Error(`${response.status} ${response.statusText}`);
+  } catch (error) {
+    if (Config.isDev) {
+      throw new Error('Get users', error.message);
+    }
+    console.error(error.message);
+    return null;
+  }
+}
+
 export async function getStudioTask(id: string) {
   try {
     const response = await fetch(
