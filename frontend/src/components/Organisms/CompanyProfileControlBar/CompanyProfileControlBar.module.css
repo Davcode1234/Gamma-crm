@@ -114,56 +114,6 @@
   /* margin-left: 10%; */
 }
 
-/* .summWrapper {
-  display: flex;
-  justify-content: space-around;
-  height: 100%;
-  width: 100%;
-}
-
-.summPar {
-  color: var(--color-title);
-  position: absolute;
-  left: -60%;
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.summValue {
-  height: 100%;
-  font-size: 16px;
-  color: var(--color-lighter);
-  font-weight: 700;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-}
-
-.totalHoursContainer {
-  position: absolute;
-  right: 14.5%;
-  height: 100%;
-  width: 8%;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: var(--color-orange);
-
-  &::after {
-    content: '';
-    position: absolute;
-    height: 50px;
-    width: 3px;
-    background-color: var(--color-lighter);
-  }
-}
-
-
-.spacer {
-  height: 10px;
-} */
-
 .spacer {
   height: 10px;
 }
@@ -213,11 +163,55 @@
   margin: 0 50px 0 50px;
 }
 
+.downloadButton {
+  cursor: pointer;
+  font-weight: 600;
+  background-color: transparent;
+  border: 1px solid var(--color-orange);
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-right: 5px;
+  transition: all 0.3s ease;
+  animation: excelBtns 0.3s ease forwards;
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+.listBtn {
+  color: var(--color-lighter);
+  background-color: var(--color-orange);
+  animation: excelBtns 0.3s ease forwards;
+
+  &:hover {
+    background-color: transparent;
+    color: var(--color-orange);
+  }
+}
+
+.sumBtn {
+  animation: excelBtns 0.3s 0.2s ease forwards;
+  &:hover {
+    background-color: var(--color-shadow);
+  }
+}
+
 @media (max-width: 1750px) {
   .center {
     padding-left: 0;
   }
   .filterInput {
     width: 50%;
+  }
+}
+
+@keyframes excelBtns {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
