@@ -183,7 +183,7 @@ export const ReckoningTaskController = {
     const dId = new Types.ObjectId(dayId);
     try {
       const res = await ReckoningTaskModel.updateOne(
-        { _id: taskId }, // keep the top-level filter minimal
+        { _id: taskId },
         {
           $set: {
             'participants.$[p].months.$[m].hours.$[h].hourNum': value.hourNum,
@@ -194,26 +194,19 @@ export const ReckoningTaskController = {
         },
         {
           arrayFilters: [
-            // participants._id is a STRING in your data
+            // participants._id is a STRING
             { 'p._id': userId },
-            // months/hours are ObjectId in your data
+            // months/hours are ObjectId
             { 'm._id': mId },
             { 'h._id': dId },
           ],
         },
       );
 
-      if (res.modifiedCount === 0) {
-        // Optional: log matchedCount to distinguish “doc not found” vs “array path didn’t match”
-        console.warn('updateDay no-op', {
-          matched: res.matchedCount,
-          modified: res.modifiedCount,
-          taskId,
-          userId,
-          monthId,
-          dayId,
-        });
-        throw new Error('No document was updated. Check IDs and structure.');
+      if (res.matchedCount === 0) {
+        throw new Error(
+          'No matching document. Verify taskId/participant/month/day ownership.',
+        );
       }
 
       return await ReckoningTaskModel.findById(taskId);
