@@ -32,6 +32,7 @@ import FilterDropdownContainer from '../../components/Atoms/FilterDropdownContai
 import DropdownHeader from '../../components/Atoms/DropdownHeader/DropdownHeader';
 import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterCheckbox';
 import FiltersClearButton from '../../components/Atoms/FiltersClearButton/FiltersClearButton';
+import PlackerView from '../../components/Organisms/PlackerView/PlackerView';
 
 const initialTaskObject: StudioTaskTypes = {
   searchID: 0,
@@ -59,7 +60,13 @@ const initialTaskObject: StudioTaskTypes = {
   startDate: new Date(),
 };
 
-const viewOptions = ['Aktywne', 'Archiwum'];
+const VIEWS = {
+  ACTIVE: 'Aktywne',
+  ARCHIVE: 'Archiwum',
+  PLACKER: 'Placker',
+};
+
+const viewOptions = [VIEWS.ACTIVE, VIEWS.ARCHIVE, VIEWS.PLACKER];
 
 function StudioTaskView() {
   const [viewVariable, setViewVariable] = useState('Aktywne');
@@ -252,6 +259,23 @@ function StudioTaskView() {
       .toLocaleLowerCase()
       .includes(selectFilterValue.company.toLocaleLowerCase());
   });
+
+  const viewRender = {
+    [VIEWS.ACTIVE]: (
+      <KanbanView
+        filterArray={participantsToFilter}
+        companiesFilterArray={companiesToFilter}
+      />
+    ),
+    [VIEWS.ARCHIVE]: (
+      <ArchivedListView
+        activeGroupedTasks={tasksByStatus}
+        setViewVariable={setViewVariable}
+        matchingTasks={matchingTasks}
+      />
+    ),
+    [VIEWS.PLACKER]: <PlackerView />,
+  };
 
   return (
     <>
@@ -456,18 +480,7 @@ function StudioTaskView() {
         )}
       </ControlBar>
 
-      {viewVariable === 'Aktywne' ? (
-        <KanbanView
-          filterArray={participantsToFilter}
-          companiesFilterArray={companiesToFilter}
-        />
-      ) : (
-        <ArchivedListView
-          activeGroupedTasks={tasksByStatus}
-          setViewVariable={setViewVariable}
-          matchingTasks={matchingTasks}
-        />
-      )}
+      {viewRender[viewVariable]}
     </>
   );
 }
