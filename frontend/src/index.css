@@ -236,7 +236,9 @@ select {
 .ShellCRT,
 .ShellGlobalProduct,
 .ShellB2B,
-.ShellFleetSolutions {
+.ShellFleetSolutions,
+.Shelloleje,
+.ShellOleje {
   background-color: #ffc600 !important;
   opacity: 0.8;
 }
@@ -427,6 +429,10 @@ select {
 
 .Solar,
 .SolarForYou,
-.solarforyou {
+.Solarforyou {
   background-color: #e0235a !important;
+}
+
+.Metallus {
+  background-color: #ed1b2c !important;
 }
