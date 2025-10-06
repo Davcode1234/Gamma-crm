@@ -50,6 +50,7 @@ export const StudioTaskController = {
               index: '$index',
               startDate: '$startDate',
               deadline: '$deadline',
+              createdAt: '$createdAt',
               author: '$author',
               taskType: '$taskType',
               description: '$description',

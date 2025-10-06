@@ -103,5 +103,8 @@ export const StudioTaskModel = mongoose.model(
     deadline: {
       type: String,
     },
+    createdAt: {
+      type: Date,
+    },
   }),
 );
