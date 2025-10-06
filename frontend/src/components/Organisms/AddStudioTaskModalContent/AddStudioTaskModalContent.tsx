@@ -142,6 +142,7 @@ function AddStudioTaskModalContent({
           subtasks: [],
           deadline: isRangeValid ? String(range.to) : null,
           startDate: isRangeValid ? range.from : currentDate,
+          createdAt: currentDate,
         });
 
         if (response !== null) {

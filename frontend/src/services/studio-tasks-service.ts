@@ -27,6 +27,7 @@ export type StudioTaskTypes = {
   subtasks: Subtask[];
   deadline: string;
   startDate: Date;
+  createdAt: Date;
 };
 
 export async function getAllStudioTasks() {
@@ -144,6 +145,7 @@ export async function addStudioTask({
   subtasks,
   deadline,
   startDate,
+  createdAt,
 }: StudioTaskTypes) {
   const formData = {
     searchID,
@@ -160,6 +162,7 @@ export async function addStudioTask({
     subtasks,
     deadline,
     startDate,
+    createdAt,
   };
 
   try {

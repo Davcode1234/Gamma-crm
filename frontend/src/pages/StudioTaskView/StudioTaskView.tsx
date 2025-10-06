@@ -58,6 +58,7 @@ const initialTaskObject: StudioTaskTypes = {
   subtasks: [],
   deadline: '',
   startDate: new Date(),
+  createdAt: new Date(),
 };
 
 const VIEWS = {
