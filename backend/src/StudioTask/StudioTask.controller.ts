@@ -16,10 +16,10 @@ export const StudioTaskController = {
 
   async getHighestSearchIDByMonth(year, month) {
     const startDate = new Date(Date.UTC(Number(year), Number(month) - 1, 1));
-    const endDate = new Date(Date.UTC(Number(year), Number(month), 1));
+    // const endDate = new Date(Date.UTC(Number(year), Number(month), 1));
 
     const tasks = await StudioTaskModel.find({
-      startDate: { $gte: startDate, $lt: endDate },
+      createdAt: { $gte: startDate },
     })
       .sort({ searchID: 1 })
       .exec();
