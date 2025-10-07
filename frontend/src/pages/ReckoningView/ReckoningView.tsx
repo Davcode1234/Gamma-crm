@@ -211,7 +211,7 @@ function ReckoningView() {
     try {
       handleLoadingStateChange('isAddEmptyLoading', true);
 
-      const startDate = new Date(selectedYear, selectedMonthIndex, 1);
+      const startDate = new Date();
 
       // const numberOfReckoTasks = await getNumberOfReckoTasks(
       //   selectedMonthIndex,
@@ -266,11 +266,12 @@ function ReckoningView() {
     title,
     description,
     participants,
+    createdAt,
   }) => {
     try {
       handleLoadingStateChange('isAddEmptyLoading', true);
 
-      const startDate = new Date(selectedYear, selectedMonthIndex, 1);
+      // const startDate = new Date(selectedYear, selectedMonthIndex, 1);
 
       const addResponse = await addReckoningTaskFromKanban({
         searchID,
@@ -297,7 +298,7 @@ function ReckoningView() {
             ],
           };
         }),
-        startDate,
+        startDate: createdAt,
         month: selectedMonthIndex,
         // deadline: '',
       });
@@ -488,6 +489,7 @@ function ReckoningView() {
                           title: string;
                           description: string;
                           participants: any[];
+                          createdAt: Date;
                         }
                       );
                     }}
