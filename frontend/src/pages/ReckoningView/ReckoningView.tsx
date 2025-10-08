@@ -239,6 +239,7 @@ function ReckoningView() {
               {
                 createdAt: new Date(selectedYear, selectedMonthIndex, 1),
                 hours: generateDaysArray(selectedMonthIndex, 2025),
+                addedToRecko: new Date(),
               },
             ],
           },
@@ -294,6 +295,7 @@ function ReckoningView() {
               {
                 createdAt: new Date(selectedYear, selectedMonthIndex, 1),
                 hours: generateDaysArray(selectedMonthIndex, 2025),
+                addedToRecko: new Date(),
               },
             ],
           };
@@ -362,19 +364,49 @@ function ReckoningView() {
       matchedTasksFromSearchInput.length > 0 &&
       !taskLoadingState.isGetMyTasksLoading
     ) {
-      return matchedTasksFromSearchInput.map((reckTask, index) => {
-        return (
-          <ReckoningTile
-            key={reckTask._id}
-            reckTask={reckTask}
-            index={index}
-            selectedMonthIndex={selectedMonthIndex}
-            companies={companies}
-            isAssignedToKanban={reckTask.idOfAssignedStudioTask !== undefined}
-            // assigneStudioTaskId={reckTask.idOfAssignedStudioTask}
-          />
-        );
-      });
+      return matchedTasksFromSearchInput
+        .sort((a, b) => {
+          const left = a.participants.filter(
+            (part) => part._id === currentUserId
+          );
+          const right = b.participants.filter(
+            (part) => part._id === currentUserId
+          );
+
+          const leftMonth = left[0].months.filter((obj) => {
+            const monthIdx = new Date(obj.createdAt).getUTCMonth() + 1;
+            return monthIdx === selectedMonthIndex;
+          });
+
+          const rightMonth = right[0].months.filter((obj) => {
+            const monthIdx = new Date(obj.createdAt).getUTCMonth() + 1;
+            return monthIdx === selectedMonthIndex;
+          });
+
+          // Convert Date | string to number (ms). Use 0 if missing.
+          const leftTime = leftMonth[0]?.addedToRecko
+            ? new Date(leftMonth[0].addedToRecko).getTime()
+            : 0;
+
+          const rightTime = rightMonth[0]?.addedToRecko
+            ? new Date(rightMonth[0].addedToRecko).getTime()
+            : 0;
+
+          return leftTime - rightTime;
+        })
+        .map((reckTask, index) => {
+          return (
+            <ReckoningTile
+              key={reckTask._id}
+              reckTask={reckTask}
+              index={index}
+              selectedMonthIndex={selectedMonthIndex}
+              companies={companies}
+              isAssignedToKanban={reckTask.idOfAssignedStudioTask !== undefined}
+              // assigneStudioTaskId={reckTask.idOfAssignedStudioTask}
+            />
+          );
+        });
     }
 
     return (

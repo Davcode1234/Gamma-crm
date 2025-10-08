@@ -95,7 +95,15 @@ export const ReckoningTaskModel = mongoose.model(
                 dayIndex: Number,
               },
             ],
-            createdAt: Date,
+            createdAt: {
+              type: Date,
+            },
+            addedToRecko: {
+              type: Date,
+            },
+            comment: {
+              type: String,
+            },
           },
         ],
       },

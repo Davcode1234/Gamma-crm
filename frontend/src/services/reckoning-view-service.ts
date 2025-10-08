@@ -31,6 +31,7 @@ export type ReckoningTaskTypes = {
         {
           createdAt: Date;
           hours: DaysArray[];
+          addedToRecko: Date;
         },
       ];
     },
