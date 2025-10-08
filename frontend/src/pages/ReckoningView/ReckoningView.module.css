@@ -8,6 +8,7 @@
 }
 
 .totalHoursContainer {
+  position: relative;
   max-height: 40px;
   width: 4%;
   transform: translateX(-10%);
@@ -20,6 +21,13 @@
     font-size: 20px;
     font-weight: 700;
     color: var(--color-lighter);
+  }
+
+  &::before {
+    content: 'Suma:';
+    position: absolute;
+    left: -80%;
+    font-weight: 800;
   }
 }
 
