@@ -15,8 +15,8 @@
   display: grid;
   grid-template-columns:
     30px /* selectPar */
-    6% /* companyPar */
-    6% /* clientPar */
+    8% /* companyPar */
+    8% /* clientPar */
     15% /* titlePar */
     auto /* days, you can calculate exact count with JS */
     20% /* commentPar */
@@ -89,7 +89,7 @@
   height: 28px;
 
   /* max-width: 100px; */
-  min-width: 60px;
+  min-width: 100px;
   font-size: 12px;
   font-family: Montserrat;
   font-weight: 600;

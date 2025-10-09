@@ -1,7 +1,7 @@
 .filterDropdownContainer {
   position: fixed;
-  right: 80px;
-  top: 140px;
+  right: 60px;
+  top: 100px;
   width: 220px;
   /* height: 350px; */
   background-color: var(--color-lighter);

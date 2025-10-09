@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getAllUsers } from '../../services/users-service';
 import styles from './UsersView.module.css';
 import SkeletonUsersLoading from '../../components/Organisms/SkeletonUsersLoading/SkeletonUsersLoading';
@@ -20,6 +20,9 @@ import InfoBar from '../../components/Atoms/InfoBar/InfoBar';
 import ControlBar from '../../components/Atoms/ControlBar/ControlBar';
 import ControlBarTitle from '../../components/Atoms/ControlBar/Title/ControlBarTitle';
 import CTA from '../../components/Atoms/CTA/CTA';
+import MultiselectDropdown from '../../components/Molecules/MultiselectDropdown/MultiselectDropdown';
+import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterCheckbox';
+// import useMultiSelect from '../../hooks/useMultiSelect';
 
 const createUserSchema = Yup.object({
   name: Yup.string().required('Imie jest wymagane'),
@@ -33,10 +36,47 @@ const createUserSchema = Yup.object({
   img: Yup.string(),
 });
 
+const roles = ['admin', 'grafik'];
+
 function UsersView() {
   const { signUp } = useAuth();
 
   const { showModal, exitAnim, openModal, closeModal } = useModal();
+  const [assignedRoles, setAssignedRoles] = useState(() => ['grafik']);
+  const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const [selectFilterValue, setSelectFilterValue] = useState('');
+
+  // const {
+  //   isSelectOpen,
+  //   setIsSelectOpen,
+  //   selectFilterValue,
+  //   handleFilterDropdownInputValue,
+  //   assignedRoles,
+  //   filteredRolesForDropdown,
+  //   handleRoleAssign,
+  // } = useMultiSelect([]);
+
+  const handleFilterDropdownInputValue = (e) => {
+    setSelectFilterValue(e.target.value);
+  };
+
+  const filteredRolesForDropdown = roles.filter((r) =>
+    r.toLowerCase().includes(selectFilterValue.toLowerCase())
+  );
+
+  const handleRoleAssign = async (role) => {
+    // compute next value without relying on state having updated yet
+    const nextRoles = assignedRoles.includes(role)
+      ? assignedRoles.filter((r) => r !== role)
+      : [...assignedRoles, role];
+
+    // update local state
+    setAssignedRoles(nextRoles);
+
+    // send exactly what you just computed
+
+    setIsSelectOpen(true);
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -47,6 +87,7 @@ function UsersView() {
       password: '',
       job: '',
       img: 'https://res.cloudinary.com/dpktrptfr/image/upload/v1701779173/Windows_10_Default_Profile_Picture.svg_o9zszg.png',
+      roles: [],
     },
     validationSchema: createUserSchema,
     onSubmit: (values) => {
@@ -67,6 +108,7 @@ function UsersView() {
         password,
         job,
         img,
+        roles: assignedRoles,
       }).catch(() => {
         formik.setStatus('error');
       });
@@ -154,25 +196,6 @@ function UsersView() {
           </FormControl>
           <FormControl>
             <Input
-              id="phone"
-              type="phone"
-              name="phone"
-              className={
-                formik.touched.phone && formik.errors.phone
-                  ? `${styles.errorBorder}`
-                  : `${inputStyle.input}`
-              }
-              placeholder="Telefon"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.phone}
-            />
-            {formik.touched.phone && formik.errors.phone ? (
-              <p className={styles.error}>{formik.errors.phone}</p>
-            ) : null}
-          </FormControl>
-          <FormControl>
-            <Input
               id="password"
               type="password"
               name="password"
@@ -190,6 +213,48 @@ function UsersView() {
               <p className={styles.error}>{formik.errors.password}</p>
             ) : null}
           </FormControl>
+          <MultiselectDropdown
+            isSelectOpen={isSelectOpen}
+            setIsSelectOpen={setIsSelectOpen}
+            label="Rola"
+            inputKey="role"
+            inputValue={selectFilterValue}
+            handleInputValue={handleFilterDropdownInputValue}
+            isBigger
+            isSquare
+          >
+            {filteredRolesForDropdown.map((role) => {
+              return (
+                <FilterCheckbox
+                  key={role}
+                  name={role}
+                  isSelected={assignedRoles.includes(role)}
+                  toggleCompany={handleRoleAssign}
+                  filterVariable={role}
+                />
+              );
+            })}
+          </MultiselectDropdown>
+          <FormControl>
+            <Input
+              id="phone"
+              type="phone"
+              name="phone"
+              className={
+                formik.touched.phone && formik.errors.phone
+                  ? `${styles.errorBorder}`
+                  : `${inputStyle.input}`
+              }
+              placeholder="Telefon"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.phone}
+            />
+            {formik.touched.phone && formik.errors.phone ? (
+              <p className={styles.error}>{formik.errors.phone}</p>
+            ) : null}
+          </FormControl>
+
           <FormControl>
             <Input
               id="job"

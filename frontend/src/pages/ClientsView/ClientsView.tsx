@@ -21,11 +21,13 @@ import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterChec
 import FiltersClearButton from '../../components/Atoms/FiltersClearButton/FiltersClearButton';
 import useCompaniesContext from '../../hooks/Context/useCompaniesContext';
 import { getAllCompanies } from '../../services/companies-service';
+import useAuth from '../../hooks/useAuth';
+import hasRole from '../../utils/hasRole';
 
 function ClientsView() {
-  const [searchInputValue, setSearchInputValue] = useState('');
-  const [filterDropdown, setFilterDropdown] = useState(false);
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const [searchInputValue, setSearchInputValue] = useState<string>('');
+  const [filterDropdown, setFilterDropdown] = useState<boolean>(false);
+  const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false);
   const [selectFilterValue, setSelectFilterValue] = useState({
     client: '',
   });
@@ -35,6 +37,8 @@ function ClientsView() {
   const { companies, dispatch: companiesDispatch } = useCompaniesContext();
 
   const { showModal, exitAnim, openModal, closeModal } = useModal();
+
+  const { user } = useAuth();
 
   // EXTRACT FILTER DROPDOWN LOGIC TO CUSTOM HOOK
 
@@ -144,6 +148,7 @@ function ClientsView() {
                 inputKey="client"
                 inputValue={selectFilterValue.client}
                 handleInputValue={handleFilterDropdownInputValue}
+                isBigger={false}
                 isSquare={false}
               >
                 {companies.map((cp) => {
@@ -168,13 +173,16 @@ function ClientsView() {
           </>
         )}
         <div className={styles.buttonsWrapper}>
-          <CTA
-            onClick={() => {
-              openModal();
-            }}
-          >
-            Dodaj klienta
-          </CTA>
+          {hasRole(user, ['admin']) && (
+            <CTA
+              onClick={() => {
+                openModal();
+              }}
+            >
+              Dodaj klienta
+            </CTA>
+          )}
+
           <CTA
             onClick={() => {
               setFilterDropdown((prev) => !prev);
@@ -204,8 +212,41 @@ function ClientsView() {
           </InfoBar>
           <>
             {filteredBySearch.map((cl, index) => {
-              return (
+              return hasRole(user, ['admin']) ? (
                 <TileWrapper key={cl._id} index={index} linkPath={cl._id}>
+                  <div className={styles.clientTileWrapper}>
+                    <p
+                      className={`${styles.clientTileWrapperElement} ${styles.bolded}`}
+                    >
+                      {cl.name}
+                    </p>
+                    <p
+                      className={`${styles.clientTileWrapperElement} ${styles.bolded}`}
+                    >
+                      {cl.company}
+                    </p>
+                    <p className={styles.clientTileWrapperElement}>
+                      <a
+                        href={`mailto:${cl.email}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {cl.email}
+                      </a>
+                    </p>
+                    <p className={styles.clientTileWrapperElement}>
+                      <a
+                        href={`tel:${cl.phone}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {cl.phone}
+                      </a>
+                    </p>
+                  </div>
+                </TileWrapper>
+              ) : (
+                <TileWrapper key={cl._id} index={index} linkPath="">
                   <div className={styles.clientTileWrapper}>
                     <p
                       className={`${styles.clientTileWrapperElement} ${styles.bolded}`}

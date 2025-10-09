@@ -1,0 +1,12 @@
+.topBar {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+
+  h2 {
+    margin: 0;
+  }
+}

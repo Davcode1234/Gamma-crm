@@ -3,6 +3,7 @@ import passport from 'passport';
 import { StatusCodes } from 'http-status-codes';
 import '../Auth/Passport';
 import { ClientController } from './Client.controller';
+import { permit } from '../Auth/permit';
 
 export const ClientRouter = Router();
 
@@ -23,6 +24,8 @@ ClientRouter.get(
 ClientRouter.get(
   '/:id',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
+
   async (req, res) => {
     try {
       const client = await ClientController.getClient(req.params.id);
@@ -37,6 +40,7 @@ ClientRouter.get(
 ClientRouter.post(
   '/',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
   async (req, res) => {
     try {
       const newClient = await ClientController.addClient({
@@ -53,36 +57,47 @@ ClientRouter.post(
   },
 );
 
-ClientRouter.post('/bulk', async (req, res) => {
-  try {
-    const clients = req.body;
+ClientRouter.post(
+  '/bulk',
+  passport.authenticate('jwt', { session: false }),
+  permit('admin'),
+  async (req, res) => {
+    try {
+      const clients = req.body;
 
-    const newClients = await ClientController.addManyClients(clients);
-    res.status(StatusCodes.ACCEPTED).json(newClients);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to insert users', details: error });
-  }
-});
-
-ClientRouter.delete('/bulk', async (req, res) => {
-  try {
-    const clientIds = req.body;
-
-    if (!Array.isArray(clientIds)) {
-      res.status(400).json({ error: 'Expected array of Ids' });
-      return;
+      const newClients = await ClientController.addManyClients(clients);
+      res.status(StatusCodes.ACCEPTED).json(newClients);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to insert users', details: error });
     }
-    const result = await ClientController.deleteManyClients(clientIds);
+  },
+);
 
-    res.status(StatusCodes.ACCEPTED).json(result);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to insert users', details: error });
-  }
-});
+ClientRouter.delete(
+  '/bulk',
+  passport.authenticate('jwt', { session: false }),
+  permit('admin'),
+  async (req, res) => {
+    try {
+      const clientIds = req.body;
+
+      if (!Array.isArray(clientIds)) {
+        res.status(400).json({ error: 'Expected array of Ids' });
+        return;
+      }
+      const result = await ClientController.deleteManyClients(clientIds);
+
+      res.status(StatusCodes.ACCEPTED).json(result);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to insert users', details: error });
+    }
+  },
+);
 
 ClientRouter.patch(
   '/:id',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
   async (req, res) => {
     try {
       const updatedCompany = await ClientController.updateClient(
@@ -99,6 +114,7 @@ ClientRouter.patch(
 ClientRouter.delete(
   '/:id',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
   async (req, res) => {
     try {
       const deletedClient = await ClientController.deleteClient(req.params.id);
@@ -127,6 +143,7 @@ ClientRouter.get(
 ClientRouter.post(
   '/:clientID/notes',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
   async (req, res) => {
     try {
       const clientID = req.params.clientID;
@@ -147,6 +164,7 @@ ClientRouter.post(
 ClientRouter.delete(
   '/:clientID/:noteID/notes',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
   async (req, res) => {
     try {
       const clientID = req.params.clientID;

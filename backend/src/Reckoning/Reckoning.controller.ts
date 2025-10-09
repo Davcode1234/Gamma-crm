@@ -179,14 +179,11 @@ export const ReckoningTaskController = {
   },
 
   async updateDay(taskId, dayId, userId, value, monthId) {
+    const mId = new Types.ObjectId(monthId);
+    const dId = new Types.ObjectId(dayId);
     try {
-      const updatedDay = await ReckoningTaskModel.updateOne(
-        {
-          _id: taskId,
-          'participants._id': userId,
-          'participants.months._id': monthId,
-          'participants.months.hours._id': dayId,
-        },
+      const res = await ReckoningTaskModel.updateOne(
+        { _id: taskId },
         {
           $set: {
             'participants.$[p].months.$[m].hours.$[h].hourNum': value.hourNum,
@@ -197,19 +194,22 @@ export const ReckoningTaskController = {
         },
         {
           arrayFilters: [
-            { 'p._id': new Types.ObjectId(userId) },
-            { 'm._id': new Types.ObjectId(monthId) },
-            { 'h._id': new Types.ObjectId(dayId) },
+            // participants._id is a STRING
+            { 'p._id': userId },
+            // months/hours are ObjectId
+            { 'm._id': mId },
+            { 'h._id': dId },
           ],
         },
       );
 
-      if (updatedDay.modifiedCount === 0) {
-        throw new Error('No document was updated. Check IDs and structure.');
+      if (res.matchedCount === 0) {
+        throw new Error(
+          'No matching document. Verify taskId/participant/month/day ownership.',
+        );
       }
 
-      const updatedTask = await ReckoningTaskModel.findById(taskId);
-      return updatedTask;
+      return await ReckoningTaskModel.findById(taskId);
     } catch (err) {
       console.error('Error in atomic day update', err);
       throw err;

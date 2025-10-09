@@ -16,10 +16,10 @@ export const StudioTaskController = {
 
   async getHighestSearchIDByMonth(year, month) {
     const startDate = new Date(Date.UTC(Number(year), Number(month) - 1, 1));
-    const endDate = new Date(Date.UTC(Number(year), Number(month), 1));
+    // const endDate = new Date(Date.UTC(Number(year), Number(month), 1));
 
     const tasks = await StudioTaskModel.find({
-      startDate: { $gte: startDate, $lt: endDate },
+      createdAt: { $gte: startDate },
     })
       .sort({ searchID: 1 })
       .exec();
@@ -28,6 +28,41 @@ export const StudioTaskController = {
     }
     const lastItem = tasks[tasks.length - 1];
     return String(lastItem.searchID);
+  },
+
+  async getPlackerTasks() {
+    const plackerTasks = await StudioTaskModel.aggregate([
+      {
+        $unwind: '$participants',
+      },
+      {
+        $group: {
+          _id: '$participants.name',
+          tasks: {
+            $push: {
+              _id: '$_id',
+              searchID: '$searchID',
+              reckoTaskID: '$reckoTaskID',
+              title: '$title',
+              client: '$client',
+              clientPerson: '$clientPerson',
+              status: '$status',
+              index: '$index',
+              startDate: '$startDate',
+              deadline: '$deadline',
+              createdAt: '$createdAt',
+              author: '$author',
+              taskType: '$taskType',
+              description: '$description',
+            },
+          },
+        },
+      },
+      { $group: { _id: null, pairs: { $push: { k: '$_id', v: '$tasks' } } } },
+      { $replaceRoot: { newRoot: { $arrayToObject: '$pairs' } } },
+    ]);
+
+    return await plackerTasks;
   },
 
   async addStudioTask(studioTask) {

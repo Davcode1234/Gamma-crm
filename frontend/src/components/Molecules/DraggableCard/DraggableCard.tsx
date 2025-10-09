@@ -12,9 +12,12 @@ import useStudioTaskUpdate from '../../../hooks/useStudioTaskUpdate';
 import checkIfUserAssigned from '../../../utils/checkIfUserAssigned';
 import UpdateTaskModalContent from '../../Organisms/UpdateTaskModalContent/UpdateTaskModalContent';
 import CompanyBatch from '../../Atoms/CompanyBatch/CompanyBatch';
+import handleCopy from '../../../utils/handleCopy';
 
 function DraggableCard({ task, index, doneSubtasks = 0, isDragAllowed }) {
   const { showModal, exitAnim, openModal, closeModal } = useModal();
+  const [searchIDCopied, setSearchIDCopied] = useState(false);
+
   const [deleteCaptcha, setDeleteCaptcha] = useState(false);
   const { user: currentUser } = useAuth();
 
@@ -108,7 +111,33 @@ function DraggableCard({ task, index, doneSubtasks = 0, isDragAllowed }) {
                 </CompanyBatch>
               </div>
 
-              <span className={styles.searchID}>#{task.searchID}</span>
+              <span
+                className={styles.searchID}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === 'Escape') {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    handleCopy(task.searchID, setSearchIDCopied);
+                  }
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  handleCopy(task.searchID, setSearchIDCopied);
+                }}
+              >
+                #{task.searchID}
+                {searchIDCopied && (
+                  <Icon
+                    icon="line-md:folder-check"
+                    width="20"
+                    height="20"
+                    className={styles.copiedIcon}
+                  />
+                )}
+              </span>
               {/* <span>{`${task.reckoTaskID}`}</span> */}
               <p className={styles.taskTitle}>{task.title}</p>
               <div className={styles.userDisplayWrapper}>

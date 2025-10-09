@@ -3,6 +3,7 @@ import passport from 'passport';
 import { CompanyController } from './Company.controller';
 import { StatusCodes } from 'http-status-codes';
 import '../Auth/Passport';
+import { permit } from '../Auth/permit';
 
 export const CompanyRouter = Router();
 
@@ -23,6 +24,7 @@ CompanyRouter.get(
 CompanyRouter.get(
   '/:id',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
   async (req, res) => {
     try {
       const company = await CompanyController.getCompany(req.params.id);
@@ -37,6 +39,7 @@ CompanyRouter.get(
 CompanyRouter.post(
   '/',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
   async (req, res) => {
     try {
       const newCompany = await CompanyController.addCompany({
@@ -60,6 +63,7 @@ CompanyRouter.post(
 CompanyRouter.patch(
   '/:id',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
   async (req, res) => {
     try {
       const updatedCompany = await CompanyController.updateCompany(
@@ -76,6 +80,7 @@ CompanyRouter.patch(
 CompanyRouter.delete(
   '/:id',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
   async (req, res) => {
     try {
       const deletedTask = await CompanyController.deleteCompany(req.params.id);
@@ -135,6 +140,7 @@ CompanyRouter.get(
 CompanyRouter.get(
   '/reckoning/:company/:monthIndex',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
   async (req, res) => {
     try {
       const company = req.params.company || '';

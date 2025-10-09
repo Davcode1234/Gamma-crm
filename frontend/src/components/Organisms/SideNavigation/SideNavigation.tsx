@@ -3,31 +3,39 @@ import { Link, NavLink } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import styles from './SideNavigation.module.css';
 import useSideNavHide from '../../../hooks/useSideNavHide';
+import hasRole from '../../../utils/hasRole';
+import useAuth from '../../../hooks/useAuth';
 
 const sideNavButtons = [
   {
     name: 'pulpit',
     icon: 'ic:outline-space-dashboard',
+    roles: ['admin'],
   },
   {
     name: 'użytkownicy',
     icon: 'uil:users-alt',
+    roles: ['admin'],
   },
   {
     name: 'zlecenia',
     icon: 'fluent:tasks-app-24-regular',
+    roles: ['admin', 'grafik'],
   },
   {
     name: 'rozliczenie',
     icon: 'icon-park-solid:excel',
+    roles: ['admin', 'grafik'],
   },
   {
     name: 'firmy',
     icon: 'clarity:building-line',
+    roles: ['admin', 'grafik'],
   },
   {
     name: 'klienci',
     icon: 'lucide:contact',
+    roles: ['admin', 'grafik'],
   },
   // {
   //   name: 'zadania',
@@ -40,6 +48,7 @@ const sideNavButtons = [
   {
     name: 'magazyn',
     icon: 'material-symbols:warehouse-outline-rounded',
+    roles: ['admin'],
   },
 ];
 
@@ -49,6 +58,7 @@ function SideNavigation() {
     sideNavContainer: {},
     text: {},
   });
+  const { user } = useAuth();
 
   return (
     <div
@@ -80,30 +90,32 @@ function SideNavigation() {
         <div className={styles.btnsWrapper}>
           {sideNavButtons.map((btn) => {
             return (
-              <NavLink
-                className={({ isActive }) =>
-                  isActive ? `${styles.active}` : `${styles.inactive}`
-                }
-                key={btn.name}
-                to={`${btn.name}`}
-              >
-                <Icon
-                  icon={btn.icon}
-                  width="28"
-                  height="28"
-                  className={styles.icon}
-                />
-                <button
-                  type="button"
-                  className={`${`${
-                    isSideNavHidden
-                      ? styles.hiddenSideNavBtn
-                      : styles.sideNavBtn
-                  }`} ${animationClass.text}`}
+              hasRole(user, btn.roles) && (
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive ? `${styles.active}` : `${styles.inactive}`
+                  }
+                  key={btn.name}
+                  to={`${btn.name}`}
                 >
-                  {btn.name[0].toUpperCase() + btn.name.slice(1)}
-                </button>
-              </NavLink>
+                  <Icon
+                    icon={btn.icon}
+                    width="28"
+                    height="28"
+                    className={styles.icon}
+                  />
+                  <button
+                    type="button"
+                    className={`${`${
+                      isSideNavHidden
+                        ? styles.hiddenSideNavBtn
+                        : styles.sideNavBtn
+                    }`} ${animationClass.text}`}
+                  >
+                    {btn.name[0].toUpperCase() + btn.name.slice(1)}
+                  </button>
+                </NavLink>
+              )
             );
           })}
         </div>

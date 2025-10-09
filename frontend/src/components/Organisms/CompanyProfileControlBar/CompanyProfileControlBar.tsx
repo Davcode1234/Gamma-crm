@@ -32,6 +32,7 @@ function CompanyProfileControlBar({
   exportToExcel,
 }) {
   const [filterDropdown, setFilterDropdown] = useState(false);
+  const [downloadDropdown, setDownloadDropdown] = useState(false);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [isSecondSelectOpen, setIsSecondSelectOpen] = useState(false);
   const [selectFilterValue, setSelectFilterValue] = useState({
@@ -121,7 +122,7 @@ function CompanyProfileControlBar({
   // };
 
   const dataForExcel = () => {
-    return tasks.flatMap((task) =>
+    const arr = tasks.flatMap((task) =>
       task.participants.flatMap((participant) => {
         const author = {
           _id: participant._id,
@@ -143,19 +144,48 @@ function CompanyProfileControlBar({
             const month = String(currentMonthIndex + 1).padStart(2, '0');
 
             return {
+              Data: `${day}.${month}`,
+              Klient: task.clientPerson,
+              Tytuł: task.title,
               Numer_karty: task.searchID,
               Autor: author.name,
-              Data: `${day}.${month}`,
               Firma: task.client,
-              Klient: task.clientPerson,
               Godziny: hour.hourNum,
-              Tytuł: task.title,
               Opis: task.description,
+              Komentarz: task.comment,
               Rozliczone: task.isSettled,
             };
           });
       })
     );
+
+    return arr.sort((a, b) => {
+      const [dayA, monthA] = a.Data.split('.').map(Number);
+      const [dayB, monthB] = b.Data.split('.').map(Number);
+
+      const dateA = new Date(2025, monthA - 1, dayA);
+      const dateB = new Date(2025, monthB - 1, dayB);
+
+      return dateA.getTime() - dateB.getTime();
+    });
+  };
+
+  const secondDataForExcel = () => {
+    const arr = tasks.flatMap((task) => {
+      return {
+        Data: task.startDate,
+        Klient: task.clientPerson,
+        Tytuł: task.title,
+        Numer_karty: task.searchID,
+        Autor: task.author.name,
+        Firma: task.client,
+        Godziny: summarizeCompanyProfHours(task, currentMonthIndex),
+        Opis: task.description,
+        Komentarz: task.comment,
+        Rozliczone: task.isSettled,
+      };
+    });
+    return arr;
   };
 
   return (
@@ -225,7 +255,7 @@ function CompanyProfileControlBar({
         <button
           type="button"
           onClick={() => {
-            exportToExcel(dataForExcel());
+            setDownloadDropdown((prev) => !prev);
           }}
           className={styles.exportButton}
         >
@@ -237,24 +267,43 @@ function CompanyProfileControlBar({
           />
         </button>
 
-        {/* <CTA
+        {/* <button
           type="button"
           onClick={() => {
-            exportToExcel(dataForExcel());
+            exportToExcel(secondDataForExcel());
           }}
+          className={styles.exportButton}
         >
-          Eksportuj
-        </CTA> */}
+          tetete
+        </button> */}
+
+        {downloadDropdown && (
+          <div>
+            <button
+              type="button"
+              className={`${styles.downloadButton} ${styles.listBtn}`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                exportToExcel(dataForExcel());
+              }}
+            >
+              Lista
+            </button>
+            <button
+              type="button"
+              className={`${styles.downloadButton} ${styles.sumBtn}`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                exportToExcel(secondDataForExcel());
+              }}
+            >
+              Suma
+            </button>
+          </div>
+        )}
       </div>
-      {/* <div className={styles.totalHoursContainer}>
-        <p className={styles.summPar}>Suma:</p>
-        <div className={styles.summWrapper}>
-          <p className={styles.summValue}>{total}h</p>
-          <p className={styles.summValue}>
-            {company && total * Number(company.hourRate)}zł
-          </p>
-        </div>
-      </div> */}
 
       <div className={styles.summaryContainer}>
         <p className={styles.summTitle}>Suma:</p>
@@ -280,6 +329,7 @@ function CompanyProfileControlBar({
               inputKey="client"
               inputValue={selectFilterValue.client}
               handleInputValue={handleFilterDropdownInputValue}
+              isBigger={false}
               isSquare={false}
             >
               {filteredClientsForDropdown.map((cp) => {
@@ -302,6 +352,7 @@ function CompanyProfileControlBar({
               inputKey="settled"
               inputValue={selectFilterValue.settled}
               handleInputValue={handleFilterDropdownInputValue}
+              isBigger={false}
               isSquare={false}
             >
               {filteredSettledForDropdown.map((sdd) => {

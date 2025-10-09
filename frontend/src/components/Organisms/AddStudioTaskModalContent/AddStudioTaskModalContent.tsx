@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import Calendar from 'react-calendar';
+import { pl } from 'date-fns/locale';
+import { DayPicker, DateRange } from 'react-day-picker';
 import { Icon } from '@iconify/react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -67,7 +68,7 @@ function AddStudioTaskModalContent({
 }) {
   const [participantsToAdd, setParticipantsToAdd] = useState([]);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
-  const [deadline, setDeadline] = useState('');
+  const [range, setRange] = useState<DateRange | undefined>();
   const [newSearchID, setNewSearchID] = useState<number>(0);
   const { dispatch } = useStudioTasksContext();
   const { user } = useAuth();
@@ -108,6 +109,7 @@ function AddStudioTaskModalContent({
       // const { deadline } = values;
 
       const currentDate = new Date();
+      const isRangeValid = !!(range?.from && range?.to);
       const searchID = generateSearchID(newSearchID);
       const statusValue: StudioTaskTypes['status'] =
         status as StudioTaskTypes['status'];
@@ -138,8 +140,9 @@ function AddStudioTaskModalContent({
           participants: participantsToAdd,
           description,
           subtasks: [],
-          deadline,
-          startDate: currentDate,
+          deadline: isRangeValid ? String(range.to) : null,
+          startDate: isRangeValid ? range.from : currentDate,
+          createdAt: currentDate,
         });
 
         if (response !== null) {
@@ -305,6 +308,7 @@ function AddStudioTaskModalContent({
                 inputKey="user"
                 inputValue={selectFilterValue.user}
                 handleInputValue={handleFilterDropdownInputValue}
+                isBigger={false}
                 isSquare
               >
                 {filteredUsersForDropdown.map((userOnDrop) => {
@@ -391,13 +395,18 @@ function AddStudioTaskModalContent({
             </select>
           </div>
 
-          <Calendar
-            value={deadline}
-            onChange={(e) => {
-              setDeadline(e.toString());
-            }}
-            locale="pl-PL"
-          />
+          <div className={styles.calendarContainer}>
+            <DayPicker
+              mode="range"
+              selected={range}
+              onSelect={setRange}
+              numberOfMonths={1}
+              // disabled={{ before: task.startDate }}
+              min={1}
+              max={180}
+              locale={pl}
+            />
+          </div>
         </div>
 
         <div className={styles.buttonWrapper}>

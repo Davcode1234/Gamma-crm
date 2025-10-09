@@ -2,7 +2,7 @@
   width: 98%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   max-height: 330px;
   overflow-y: scroll;

@@ -21,6 +21,20 @@ StudioTaskRouter.get(
 );
 
 StudioTaskRouter.get(
+  '/placker',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const studioTasks = await StudioTaskController.getPlackerTasks();
+      res.status(StatusCodes.ACCEPTED).json(studioTasks);
+    } catch (error) {
+      console.error(error);
+      res.status(StatusCodes.BAD_REQUEST).json({ message: error });
+    }
+  },
+);
+
+StudioTaskRouter.get(
   '/:id',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
@@ -75,6 +89,7 @@ StudioTaskRouter.post(
         subtasks: req.body.subtasks,
         deadline: req.body.deadline,
         startDate: req.body.startDate,
+        createdAt: req.body.createdAt,
       });
       res.status(StatusCodes.CREATED).json(newStudioTask);
     } catch (error) {

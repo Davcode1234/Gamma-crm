@@ -2,12 +2,14 @@ import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { UserController } from './User.controller';
 import passport from 'passport';
+import { permit } from '../Auth/permit';
 
 export const UserRouter = Router();
 
 UserRouter.get(
   '/',
   passport.authenticate('jwt', { session: false }),
+  permit('admin', 'grafik'),
   async (req, res) => {
     try {
       const users = await UserController.getUsers();
@@ -23,6 +25,7 @@ UserRouter.get(
 UserRouter.get(
   '/:id',
   passport.authenticate('jwt', { session: false }),
+  permit('admin', 'grafik'),
   async (req, res) => {
     const id = req.params.id === 'me' ? req.user.id : req.params.id;
     try {
@@ -37,7 +40,6 @@ UserRouter.get(
 UserRouter.patch(
   '/:id',
   passport.authenticate('jwt', { session: false }),
-
   async (req, res) => {
     const id = req.params.id === 'me' ? req.user.id : req.params.id;
     try {
@@ -57,6 +59,7 @@ UserRouter.patch(
 UserRouter.delete(
   '/:id',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
   async (req, res) => {
     const id = req.params.id === 'me' ? req.user.id : req.params.id;
     try {

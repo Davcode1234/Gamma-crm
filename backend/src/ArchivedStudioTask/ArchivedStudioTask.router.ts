@@ -56,6 +56,7 @@ ArchivedStudioTaskRouter.post(
           subtasks: req.body.subtasks,
           deadline: req.body.deadline,
           startDate: req.body.startDate,
+          createdAt: req.body.createdAt,
         });
       res.status(StatusCodes.CREATED).json(newArchivedStudioTask);
     } catch (error) {

@@ -15,17 +15,17 @@
   margin-bottom: 20px;
 }
 
-@media (max-width: 2000px) {
+/* @media (max-width: 2000px) {
   .listContainer {
     max-width: 85vw;
   }
-}
+} */
 
-@media (max-width: 1000px) {
+/* @media (max-width: 1000px) {
   .listContainer {
     max-width: 75vw;
   }
-}
+} */
 /* @media (min-width: 2400px) {
   .listContainer {
     max-height: 1050px;

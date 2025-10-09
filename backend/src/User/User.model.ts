@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+const rolesEnum = ['admin', 'grafik', 'marketing'] as const;
 
 export const UserModel = mongoose.model(
   'User',
@@ -30,6 +31,12 @@ export const UserModel = mongoose.model(
     },
     img: {
       type: String,
+      required: true,
+    },
+    roles: {
+      type: [String],
+      enum: rolesEnum,
+      default: ['grafik'],
       required: true,
     },
   }),

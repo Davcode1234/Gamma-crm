@@ -27,12 +27,38 @@ export type StudioTaskTypes = {
   subtasks: Subtask[];
   deadline: string;
   startDate: Date;
+  createdAt: Date;
 };
 
 export async function getAllStudioTasks() {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/api/studiotasks`,
+      {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (response.ok) {
+      return await response.json();
+    }
+    throw new Error(`${response.status} ${response.statusText}`);
+  } catch (error) {
+    if (Config.isDev) {
+      throw new Error('Get users', error.message);
+    }
+    console.error(error.message);
+    return null;
+  }
+}
+
+export async function getPlackerTasks() {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/studiotasks/placker`,
       {
         method: 'GET',
         credentials: 'include',
@@ -119,6 +145,7 @@ export async function addStudioTask({
   subtasks,
   deadline,
   startDate,
+  createdAt,
 }: StudioTaskTypes) {
   const formData = {
     searchID,
@@ -135,6 +162,7 @@ export async function addStudioTask({
     subtasks,
     deadline,
     startDate,
+    createdAt,
   };
 
   try {

@@ -24,7 +24,8 @@ function ReckoningTile({
   isAssignedToKanban,
 }) {
   const [formValue, setFormValue] = useState(reckTask);
-  const [isTaskDeleteLoading, setIsTaskDeleteLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [isEditOpen, setIsEditOpen] = useState({
     isOpen: false,
     position: null,
@@ -87,12 +88,12 @@ function ReckoningTile({
   const handleBlur = async (id, value) => {
     // setIsEditing(false);
     try {
-      setIsTaskDeleteLoading(true);
+      setIsLoading(true);
       await updateReckoningTask({ taskId: id, value });
     } catch (error) {
       console.error('Error saving value:', error);
     } finally {
-      setIsTaskDeleteLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -126,7 +127,8 @@ function ReckoningTile({
 
   const handleDayUpdate = async (taskId, userId, dayId, value, monthId) => {
     try {
-      setIsTaskDeleteLoading(true);
+      setIsLoading(true);
+
       await updateDay({ taskId, userId, dayId, value, monthId });
       dispatch({
         type: 'UPDATE_HOUR_NUM',
@@ -141,7 +143,7 @@ function ReckoningTile({
     } catch (error) {
       console.error('Error saving value:', error);
     } finally {
-      setIsTaskDeleteLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -186,7 +188,7 @@ function ReckoningTile({
 
   const handleDeleteReckoTask = async (id) => {
     try {
-      setIsTaskDeleteLoading(true);
+      setIsLoading(true);
       setIsEditOpen((prev) => {
         return {
           ...prev,
@@ -208,7 +210,7 @@ function ReckoningTile({
     } catch (error) {
       console.error('Error saving value:', error);
     } finally {
-      setIsTaskDeleteLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -270,7 +272,7 @@ function ReckoningTile({
             });
           }}
         >
-          {isTaskDeleteLoading ? (
+          {isLoading ? (
             <CheckboxLoader />
           ) : (
             <Icon icon="ic:outline-more-vert" width="24" height="24" />
@@ -379,6 +381,7 @@ function ReckoningTile({
                 // maxLength="2"
                 key={dayIndex}
                 value={dayTile.hourNum === 0 ? '' : dayTile.hourNum}
+                disabled={isLoading}
                 onChange={(e) => {
                   if (e.target.value.length > 2 || Number(e.target.value) >= 25)
                     return;

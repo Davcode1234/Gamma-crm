@@ -176,10 +176,28 @@
 
 .cardNumberWrapper {
   width: 150px;
+  cursor: pointer;
+}
+.searchIDContainer {
+  position: relative;
+}
+
+.copiedInfo {
+  display: flex;
+  gap: 5px;
+  position: absolute;
+  font-size: 12px;
+  font-weight: 600;
+  animation: appear 0.3s ease forwards;
+
+  svg {
+    color: var(--color-green);
+  }
 }
 
 .cardNumber,
 .modalDatesWrapper {
+  cursor: pointer;
   width: fit-content;
   margin: 0;
   padding: 2px 8px;
@@ -188,9 +206,24 @@
   font-weight: 600;
   color: var(--color-lighter);
   background-color: var(--color-navButton);
+  animation: appear 0.3s ease forwards;
+  transition: all 0.3s ease;
+  border: 1px solid var(--color-navButton);
+
+  &:hover {
+    transform: scale(1.05);
+    background-color: transparent;
+    color: var(--color-navButton);
+  }
 }
 .modalDatesWrapper {
   display: flex;
+  border: 1px solid var(--color-orange);
+  transition: all 0.3s ease;
+  &:hover {
+    color: var(--color-orange);
+    background-color: transparent;
+  }
 }
 
 .dateCurrent {
@@ -434,6 +467,64 @@
 
 .noParticipantsPar {
   font-size: 14px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  padding: 5% 10%;
+  background-color: transparent;
+  z-index: 999;
+  cursor: default;
+}
+
+.editDateContainer {
+  background-color: var(--color-lighter);
+  /* position: absolute;
+  left: 35%;
+  top: 35%; */
+  padding: 10px 20px;
+  border-radius: 10px;
+  z-index: 9999999;
+}
+
+.noDates {
+  margin: 5px 0;
+}
+
+.buttonsWrapper {
+  margin-top: 10px;
+  display: flex;
+  gap: 5px;
+}
+
+.calendarBtn {
+  cursor: pointer;
+  background-color: var(--color-orange);
+  color: var(--color-lighter);
+  font-weight: 600;
+  border-radius: 5px;
+  border: 1px solid var(--color-orange);
+  padding: 5px 10px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: transparent;
+    color: var(--color-orange);
+  }
+}
+.abortBtn {
+  background-color: var(--color-lighter);
+  color: var(--color-dark);
+
+  &:hover {
+    background-color: #f4f4f4;
+    color: var(--color-dark);
+  }
 }
 
 @keyframes appear {

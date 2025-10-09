@@ -2,12 +2,15 @@ import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import passport from 'passport';
 import { ChartsController } from './Charts.controller';
+import { permit } from '../Auth/permit';
 
 export const ChartsRouter = Router();
 
 ChartsRouter.get(
   '/reckoning/client-per-hour/:month/:year',
   passport.authenticate('jwt', { session: false }),
+  permit('admin'),
+
   async (req, res) => {
     const month = req.params.month;
     const year = req.params.year;

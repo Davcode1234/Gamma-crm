@@ -32,6 +32,7 @@ import FilterDropdownContainer from '../../components/Atoms/FilterDropdownContai
 import DropdownHeader from '../../components/Atoms/DropdownHeader/DropdownHeader';
 import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterCheckbox';
 import FiltersClearButton from '../../components/Atoms/FiltersClearButton/FiltersClearButton';
+import PlackerView from '../../components/Organisms/PlackerView/PlackerView';
 
 const initialTaskObject: StudioTaskTypes = {
   searchID: 0,
@@ -49,6 +50,7 @@ const initialTaskObject: StudioTaskTypes = {
     lastname: '',
     name: '',
     phone: 0,
+    roles: [],
   },
   taskType: '',
   participants: [],
@@ -56,9 +58,16 @@ const initialTaskObject: StudioTaskTypes = {
   subtasks: [],
   deadline: '',
   startDate: new Date(),
+  createdAt: new Date(),
 };
 
-const viewOptions = ['Aktywne', 'Archiwum'];
+const VIEWS = {
+  ACTIVE: 'Aktywne',
+  ARCHIVE: 'Archiwum',
+  PLACKER: 'Placker',
+};
+
+const viewOptions = [VIEWS.ACTIVE, VIEWS.ARCHIVE, VIEWS.PLACKER];
 
 function StudioTaskView() {
   const [viewVariable, setViewVariable] = useState('Aktywne');
@@ -139,74 +148,9 @@ function StudioTaskView() {
     objectKey: 'participants',
   });
 
-  // const handleLoadingStateChange = (key, val) => {
-  //   setLoadingState((prev) => ({
-  //     ...prev,
-  //     [key]: val,
-  //   }));
-  // };
-
-  // const handleFormChange = (e, key) => {
-  //   setFormValue((prev) => ({
-  //     ...prev,
-  //     [key]: e.target.value,
-  //   }));
-  // };
-
   const handleViewChange = (e) => {
     setViewVariable(e.target.value);
   };
-
-  // const createTaskHandler = async () => {
-  //   try {
-  //     handleLoadingStateChange('isLoading', true);
-  //     const searchID = generateSearchID();
-  //     const currentDate = new Date();
-  //     const statusValue: StudioTaskTypes['status'] =
-  //       formValue.status as StudioTaskTypes['status'];
-
-  //     let indexOfNewTask;
-  //     if (tasksByStatus[statusValue].length > 0) {
-  //       indexOfNewTask =
-  //         tasksByStatus[statusValue][tasksByStatus[statusValue].length - 1]
-  //           .index + 1;
-  //     }
-  //     if (tasksByStatus[statusValue].length === 0) {
-  //       indexOfNewTask = tasksByStatus[statusValue].length + 1;
-  //     }
-  //     const response = await addStudioTask({
-  //       searchID,
-  //       reckoTaskID: '',
-  //       title: formValue.title,
-  //       client: formValue.client,
-  //       clientPerson: formValue.clientPerson,
-  //       status: statusValue,
-  //       index: indexOfNewTask,
-  //       author: user[0],
-  //       taskType: formValue.taskType,
-  //       participants: formValue.participants,
-  //       description: formValue.description,
-  //       subtasks: [],
-  //       deadline: formValue.deadline,
-  //       startDate: currentDate,
-  //     });
-
-  //     if (response !== null) {
-  //       handleLoadingStateChange('finalMessage', 'Zlecenie utworzone!');
-  //       setFormValue(initialTaskObject);
-  //       socket.emit('taskAdded', response); // Emit updated tasks
-  //       dispatch({ type: 'CREATE_STUDIOTASK', payload: response });
-  //     } else {
-  //       handleLoadingStateChange('finalMessage', 'Coś poszło nie tak :(');
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     handleLoadingStateChange('isLoading', false);
-  //   } finally {
-  //     handleLoadingStateChange('isLoading', false);
-  //     handleLoadingStateChange('isFinalMessage', true);
-  //   }
-  // };
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -317,11 +261,22 @@ function StudioTaskView() {
       .includes(selectFilterValue.company.toLocaleLowerCase());
   });
 
-  // const filteredUsersToAddForDropdown = users.filter((c) => {
-  //   return c.name
-  //     .toLocaleLowerCase()
-  //     .includes(selectFilterValue.company.toLocaleLowerCase());
-  // });
+  const viewRender = {
+    [VIEWS.ACTIVE]: (
+      <KanbanView
+        filterArray={participantsToFilter}
+        companiesFilterArray={companiesToFilter}
+      />
+    ),
+    [VIEWS.ARCHIVE]: (
+      <ArchivedListView
+        activeGroupedTasks={tasksByStatus}
+        setViewVariable={setViewVariable}
+        matchingTasks={matchingTasks}
+      />
+    ),
+    [VIEWS.PLACKER]: <PlackerView />,
+  };
 
   return (
     <>
@@ -469,6 +424,7 @@ function StudioTaskView() {
                   inputKey="user"
                   inputValue={selectFilterValue.user}
                   handleInputValue={handleFilterDropdownInputValue}
+                  isBigger={false}
                   isSquare={false}
                 >
                   {filteredUsersForDropdown.map((userOnDrop) => {
@@ -497,6 +453,7 @@ function StudioTaskView() {
                   inputKey="company"
                   inputValue={selectFilterValue.company}
                   handleInputValue={handleFilterDropdownInputValue}
+                  isBigger={false}
                   isSquare={false}
                 >
                   {filteredCompaniesForDropdown.map((company) => {
@@ -524,18 +481,7 @@ function StudioTaskView() {
         )}
       </ControlBar>
 
-      {viewVariable === 'Aktywne' ? (
-        <KanbanView
-          filterArray={participantsToFilter}
-          companiesFilterArray={companiesToFilter}
-        />
-      ) : (
-        <ArchivedListView
-          activeGroupedTasks={tasksByStatus}
-          setViewVariable={setViewVariable}
-          matchingTasks={matchingTasks}
-        />
-      )}
+      {viewRender[viewVariable]}
     </>
   );
 }
