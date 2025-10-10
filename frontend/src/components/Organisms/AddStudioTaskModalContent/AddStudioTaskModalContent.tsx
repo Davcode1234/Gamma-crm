@@ -100,6 +100,9 @@ function AddStudioTaskModalContent({
     },
     validationSchema: createStudioTaskSchema,
     onSubmit: async (values) => {
+      const uniqueParticipants = Array.from(
+        new Map(participantsToAdd.map((u) => [String(u._id), u])).values()
+      );
       const { title } = values;
       const { client } = values;
       const { clientPerson } = values;
@@ -137,7 +140,7 @@ function AddStudioTaskModalContent({
           index: indexOfNewTask,
           author: user[0],
           taskType,
-          participants: participantsToAdd,
+          participants: uniqueParticipants,
           description,
           subtasks: [],
           deadline: isRangeValid ? String(range.to) : null,
@@ -157,22 +160,15 @@ function AddStudioTaskModalContent({
   });
 
   const handleUserAssign = (userOnDrop) => {
-    if (
-      participantsToAdd.some(
-        (userToCheck) => userToCheck._id === userOnDrop._id
-      )
-    ) {
-      setParticipantsToAdd(
-        participantsToAdd.filter((part) => part._id !== userOnDrop._id)
-      );
-
-      setIsSelectOpen(true);
-    } else {
-      setParticipantsToAdd((prev) => {
-        return [...prev, userOnDrop];
-      });
-      setIsSelectOpen(true);
-    }
+    setParticipantsToAdd((prev) => {
+      const id = String(userOnDrop._id);
+      const exists = prev.some((p) => String(p._id) === id);
+      if (exists) {
+        return prev.filter((p) => String(p._id) !== id);
+      }
+      return [...prev, userOnDrop];
+    });
+    setIsSelectOpen(true);
   };
 
   return (

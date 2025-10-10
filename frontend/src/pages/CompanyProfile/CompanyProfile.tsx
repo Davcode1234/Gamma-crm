@@ -228,9 +228,9 @@ function CompanyProfile() {
     ];
 
     const aoa: any[][] = [];
-    aoa.push([title]); // Row 1: title
-    aoa.push([]); // Row 2: spacer
-    aoa.push(header); // Row 3: header
+    aoa.push([title]);
+    aoa.push([]);
+    aoa.push(header);
 
     // Data rows start at row 4
     rows.forEach((r, i) => {
