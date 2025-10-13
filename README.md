@@ -57,12 +57,12 @@ npm run dev
 
 ```
 Gamma-crm/
-├── client/          # Frontend (React + Vite)
+├── frontend/          # Frontend (React + Vite)
 │   ├── src/
 │   ├── package.json
 │   └── ...
 │
-├── server/          # Backend (Express + MongoDB)
+├── backend/          # Backend (Express + MongoDB)
 │   ├── src/
 │   ├── package.json
 │   └── ...
