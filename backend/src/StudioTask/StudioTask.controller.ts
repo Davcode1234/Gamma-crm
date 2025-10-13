@@ -40,31 +40,53 @@ export const StudioTaskController = {
           _id: '$participants.name',
           tasks: {
             $push: {
-              _id: '$_id',
-              searchID: '$searchID',
-              reckoTaskID: '$reckoTaskID',
-              title: '$title',
-              client: '$client',
-              clientPerson: '$clientPerson',
-              status: '$status',
-              index: '$index',
-              startDate: '$startDate',
-              deadline: '$deadline',
-              createdAt: '$createdAt',
-              author: '$author',
-              taskType: '$taskType',
-              description: '$description',
+              $cond: [
+                { $in: ['$status', ['do_zrobienia', 'w_trakcie']] },
+                {
+                  _id: '$_id',
+                  searchID: '$searchID',
+                  reckoTaskID: '$reckoTaskID',
+                  title: '$title',
+                  client: '$client',
+                  clientPerson: '$clientPerson',
+                  status: '$status',
+                  index: '$index',
+                  startDate: '$startDate',
+                  deadline: '$deadline',
+                  createdAt: '$createdAt',
+                  author: '$author',
+                  taskType: '$taskType',
+                  description: '$description',
+                },
+
+                null,
+              ],
             },
           },
         },
       },
-      { $group: { _id: null, pairs: { $push: { k: '$_id', v: '$tasks' } } } },
-      { $replaceRoot: { newRoot: { $arrayToObject: '$pairs' } } },
+
+      {
+        $addFields: {
+          tasks: {
+            $filter: {
+              input: '$tasks',
+              as: 'task',
+              cond: { $ne: ['$$task', null] },
+            },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: 'Placker Tasks',
+          pairs: { $push: { name: '$_id', tasks: '$tasks' } },
+        },
+      },
     ]);
 
-    return await plackerTasks;
+    return plackerTasks;
   },
-
   async addStudioTask(studioTask) {
     await StudioTaskModel.validate(studioTask);
     return await StudioTaskModel.create(studioTask);
