@@ -79,9 +79,4 @@ Gamma-crm/
 Developed and maintained by **Dawid [Davcode1234](https://github.com/Davcode1234)**  
 💬 Feel free to reach out via email for setup help or collaboration.
 
----
 
-## 🧾 License
-
-This project is licensed under the **MIT License**.  
-You are free to use, modify, and distribute it with proper attribution.
