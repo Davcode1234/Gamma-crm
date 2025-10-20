@@ -300,7 +300,7 @@ function ReckoningView() {
             ],
           };
         }),
-        startDate: createdAt,
+        startDate: new Date(createdAt ?? Date.now()),
         month: selectedMonthIndex,
         // deadline: '',
       });
