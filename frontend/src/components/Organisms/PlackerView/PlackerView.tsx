@@ -71,7 +71,7 @@ function PlackerView() {
   if (!loadingState.isError && !loadingState.isLoading && tasks.length > 0) {
     return (
       <div className={styles.columnsWrapper}>
-        <h1>Placker</h1>
+        {/* <h1>Placker</h1> */}
         <DragDropContext
           onDragEnd={() => console.log('dsds')}
           onDragStart={() => console.log('ddsfdfsds')}
