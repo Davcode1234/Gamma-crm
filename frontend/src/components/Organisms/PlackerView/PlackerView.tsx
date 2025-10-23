@@ -85,7 +85,7 @@ function PlackerView() {
                     <p>{col.name}</p>
                   </div>
 
-                  <PlackerColumn tasks={col.tasks} />
+                  <PlackerColumn tasks={col.tasks} columnId={col.name} />
                 </div>
               );
             })}
