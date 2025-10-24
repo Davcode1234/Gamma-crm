@@ -131,7 +131,7 @@ function KanbanView({ filterArray, companiesFilterArray }) {
         setIsDragAllowed(false);
         const allStudioTasks = await getAllStudioTasks();
         dispatch({ type: 'SET_STUDIOTASKS', payload: allStudioTasks });
-        socket.emit('taskUpdated', allStudioTasks); // Emit updated tasks
+        socket.emit('taskUpdated', allStudioTasks);
       } catch (error) {
         console.error(error);
       } finally {
@@ -156,7 +156,6 @@ function KanbanView({ filterArray, companiesFilterArray }) {
     if (!destination) return;
 
     setIsDragAllowed(false);
-    console.log('testestestst');
 
     try {
       if (

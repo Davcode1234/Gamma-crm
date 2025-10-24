@@ -2,7 +2,7 @@ import { Droppable } from '@hello-pangea/dnd';
 import PlackerCard from '../PlackerCard/PlackerCard';
 import styles from './PlackerColumn.module.css';
 
-function PlackerColumn({ tasks, columnId }) {
+function PlackerColumn({ tasks, columnId, isDragAllowed }) {
   return (
     <div className={styles.column}>
       <Droppable droppableId={columnId}>
@@ -22,10 +22,14 @@ function PlackerColumn({ tasks, columnId }) {
               }`}
             >
               {tasks.length > 0 &&
-                tasks.map((task) => {
+                tasks.map((task, index) => {
                   return (
                     <div key={task._id}>
-                      <PlackerCard task={task} />
+                      <PlackerCard
+                        task={task}
+                        index={index}
+                        isDragAllowed={isDragAllowed}
+                      />
                     </div>
                   );
                 })}

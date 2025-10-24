@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
-import { DragDropContext } from '@hello-pangea/dnd';
+import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
 import { getPlackerTasks } from '../../../services/studio-tasks-service';
 import styles from './PlackerView.module.css';
 // import DroppableColumn from '../../Molecules/DroppableColumn/DroppableColumn';
@@ -12,7 +12,7 @@ function PlackerView() {
     isLoading: false,
     isError: false,
   });
-  // const [isDragAllowed, setIsDragAllowed] = useState(true);
+  const [isDragAllowed, setIsDragAllowed] = useState(true);
 
   const fetchPlackerTasks = async () => {
     let errorHappened = false;
@@ -36,6 +36,13 @@ function PlackerView() {
         isError: errorHappened ? true : prev.isError,
       }));
     }
+  };
+
+  const onDragEnd: OnDragEndResponder = (result) => {
+    const { destination, source } = result;
+    setIsDragAllowed(false);
+
+    console.log(destination, source);
   };
 
   useEffect(() => {
@@ -74,7 +81,7 @@ function PlackerView() {
       <div className={styles.columnsWrapper}>
         {/* <h1>Placker</h1> */}
         <DragDropContext
-          onDragEnd={() => console.log('dsds')}
+          onDragEnd={onDragEnd}
           onDragStart={() => console.log('ddsfdfsds')}
         >
           <div className={styles.columnWrapper}>
@@ -90,7 +97,11 @@ function PlackerView() {
                       <p>{col.name}</p>
                     </div>
 
-                    <PlackerColumn tasks={col.tasks} columnId={col.name} />
+                    <PlackerColumn
+                      tasks={col.tasks}
+                      columnId={col.name}
+                      isDragAllowed={isDragAllowed}
+                    />
                   </div>
                 );
               })}
