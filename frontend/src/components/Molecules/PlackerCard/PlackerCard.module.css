@@ -17,9 +17,24 @@
   }
 }
 
+.title {
+  width: 100%;
+  max-width: 200px;
+  font-size: 14px;
+  margin: 5px 0 15px 0;
+  padding: 0;
+}
+
 .statusName {
   width: fit-content;
   font-size: 10px;
   border: 1px solid var(--color-border);
   padding: 2px 5px;
+}
+
+.clientInfoWrapper {
+  max-width: 250px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
