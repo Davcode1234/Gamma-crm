@@ -23,7 +23,6 @@ function PlackerView() {
       }));
       const plackerTasks = await getPlackerTasks();
       setTasks(plackerTasks);
-      console.log(plackerTasks);
     } catch (error) {
       errorHappened = true;
       setLoadingState(() => ({
@@ -68,6 +67,8 @@ function PlackerView() {
     );
   }
 
+  console.log(tasks);
+
   if (!loadingState.isError && !loadingState.isLoading && tasks.length > 0) {
     return (
       <div className={styles.columnsWrapper}>
@@ -77,18 +78,22 @@ function PlackerView() {
           onDragStart={() => console.log('ddsfdfsds')}
         >
           <div className={styles.columnWrapper}>
-            {tasks[0].pairs.map((col) => {
-              return (
-                <div key={col.name}>
-                  <div className={styles.headerWrapper}>
-                    <p>{col.tasks.length}</p>
-                    <p>{col.name}</p>
-                  </div>
+            {[...tasks[0].pairs]
+              .sort((a, b) => {
+                return b.tasks.length - a.tasks.length;
+              })
+              .map((col) => {
+                return (
+                  <div key={col.name}>
+                    <div className={styles.headerWrapper}>
+                      <p>{col.tasks.length}</p>
+                      <p>{col.name}</p>
+                    </div>
 
-                  <PlackerColumn tasks={col.tasks} columnId={col.name} />
-                </div>
-              );
-            })}
+                    <PlackerColumn tasks={col.tasks} columnId={col.name} />
+                  </div>
+                );
+              })}
           </div>
         </DragDropContext>
       </div>

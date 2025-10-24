@@ -16,3 +16,10 @@
     border: 1px solid var(--color-orange);
   }
 }
+
+.statusName {
+  width: fit-content;
+  font-size: 10px;
+  border: 1px solid var(--color-border);
+  padding: 2px 5px;
+}
