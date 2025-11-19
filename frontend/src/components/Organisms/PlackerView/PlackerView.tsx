@@ -5,6 +5,8 @@ import { getPlackerTasks } from '../../../services/studio-tasks-service';
 import styles from './PlackerView.module.css';
 // import DroppableColumn from '../../Molecules/DroppableColumn/DroppableColumn';
 import PlackerColumn from '../../Molecules/PlackerColumn/PlackerColumn';
+import useUsersContext from '../../../hooks/Context/useUsersContext';
+import { getAllUsers } from '../../../services/users-service';
 
 function PlackerView() {
   const [tasks, setTasks] = useState([]);
@@ -13,6 +15,22 @@ function PlackerView() {
     isError: false,
   });
   const [isDragAllowed, setIsDragAllowed] = useState(true);
+  const { users, dispatch } = useUsersContext();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (users.length === 0) {
+        try {
+          const allUsers = await getAllUsers();
+          dispatch({ type: 'SET_USERS', payload: allUsers });
+        } catch (error) {
+          console.error('Error fetching users:', error);
+        }
+      }
+    };
+
+    fetchUsers();
+  }, [dispatch, users]);
 
   const fetchPlackerTasks = async () => {
     let errorHappened = false;
@@ -42,7 +60,7 @@ function PlackerView() {
     const { destination, source } = result;
     setIsDragAllowed(false);
 
-    console.log(destination, source);
+    console.log('dest:', destination, 'src:', source);
   };
 
   useEffect(() => {
@@ -74,8 +92,6 @@ function PlackerView() {
     );
   }
 
-  console.log(tasks);
-
   if (!loadingState.isError && !loadingState.isLoading && tasks.length > 0) {
     return (
       <div className={styles.columnsWrapper}>
@@ -90,11 +106,14 @@ function PlackerView() {
                 return b.tasks.length - a.tasks.length;
               })
               .map((col) => {
+                const userColumn =
+                  users.length > 0 && users.find((us) => us._id === col.name);
+
                 return (
                   <div key={col.name}>
                     <div className={styles.headerWrapper}>
-                      <p>{col.tasks.length}</p>
-                      <p>{col.name}</p>
+                      <p className={styles.tasksNumber}>{col.tasks.length}</p>
+                      <p className={styles.columnName}>{userColumn.name}</p>
                     </div>
 
                     <PlackerColumn

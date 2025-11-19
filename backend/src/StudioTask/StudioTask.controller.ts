@@ -37,7 +37,7 @@ export const StudioTaskController = {
       },
       {
         $group: {
-          _id: '$participants.name',
+          _id: '$participants._id',
           tasks: {
             $push: {
               $cond: [
