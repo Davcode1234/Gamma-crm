@@ -29,6 +29,7 @@ function PlackerColumn({ tasks, columnId, isDragAllowed }) {
                         task={task}
                         index={index}
                         isDragAllowed={isDragAllowed}
+                        userId={columnId}
                       />
                     </div>
                   );

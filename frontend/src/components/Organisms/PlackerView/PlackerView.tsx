@@ -58,9 +58,36 @@ function PlackerView() {
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { destination, source } = result;
-    setIsDragAllowed(false);
+    if (!destination) return;
 
-    console.log('dest:', destination, 'src:', source);
+    setIsDragAllowed(true);
+
+    try {
+      const sourceUserId = source.droppableId;
+      const destinationUser = users.find(
+        (user) => user._id === destination.droppableId
+      );
+
+      const sourceTask = tasks[0].pairs.find((task) => task.id === sourceUserId)
+        .tasks[source.index];
+
+      const updatedTask = sourceTask.participants.filter(
+        (userToRemove) => userToRemove._id !== sourceUserId
+      );
+
+      const newPartsArray = [...updatedTask, destinationUser];
+
+      console.log(
+        'dest:',
+        destination,
+        'src:',
+        source,
+        'new Task',
+        newPartsArray
+      );
+    } catch (error) {
+      console.error('Error handling drag and drop', error);
+    }
   };
 
   useEffect(() => {
@@ -107,10 +134,10 @@ function PlackerView() {
               })
               .map((col) => {
                 const userColumn =
-                  users.length > 0 && users.find((us) => us._id === col.name);
+                  users.length > 0 && users.find((us) => us._id === col.id);
 
                 return (
-                  <div key={col.name}>
+                  <div key={col.id}>
                     <div className={styles.headerWrapper}>
                       <p className={styles.tasksNumber}>{col.tasks.length}</p>
                       <p className={styles.columnName}>{userColumn.name}</p>
@@ -118,7 +145,7 @@ function PlackerView() {
 
                     <PlackerColumn
                       tasks={col.tasks}
-                      columnId={col.name}
+                      columnId={col.id}
                       isDragAllowed={isDragAllowed}
                     />
                   </div>

@@ -3,13 +3,13 @@ import { statusNames } from '../../../statuses';
 import CompanyBatch from '../../Atoms/CompanyBatch/CompanyBatch';
 import styles from './PlackerCard.module.css';
 
-function PlackerCard({ task, index, isDragAllowed }) {
+function PlackerCard({ task, index, isDragAllowed, userId }) {
   const companyClass = task.client.split(' ').join('');
   const dragDisabledClass = isDragAllowed ? '' : styles.dragDisabled;
 
   return (
     <Draggable
-      draggableId={task._id}
+      draggableId={`${userId}_${task._id}`}
       index={index}
       isDragDisabled={!isDragAllowed}
     >

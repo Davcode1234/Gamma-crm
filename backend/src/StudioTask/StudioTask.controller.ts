@@ -32,55 +32,61 @@ export const StudioTaskController = {
 
   async getPlackerTasks() {
     const plackerTasks = await StudioTaskModel.aggregate([
+      // 1. OPTIMIZATION: Filter first.
+      // Only process tasks that are actually active.
+      {
+        $match: {
+          status: { $in: ['do_zrobienia', 'w_trakcie'] },
+        },
+      },
+
+      // 2. Backup the full participants array (The fix from before)
+      {
+        $addFields: {
+          allParticipants: '$participants',
+        },
+      },
+
+      // 3. Split the documents by participant
       {
         $unwind: '$participants',
       },
+
+      // 4. Group by Participant ID
       {
         $group: {
           _id: '$participants._id',
           tasks: {
             $push: {
-              $cond: [
-                { $in: ['$status', ['do_zrobienia', 'w_trakcie']] },
-                {
-                  _id: '$_id',
-                  searchID: '$searchID',
-                  reckoTaskID: '$reckoTaskID',
-                  title: '$title',
-                  client: '$client',
-                  clientPerson: '$clientPerson',
-                  status: '$status',
-                  index: '$index',
-                  startDate: '$startDate',
-                  deadline: '$deadline',
-                  createdAt: '$createdAt',
-                  author: '$author',
-                  taskType: '$taskType',
-                  description: '$description',
-                },
-
-                null,
-              ],
+              // We no longer need $cond here because we filtered at step 1
+              _id: '$_id',
+              searchID: '$searchID',
+              reckoTaskID: '$reckoTaskID',
+              title: '$title',
+              client: '$client',
+              clientPerson: '$clientPerson',
+              status: '$status',
+              index: '$index',
+              startDate: '$startDate',
+              participants: '$allParticipants', // Using the backup array
+              deadline: '$deadline',
+              createdAt: '$createdAt',
+              author: '$author',
+              taskType: '$taskType',
+              description: '$description',
             },
           },
         },
       },
 
-      {
-        $addFields: {
-          tasks: {
-            $filter: {
-              input: '$tasks',
-              as: 'task',
-              cond: { $ne: ['$$task', null] },
-            },
-          },
-        },
-      },
+      // (We deleted the $addFields/$filter stage here because
+      // we no longer generate 'null' tasks)
+
+      // 5. Final formatting
       {
         $group: {
           _id: 'Placker Tasks',
-          pairs: { $push: { name: '$_id', tasks: '$tasks' } },
+          pairs: { $push: { id: '$_id', tasks: '$tasks' } },
         },
       },
     ]);
