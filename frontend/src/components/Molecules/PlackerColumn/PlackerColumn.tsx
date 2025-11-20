@@ -15,11 +15,7 @@ function PlackerColumn({ tasks, columnId, isDragAllowed }) {
                 snapshot.isDraggingOver
                   ? styles.draggedColumn
                   : styles.columnContainer
-              } ${
-                tasks.some((task) => task.status === columnId)
-                  ? styles.noBorder
-                  : null
-              }`}
+              } ${tasks.length > 0 ? styles.noBorder : null}`}
             >
               {tasks.length > 0 &&
                 tasks.map((task, index) => {

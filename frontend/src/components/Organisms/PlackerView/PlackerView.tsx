@@ -1,7 +1,10 @@
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
 import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
-import { getPlackerTasks } from '../../../services/studio-tasks-service';
+import {
+  getPlackerTasks,
+  UpdateStudioTask,
+} from '../../../services/studio-tasks-service';
 import styles from './PlackerView.module.css';
 // import DroppableColumn from '../../Molecules/DroppableColumn/DroppableColumn';
 import PlackerColumn from '../../Molecules/PlackerColumn/PlackerColumn';
@@ -30,7 +33,7 @@ function PlackerView() {
     };
 
     fetchUsers();
-  }, [dispatch, users]);
+  }, [dispatch, users.length]);
 
   const fetchPlackerTasks = async () => {
     let errorHappened = false;
@@ -40,6 +43,9 @@ function PlackerView() {
         isError: false,
       }));
       const plackerTasks = await getPlackerTasks();
+      if (plackerTasks && plackerTasks.length > 0 && plackerTasks[0].pairs) {
+        plackerTasks[0].pairs.sort((a, b) => b.tasks.length - a.tasks.length);
+      }
       setTasks(plackerTasks);
     } catch (error) {
       errorHappened = true;
@@ -56,43 +62,63 @@ function PlackerView() {
     }
   };
 
-  const onDragEnd: OnDragEndResponder = (result) => {
+  useEffect(() => {
+    fetchPlackerTasks();
+  }, []);
+
+  const onDragEnd: OnDragEndResponder = async (result) => {
     const { destination, source } = result;
     if (!destination) return;
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
 
     setIsDragAllowed(true);
+    const sourceUserId = source.droppableId;
+    const destUserId = destination.droppableId;
+    const destinationUser = users.find((user) => user._id === destUserId);
+
+    if (!destinationUser) {
+      console.error('User not found');
+      return;
+    }
+
+    const newTasksState = JSON.parse(JSON.stringify(tasks)); // Deep copy state, React trick that create new state instead of referance to previous state (geminy prompt),https://medium.com/@mgarg2121/shallow-vs-deep-copying-in-react-essential-knowledge-for-efficient-state-management-22404614e6a7
+    const pairs = [...newTasksState[0].pairs];
+
+    const sourceCol = pairs.find((col) => col.id === sourceUserId);
+    const destCol = pairs.find((col) => col.id === destUserId);
+
+    const [movedTask] = sourceCol.tasks.splice(source.index, 1);
+
+    if (
+      !movedTask.participants.some((user) => user._id === destinationUser._id)
+    ) {
+      movedTask.participants = movedTask.participants.filter(
+        (u) => u._id !== sourceUserId
+      );
+      movedTask.participants.push(destinationUser);
+    } else {
+      return;
+    }
+
+    destCol.tasks.splice(destination.index, 0, movedTask);
+
+    setTasks(newTasksState);
 
     try {
-      const sourceUserId = source.droppableId;
-      const destinationUser = users.find(
-        (user) => user._id === destination.droppableId
-      );
-
-      const sourceTask = tasks[0].pairs.find((task) => task.id === sourceUserId)
-        .tasks[source.index];
-
-      const updatedTask = sourceTask.participants.filter(
-        (userToRemove) => userToRemove._id !== sourceUserId
-      );
-
-      const newPartsArray = [...updatedTask, destinationUser];
-
-      console.log(
-        'dest:',
-        destination,
-        'src:',
-        source,
-        'new Task',
-        newPartsArray
-      );
+      await UpdateStudioTask({
+        id: movedTask._id,
+        studioTaskData: { participants: movedTask.participants },
+      });
     } catch (error) {
       console.error('Error handling drag and drop', error);
     }
   };
 
-  useEffect(() => {
-    fetchPlackerTasks();
-  }, []);
   if (loadingState.isError) {
     return (
       <div className={styles.iconWrapper}>
@@ -128,29 +154,27 @@ function PlackerView() {
           onDragStart={() => console.log('ddsfdfsds')}
         >
           <div className={styles.columnWrapper}>
-            {[...tasks[0].pairs]
-              .sort((a, b) => {
-                return b.tasks.length - a.tasks.length;
-              })
-              .map((col) => {
-                const userColumn =
-                  users.length > 0 && users.find((us) => us._id === col.id);
+            {[...tasks[0].pairs].map((col) => {
+              const userColumn =
+                users.length > 0 && users.find((us) => us._id === col.id);
 
-                return (
-                  <div key={col.id}>
-                    <div className={styles.headerWrapper}>
-                      <p className={styles.tasksNumber}>{col.tasks.length}</p>
-                      <p className={styles.columnName}>{userColumn.name}</p>
-                    </div>
+              if (!userColumn) return null;
 
-                    <PlackerColumn
-                      tasks={col.tasks}
-                      columnId={col.id}
-                      isDragAllowed={isDragAllowed}
-                    />
+              return (
+                <div key={col.id}>
+                  <div className={styles.headerWrapper}>
+                    <p className={styles.tasksNumber}>{col.tasks.length}</p>
+                    <p className={styles.columnName}>{userColumn.name}</p>
                   </div>
-                );
-              })}
+
+                  <PlackerColumn
+                    tasks={col.tasks}
+                    columnId={col.id}
+                    isDragAllowed={isDragAllowed}
+                  />
+                </div>
+              );
+            })}
           </div>
         </DragDropContext>
       </div>
