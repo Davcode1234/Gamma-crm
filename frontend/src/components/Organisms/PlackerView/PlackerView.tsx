@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
 import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
 import {
+  getAllStudioTasks,
   getPlackerTasks,
   UpdateStudioTask,
 } from '../../../services/studio-tasks-service';
@@ -10,6 +11,7 @@ import styles from './PlackerView.module.css';
 import PlackerColumn from '../../Molecules/PlackerColumn/PlackerColumn';
 import useUsersContext from '../../../hooks/Context/useUsersContext';
 import { getAllUsers } from '../../../services/users-service';
+import socket from '../../../socket';
 
 function PlackerView() {
   const [tasks, setTasks] = useState([]);
@@ -114,6 +116,13 @@ function PlackerView() {
         id: movedTask._id,
         studioTaskData: { participants: movedTask.participants },
       });
+      const allStudioTasks = await getAllStudioTasks();
+      dispatch({ type: 'SET_STUDIOTASKS', payload: allStudioTasks });
+      console.log(
+        'studioTasksUpdated',
+        allStudioTasks.filter((task) => task.searchID === 25110001)
+      );
+      socket.emit('taskUpdated', allStudioTasks);
     } catch (error) {
       console.error('Error handling drag and drop', error);
     }
