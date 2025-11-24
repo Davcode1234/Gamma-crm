@@ -12,6 +12,7 @@ import PlackerColumn from '../../Molecules/PlackerColumn/PlackerColumn';
 import useUsersContext from '../../../hooks/Context/useUsersContext';
 import { getAllUsers } from '../../../services/users-service';
 import socket from '../../../socket';
+import useStudioTasksContext from '../../../hooks/Context/useStudioTasksContext';
 
 function PlackerView() {
   const [tasks, setTasks] = useState([]);
@@ -21,6 +22,7 @@ function PlackerView() {
   });
   const [isDragAllowed, setIsDragAllowed] = useState(true);
   const { users, dispatch } = useUsersContext();
+  const { dispatch: studioTasksDispatch } = useStudioTasksContext();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -117,11 +119,7 @@ function PlackerView() {
         studioTaskData: { participants: movedTask.participants },
       });
       const allStudioTasks = await getAllStudioTasks();
-      dispatch({ type: 'SET_STUDIOTASKS', payload: allStudioTasks });
-      console.log(
-        'studioTasksUpdated',
-        allStudioTasks.filter((task) => task.searchID === 25110001)
-      );
+      studioTasksDispatch({ type: 'SET_STUDIOTASKS', payload: allStudioTasks });
       socket.emit('taskUpdated', allStudioTasks);
     } catch (error) {
       console.error('Error handling drag and drop', error);

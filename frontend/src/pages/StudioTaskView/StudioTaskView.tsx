@@ -70,7 +70,7 @@ const VIEWS = {
 const viewOptions = [VIEWS.ACTIVE, VIEWS.ARCHIVE, VIEWS.PLACKER];
 
 function StudioTaskView() {
-  const [viewVariable, setViewVariable] = useState('Placker');
+  const [viewVariable, setViewVariable] = useState('Aktywne');
   const { studioTasks, dispatch } = useStudioTasksContext();
   const { companies, dispatch: companiesDispatch } = useCompaniesContext();
   const [tasksByStatus, setTasksByStatus] = useState(getTasksByStatus([]));
