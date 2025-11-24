@@ -168,7 +168,12 @@ function PlackerView() {
               if (!userColumn) return null;
 
               return (
-                <div key={col.id}>
+                <div
+                  key={col.id}
+                  // className={`${
+                  //   index % 2 === 0 ? styles.darker : styles.lighter
+                  // }`}
+                >
                   <div className={styles.headerWrapper}>
                     <p className={styles.tasksNumber}>{col.tasks.length}</p>
                     <p className={styles.columnName}>{userColumn.name}</p>

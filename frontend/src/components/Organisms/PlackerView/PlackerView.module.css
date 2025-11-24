@@ -2,7 +2,7 @@
   margin: 0 auto;
   max-width: 100%;
   height: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
   /* padding: 5px 15px; */
 }
 
@@ -11,6 +11,24 @@
   gap: 5px;
   height: 100%;
   padding: 0 10px;
+  overflow-x: auto;
+}
+
+.columnWrapper::-webkit-scrollbar {
+  height: 12px;
+}
+
+.columnWrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.columnWrapper::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 8px;
+}
+
+.columnWrapper::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .headerWrapper {
@@ -71,3 +89,7 @@
 .errorIcon {
   color: var(--color-error);
 }
+
+/* .lighter {
+  background-color: #ebeff7;
+} */

@@ -373,22 +373,25 @@ function StudioTaskView() {
             )}
           </div>
         </div>
-        <div className={styles.buttonsWrapper}>
-          <CTA
-            onClick={() => {
-              openModal();
-            }}
-          >
-            Nowe zlecenie
-          </CTA>
-          <CTA
-            onClick={() => {
-              setFilterDropdown((prev) => !prev);
-            }}
-          >
-            Filtry
-          </CTA>
-        </div>
+        {viewVariable !== 'Placker' && viewVariable !== 'Archiwum' ? (
+          <div className={styles.buttonsWrapper}>
+            <CTA
+              onClick={() => {
+                openModal();
+              }}
+            >
+              Nowe zlecenie
+            </CTA>
+            <CTA
+              onClick={() => {
+                setFilterDropdown((prev) => !prev);
+              }}
+            >
+              Filtry
+            </CTA>
+          </div>
+        ) : null}
+
         {filterDropdown && (
           <>
             <Overlay closeFunction={setFilterDropdown} />
