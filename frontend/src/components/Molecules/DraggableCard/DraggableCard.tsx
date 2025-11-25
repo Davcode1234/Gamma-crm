@@ -23,7 +23,8 @@ function DraggableCard({ task, index, doneSubtasks = 0, isDragAllowed }) {
 
   const { handleDeleteTask, setIsUserAssigned } = useStudioTaskUpdate(
     task,
-    closeModal
+    closeModal,
+    false
   );
 
   const taskClass =

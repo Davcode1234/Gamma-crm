@@ -5,6 +5,7 @@ import {
   UpdateStudioTask,
   StudioTaskTypes,
   getStudioTask,
+  getPlackerTasks,
 } from '../services/studio-tasks-service';
 import useStudioTasksContext from './Context/useStudioTasksContext';
 import useUsersContext from './Context/useUsersContext';
@@ -15,8 +16,9 @@ import {
   updateReckoningTask,
 } from '../services/reckoning-view-service';
 import generateDaysArray from '../utils/generateDaysArray';
+import usePlackerTasksContext from './Context/usePlackerTasksContext';
 
-const useStudioTaskUpdate = (task, closeModal) => {
+const useStudioTaskUpdate = (task, closeModal, isPlacker) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [isUserAssigned, setIsUserAssigned] = useState(false);
@@ -29,6 +31,7 @@ const useStudioTaskUpdate = (task, closeModal) => {
   const { users } = useUsersContext();
   const { companies } = useCompaniesContext();
   const { dispatch } = useStudioTasksContext();
+  const { dispatch: plackerTasksDispatch } = usePlackerTasksContext();
 
   const fetchRelatedReckoTask = async () => {
     if (task.reckoTaskID) {
@@ -36,6 +39,19 @@ const useStudioTaskUpdate = (task, closeModal) => {
       return reckoTask;
     }
     return null;
+  };
+
+  const refreshPlacker = async () => {
+    if (isPlacker) {
+      const plackerTasks = await getPlackerTasks();
+      if (plackerTasks && plackerTasks.length > 0 && plackerTasks[0].pairs) {
+        plackerTasks[0].pairs.sort((a, b) => b.tasks.length - a.tasks.length);
+      }
+      plackerTasksDispatch({
+        type: 'SET_PLACKERTASKS',
+        payload: plackerTasks,
+      });
+    }
   };
 
   useEffect(() => {
@@ -164,6 +180,8 @@ const useStudioTaskUpdate = (task, closeModal) => {
       const res = await getStudioTask(updatedTask._id);
       dispatch({ type: 'UPDATE_STUDIOTASK', payload: res });
       socket.emit('tasksUpdated', res);
+
+      refreshPlacker();
     } catch (error) {
       console.error('Error saving value:', error);
     } finally {
@@ -199,6 +217,7 @@ const useStudioTaskUpdate = (task, closeModal) => {
       const res = await getStudioTask(updatedTask._id);
       dispatch({ type: 'UPDATE_STUDIOTASK', payload: res });
       socket.emit('tasksUpdated', res);
+      refreshPlacker();
     } catch (error) {
       console.error('Error saving value:', error);
     } finally {

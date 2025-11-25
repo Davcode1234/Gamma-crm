@@ -22,7 +22,8 @@ function PlackerCard({ task, index, isDragAllowed, userId }) {
 
   const { handleDeleteTask, setIsUserAssigned } = useStudioTaskUpdate(
     task,
-    closeModal
+    closeModal,
+    true
   );
 
   return (

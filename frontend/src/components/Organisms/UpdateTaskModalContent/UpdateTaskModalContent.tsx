@@ -69,7 +69,7 @@ function UpdateTaskModalContent({
     handleClientPersonChange,
     isUserAssigned,
     setIsUserAssigned,
-  } = useStudioTaskUpdate(task, closeModal);
+  } = useStudioTaskUpdate(task, closeModal, isPlacker);
 
   const {
     handleAddSubtask,

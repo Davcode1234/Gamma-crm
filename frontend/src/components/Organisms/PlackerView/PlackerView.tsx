@@ -13,9 +13,12 @@ import useUsersContext from '../../../hooks/Context/useUsersContext';
 import { getAllUsers } from '../../../services/users-service';
 import socket from '../../../socket';
 import useStudioTasksContext from '../../../hooks/Context/useStudioTasksContext';
+import usePlackerTasksContext from '../../../hooks/Context/usePlackerTasksContext';
 
 function PlackerView() {
-  const [tasks, setTasks] = useState([]);
+  // const [tasks, setTasks] = useState([]);
+  const { plackerTasks: tasks, dispatch: plackerTasksDispatch } =
+    usePlackerTasksContext();
   const [loadingState, setLoadingState] = useState({
     isLoading: false,
     isError: false,
@@ -50,7 +53,7 @@ function PlackerView() {
       if (plackerTasks && plackerTasks.length > 0 && plackerTasks[0].pairs) {
         plackerTasks[0].pairs.sort((a, b) => b.tasks.length - a.tasks.length);
       }
-      setTasks(plackerTasks);
+      plackerTasksDispatch({ type: 'SET_PLACKERTASKS', payload: plackerTasks });
     } catch (error) {
       errorHappened = true;
       setLoadingState(() => ({
@@ -111,7 +114,7 @@ function PlackerView() {
 
     destCol.tasks.splice(destination.index, 0, movedTask);
 
-    setTasks(newTasksState);
+    plackerTasksDispatch({ type: 'SET_PLACKERTASKS', payload: newTasksState });
 
     try {
       await UpdateStudioTask({

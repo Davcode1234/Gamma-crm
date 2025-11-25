@@ -12,6 +12,7 @@ import { StudioTasksContextProvider } from './context/StudioTasksContext';
 import { ReckoTasksContextProvider } from './context/ReckoTasksContext';
 import { ClientsContextProvider } from './context/ClientsContext';
 import EasterEgg from './components/Templates/EasterEgg/EasterEgg';
+import { PlackerTasksContextProvider } from './context/PlackerContext';
 
 const queryClient = new QueryClient();
 
@@ -20,20 +21,22 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <UserProvider>
-          <ClientsContextProvider>
-            <ReckoTasksContextProvider>
-              <StudioTasksContextProvider>
-                <CompaniesContextProvider>
-                  <TasksContextProvder>
-                    <UsersContextProvider>
-                      <EasterEgg />
-                      <App />
-                    </UsersContextProvider>
-                  </TasksContextProvder>
-                </CompaniesContextProvider>
-              </StudioTasksContextProvider>
-            </ReckoTasksContextProvider>
-          </ClientsContextProvider>
+          <PlackerTasksContextProvider>
+            <ClientsContextProvider>
+              <ReckoTasksContextProvider>
+                <StudioTasksContextProvider>
+                  <CompaniesContextProvider>
+                    <TasksContextProvder>
+                      <UsersContextProvider>
+                        <EasterEgg />
+                        <App />
+                      </UsersContextProvider>
+                    </TasksContextProvder>
+                  </CompaniesContextProvider>
+                </StudioTasksContextProvider>
+              </ReckoTasksContextProvider>
+            </ClientsContextProvider>
+          </PlackerTasksContextProvider>
         </UserProvider>
       </QueryClientProvider>
     </BrowserRouter>
