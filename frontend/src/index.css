@@ -257,6 +257,7 @@ select {
 
 .Santander,
 .SantanderOdrębne,
+.Santanderodrębne,
 .SantanderPR {
   background-color: #ec0000 !important;
   opacity: 0.8;
