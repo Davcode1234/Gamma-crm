@@ -76,7 +76,11 @@ function CompanyProfileRow({
         <p>{task.startDate.slice(0, 10)}</p>
       </div> */}
       <div className={styles.reckoningTaskListElementTile}>
-        <UsersDisplay data={task} usersArray={task.participants} />
+        <UsersDisplay
+          data={task}
+          usersArray={task.participants}
+          isSmall={false}
+        />
       </div>
       <div className={styles.reckoningTaskListElementTile}>
         <p>{task.title}</p>

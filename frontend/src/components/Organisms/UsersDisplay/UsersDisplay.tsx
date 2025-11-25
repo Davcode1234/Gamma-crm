@@ -3,7 +3,7 @@ import styles from './UsersDisplay.module.css';
 import useShowLabel from '../../../hooks/useShowLabel';
 import HoverLabel from '../../Atoms/HoverLabel/HoverLabel';
 
-function UsersDisplay({ data, usersArray }) {
+function UsersDisplay({ data, usersArray, isSmall }) {
   const { labelState, handleMouseEnter, handleMouseLeave } = useShowLabel();
 
   return (
@@ -17,7 +17,9 @@ function UsersDisplay({ data, usersArray }) {
               to={`/użytkownicy/${user._id}`}
             >
               <img
-                className={styles.userImg}
+                className={`${
+                  isSmall ? styles.smallerUserImg : styles.userImg
+                }`}
                 src={user.img}
                 alt="user"
                 onMouseEnter={(e) => {

@@ -2,6 +2,8 @@ import { Draggable } from '@hello-pangea/dnd';
 import { statusNames } from '../../../statuses';
 import CompanyBatch from '../../Atoms/CompanyBatch/CompanyBatch';
 import styles from './PlackerCard.module.css';
+import DateFormatter from '../../../utils/dateFormatter';
+import UsersDisplay from '../../Organisms/UsersDisplay/UsersDisplay';
 
 function PlackerCard({ task, index, isDragAllowed, userId }) {
   const companyClass = task.client.split(' ').join('');
@@ -42,6 +44,24 @@ function PlackerCard({ task, index, isDragAllowed, userId }) {
             </div>
             <p className={styles.title}>{task.title}</p>
             <p className={styles.statusName}>{statusNames[task.status]}</p>
+            <div className={styles.userDisplayWrapper}>
+              <UsersDisplay
+                data={task}
+                usersArray={task.participants}
+                isSmall
+              />
+            </div>
+            <div className={styles.datesWrapper}>
+              {task.deadline && task.startDate ? (
+                <>
+                  <DateFormatter dateString={task.startDate} />
+                  <span>&nbsp;-&nbsp;</span>
+                  <DateFormatter dateString={task.deadline} />
+                </>
+              ) : (
+                <p className={styles.noDates}>Brak dat</p>
+              )}
+            </div>
           </div>
         </div>
       )}

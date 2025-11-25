@@ -129,6 +129,7 @@ function ArchivedListView({
                         <UsersDisplay
                           data={studioTask}
                           usersArray={studioTask.participants}
+                          isSmall={false}
                         />
                       </div>
                       <div className={styles.restoreButtonContainer}>

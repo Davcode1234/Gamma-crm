@@ -224,7 +224,11 @@ function UpdateTaskModalContent({
             <div className={styles.usersContainer}>
               <p className={styles.sectionTitle}>Członkowie</p>
               {task.participants.length > 0 ? (
-                <UsersDisplay data={task} usersArray={task.participants} />
+                <UsersDisplay
+                  data={task}
+                  usersArray={task.participants}
+                  isSmall={false}
+                />
               ) : (
                 <p className={styles.noParticipantsPar}>Brak członków</p>
               )}
