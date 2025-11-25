@@ -57,6 +57,7 @@ function DraggableCard({ task, index, doneSubtasks = 0, isDragAllowed }) {
             closeModal={closeModal}
             setDeleteCaptcha={setDeleteCaptcha}
             companyClass={companyClass}
+            isPlacker={false}
           />
         )}
       </ModalTemplate>
