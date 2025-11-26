@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getUserById, User } from '../../services/users-service';
 import styles from './UserProfile.module.css';
-
 import ViewContainer from '../../components/Atoms/ViewContainer/ViewContainer';
-
 import BackButton from '../../components/Atoms/BackButton/BackButton';
 import ListContainer from '../../components/Atoms/ListContainer/ListContainer';
 import ProfileTopBar from '../../components/Atoms/ProfileTopBar/ProfileTopBar';
