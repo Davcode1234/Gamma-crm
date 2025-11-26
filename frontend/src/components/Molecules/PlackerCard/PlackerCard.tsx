@@ -62,7 +62,7 @@ function PlackerCard({ task, index, isDragAllowed, userId }) {
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             ref={provided.innerRef}
-            className={dragDisabledClass}
+            className={`${dragDisabledClass} placker-task-card`}
           >
             <div
               role="button"

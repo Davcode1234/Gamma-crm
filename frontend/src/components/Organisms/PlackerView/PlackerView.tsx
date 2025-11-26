@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
 import {
   getAllStudioTasks,
@@ -26,6 +26,47 @@ function PlackerView() {
   const [isDragAllowed, setIsDragAllowed] = useState(true);
   const { users, dispatch } = useUsersContext();
   const { dispatch: studioTasksDispatch } = useStudioTasksContext();
+  const scrollContainerRef = useRef(null);
+  const isDown = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+
+  const handleMouseDown = (e) => {
+    if (e.target.closest('.placker-task-card')) {
+      return;
+    }
+
+    isDown.current = true;
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.classList.add(styles.activeDrag);
+      startX.current = e.pageX - scrollContainerRef.current.offsetLeft;
+      scrollLeft.current = scrollContainerRef.current.scrollLeft;
+    }
+  };
+
+  const handleMouseLeave = () => {
+    isDown.current = false;
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.classList.remove(styles.activeDrag);
+    }
+  };
+
+  const handleMouseUp = () => {
+    isDown.current = false;
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.classList.remove(styles.activeDrag);
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDown.current) return;
+    e.preventDefault(); // Stop text selection
+    if (scrollContainerRef.current) {
+      const x = e.pageX - scrollContainerRef.current.offsetLeft;
+      const walk = (x - startX.current) * 1.5; // * 1.5 is the scroll speed multiplier
+      scrollContainerRef.current.scrollLeft = scrollLeft.current - walk;
+    }
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -163,7 +204,17 @@ function PlackerView() {
           onDragEnd={onDragEnd}
           onDragStart={() => console.log('ddsfdfsds')}
         >
-          <div className={styles.columnWrapper}>
+          {/* eslint-disable-next-line */}
+          <div
+            className={styles.columnWrapper}
+            ref={scrollContainerRef}
+            onMouseDown={handleMouseDown}
+            onMouseLeave={handleMouseLeave}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+            role="region"
+            aria-label="Kanban Board"
+          >
             {[...tasks[0].pairs].map((col) => {
               const userColumn =
                 users.length > 0 && users.find((us) => us._id === col.id);
