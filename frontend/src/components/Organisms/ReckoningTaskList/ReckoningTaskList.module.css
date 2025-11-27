@@ -1,0 +1,58 @@
+.iconWrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    font-weight: 600;
+  }
+}
+
+.noTasksContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  p {
+    font-weight: 600;
+  }
+}
+
+.addNewReckoTaskWrapper {
+  display: flex;
+  gap: 5px;
+  padding: 5px 0 0 38px;
+}
+
+.loadingIcon {
+  color: var(--color-orange);
+}
+
+.addNewReckoTaskButton {
+  border: 1px solid #f4f7fd;
+  text-align: center;
+  height: 35px;
+  min-width: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  /* text-align: center; */
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #f4f7fd;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--color-lighter);
+  }
+}

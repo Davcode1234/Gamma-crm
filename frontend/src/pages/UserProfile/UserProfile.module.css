@@ -8,3 +8,12 @@
 .multiSelectWrapper {
   width: 110px;
 }
+
+.reckoTilesContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow: scroll;
+}

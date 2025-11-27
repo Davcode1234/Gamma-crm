@@ -8,7 +8,6 @@ import {
   updateDay,
   updateReckoningTask,
 } from '../../../services/reckoning-view-service';
-import useAuth from '../../../hooks/useAuth';
 // import Overlay from '../../Atoms/Overlay/Overlay';
 import useReckoTasksContext from '../../../hooks/Context/useReckoTasksContext';
 import CheckboxLoader from '../../Atoms/CheckboxLoader/CheckboxLoader';
@@ -22,6 +21,7 @@ function ReckoningTile({
   selectedMonthIndex,
   companies,
   isAssignedToKanban,
+  currentUserId,
 }) {
   const [formValue, setFormValue] = useState(reckTask);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,9 +41,6 @@ function ReckoningTile({
 
   const { dispatch } = useReckoTasksContext();
   const currentDate = new Date();
-
-  const { user } = useAuth();
-  const currentUserId = user[0]._id;
 
   const filteredParticipants =
     reckTask.participants?.filter((part) => part._id === currentUserId) || [];

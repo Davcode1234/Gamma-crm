@@ -2,15 +2,12 @@ import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
 import ControlBar from '../../components/Atoms/ControlBar/ControlBar';
 import ControlBarTitle from '../../components/Atoms/ControlBar/Title/ControlBarTitle';
-// import InfoBar from '../../components/Atoms/InfoBar/InfoBar';
 import CTA from '../../components/Atoms/CTA/CTA';
 import CheckboxLoader from '../../components/Atoms/CheckboxLoader/CheckboxLoader';
 import SearchInput from '../../components/Atoms/ControlBar/SearchInput/SearchInput';
 import ListContainer from '../../components/Atoms/ListContainer/ListContainer';
 import Select from '../../components/Atoms/Select/Select';
 import ViewContainer from '../../components/Atoms/ViewContainer/ViewContainer';
-import ReckoningTile from '../../components/Organisms/ReckoningTile/ReckoningTile';
-import SkeletonUsersLoading from '../../components/Organisms/SkeletonUsersLoading/SkeletonUsersLoading';
 import useReckoTasksContext from '../../hooks/Context/useReckoTasksContext';
 import useAuth from '../../hooks/useAuth';
 import useCurrentDate from '../../hooks/useCurrentDate';
@@ -35,29 +32,11 @@ import socket from '../../socket';
 import generateDaysArray from '../../utils/generateDaysArray';
 import useCompaniesContext from '../../hooks/Context/useCompaniesContext';
 import { getAllCompanies } from '../../services/companies-service';
-// import { getNumberOfReckoTasks } from '../../services/dashboard-service';
-
-// function generateDaysArray(month, year) {
-//   const daysInMonth = new Date(year, month, 0).getDate();
-//   const daysArray = [];
-
-//   for (let i = 1; i <= daysInMonth; i += 1) {
-//     const dayOfWeek = new Date(year, month - 1, i).getDay(); // Sunday=0, Saturday=6
-//     daysArray.push({
-//       hourNum: 0,
-//       isWeekend: dayOfWeek === 0 || dayOfWeek === 6,
-//     });
-//   }
-
-//   return daysArray;
-// }
+import ReckoningTaskList from '../../components/Organisms/ReckoningTaskList/ReckoningTaskList';
 
 function ReckoningView() {
   const [selectedMonthDaysArray, setSelectedMonthDaysArray] = useState([]);
-  // const [hover, setHover] = useState({
-  //   isHover: false,
-  //   cardId: '',
-  // });
+
   const [searchInputValue, setSearchInputValue] = useState('');
   const [hoveredCardId, setHoveredCardId] = useState(null);
   const [addTaskFromKanbanState, setAddTaskFromKanbanState] = useState({
@@ -213,11 +192,6 @@ function ReckoningView() {
 
       const startDate = new Date();
 
-      // const numberOfReckoTasks = await getNumberOfReckoTasks(
-      //   selectedMonthIndex,
-      //   selectedYear
-      // );
-
       const addResponse = await addReckoningTask({
         searchID: generateSearchID(),
         idOfAssignedStudioTask: '',
@@ -353,81 +327,6 @@ function ReckoningView() {
         };
       });
     }
-  };
-
-  const renderReckoTasks = () => {
-    if (taskLoadingState.isGetMyTasksLoading) {
-      return <SkeletonUsersLoading />;
-    }
-
-    if (
-      matchedTasksFromSearchInput.length > 0 &&
-      !taskLoadingState.isGetMyTasksLoading
-    ) {
-      return matchedTasksFromSearchInput
-        .sort((a, b) => {
-          const left = a.participants.filter(
-            (part) => part._id === currentUserId
-          );
-          const right = b.participants.filter(
-            (part) => part._id === currentUserId
-          );
-
-          const leftMonth = left[0].months.filter((obj) => {
-            const monthIdx = new Date(obj.createdAt).getUTCMonth() + 1;
-            return monthIdx === selectedMonthIndex;
-          });
-
-          const rightMonth = right[0].months.filter((obj) => {
-            const monthIdx = new Date(obj.createdAt).getUTCMonth() + 1;
-            return monthIdx === selectedMonthIndex;
-          });
-
-          // Convert Date | string to number (ms). Use 0 if missing.
-          const leftTime = leftMonth[0]?.addedToRecko
-            ? new Date(leftMonth[0].addedToRecko).getTime()
-            : 0;
-
-          const rightTime = rightMonth[0]?.addedToRecko
-            ? new Date(rightMonth[0].addedToRecko).getTime()
-            : 0;
-
-          return leftTime - rightTime;
-        })
-        .map((reckTask, index) => {
-          return (
-            <ReckoningTile
-              key={reckTask._id}
-              reckTask={reckTask}
-              index={index}
-              selectedMonthIndex={selectedMonthIndex}
-              companies={companies}
-              isAssignedToKanban={reckTask.idOfAssignedStudioTask !== undefined}
-              // assigneStudioTaskId={reckTask.idOfAssignedStudioTask}
-            />
-          );
-        });
-    }
-
-    return (
-      <div className={styles.noTasksContainer}>
-        <div>
-          <p>Brak zleceń</p>
-          <Icon icon="line-md:coffee-loop" width="24" height="24" />
-        </div>
-
-        <div>
-          <button
-            type="button"
-            className={styles.addNewReckoTaskButton}
-            onClick={handleAddEmptyReckoTask}
-          >
-            Dodaj pierwszy wiersz!
-          </button>
-          {taskLoadingState.isAddEmptyLoading && <CheckboxLoader />}
-        </div>
-      </div>
-    );
   };
 
   const studioTasksAssignedTome = studioTasks.filter((task) => {
@@ -611,7 +510,16 @@ function ReckoningView() {
                 Druk(gdzie)
               </p>
             </div>
-            {renderReckoTasks()}
+            {/* {renderReckoTasks()} */}
+            <ReckoningTaskList
+              tasks={matchedTasksFromSearchInput}
+              isLoading={taskLoadingState.isGetMyTasksLoading}
+              isAddingTask={taskLoadingState.isAddEmptyLoading}
+              currentUserId={currentUserId}
+              selectedMonthIndex={selectedMonthIndex}
+              companies={companies}
+              onAddEmptyTask={handleAddEmptyReckoTask}
+            />
             {reckoTasks.length > 0 && !taskLoadingState.isGetMyTasksLoading && (
               <div className={styles.addNewReckoTaskWrapper}>
                 <button

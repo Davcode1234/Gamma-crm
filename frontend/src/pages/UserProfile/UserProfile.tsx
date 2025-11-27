@@ -9,10 +9,30 @@ import ProfileTopBar from '../../components/Atoms/ProfileTopBar/ProfileTopBar';
 import MultiselectDropdown from '../../components/Molecules/MultiselectDropdown/MultiselectDropdown';
 import useMultiSelect from '../../hooks/useMultiSelect';
 import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterCheckbox';
+import { getMyReckoningTasks } from '../../services/reckoning-view-service';
+import useCurrentDate from '../../hooks/useCurrentDate';
+import Select from '../../components/Atoms/Select/Select';
+import useCompaniesContext from '../../hooks/Context/useCompaniesContext';
+import { getAllCompanies } from '../../services/companies-service';
+import ReckoningTaskList from '../../components/Organisms/ReckoningTaskList/ReckoningTaskList';
 
 function UserProfile() {
   const params = useParams();
   const [user, setUser] = useState<User[]>([]);
+  const currentUserId = user.length > 0 && user[0]._id;
+  const { companies, dispatch: companiesDispatch } = useCompaniesContext();
+
+  const [isReckoTasksLoading, setIsReckoTasksLoading] = useState(false);
+  const [reckoTasks, setReckoTasks] = useState([]);
+  const {
+    selectedMonth,
+    selectedYear,
+    handleMonthChange,
+    handleYearChange,
+    months,
+    years,
+  } = useCurrentDate();
+  const selectedMonthIndex = months.indexOf(selectedMonth) + 1;
 
   const {
     isSelectOpen,
@@ -23,6 +43,24 @@ function UserProfile() {
     filteredRolesForDropdown,
     handleRoleAssign,
   } = useMultiSelect(user);
+
+  const fetchReckoningTasks = async (index) => {
+    try {
+      setIsReckoTasksLoading(true);
+
+      // DODANE +1 PO ZMIANIE REQUESTOW NA LOCALHOST NIE WIEM DLACZEGO, PEWNIE TRZEBA ZMIENIC TAK JAK BYLO NA MAINE I FETCHOW Z API
+
+      const response = await getMyReckoningTasks(params.id, '2025', index);
+      if (response) {
+        // setReckoningTasks(response);
+        setReckoTasks(response);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsReckoTasksLoading(false);
+    }
+  };
 
   useEffect(() => {
     getUserById(params.id)
@@ -39,6 +77,25 @@ function UserProfile() {
         console.error('Error fetching user:', error);
       });
   }, [params.id]);
+
+  useEffect(() => {
+    fetchReckoningTasks(selectedMonthIndex);
+  }, [selectedMonth]);
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      if (companies.length === 0) {
+        try {
+          const allCompanies = await getAllCompanies();
+          companiesDispatch({ type: 'SET_COMPANIES', payload: allCompanies });
+        } catch (error) {
+          console.error('Error fetching users:', error);
+        }
+      }
+    };
+
+    fetchCompanies();
+  }, [companiesDispatch, companies]);
 
   return (
     <ViewContainer>
@@ -71,9 +128,30 @@ function UserProfile() {
                 })}
               </MultiselectDropdown>
             </div>
+            <Select
+              value={selectedMonth}
+              handleValueChange={handleMonthChange}
+              optionData={months}
+            />
+
+            <Select
+              value={selectedYear}
+              handleValueChange={handleYearChange}
+              optionData={years}
+            />
           </div>
         </ProfileTopBar>
-        <p>W produkcji</p>
+        <div className={styles.reckoTilesContainer}>
+          <ReckoningTaskList
+            tasks={reckoTasks}
+            isLoading={isReckoTasksLoading}
+            currentUserId={currentUserId}
+            selectedMonthIndex={selectedMonthIndex}
+            companies={companies}
+            isAddingTask={false}
+            onAddEmptyTask={() => {}}
+          />
+        </div>
       </ListContainer>
     </ViewContainer>
   );

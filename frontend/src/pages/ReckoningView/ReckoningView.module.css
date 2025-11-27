@@ -31,23 +31,6 @@
   }
 }
 
-.noTasksContainer {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  div {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  p {
-    font-weight: 600;
-  }
-}
 .reckoningItemContainer,
 .infoBar {
   width: 100%;
