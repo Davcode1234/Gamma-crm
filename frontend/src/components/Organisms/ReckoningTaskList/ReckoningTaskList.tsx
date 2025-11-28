@@ -2,16 +2,19 @@ import { Icon } from '@iconify/react';
 import CheckboxLoader from '../../Atoms/CheckboxLoader/CheckboxLoader';
 import ReckoningTile from '../ReckoningTile/ReckoningTile';
 import styles from './ReckoningTaskList.module.css';
+import useReckoningActions from '../../../hooks/useReckoningActions';
 
 function ReckoningTaskList({
   tasks = [], // matchedTasksFromSearchInput
   isLoading, // taskLoadingState.isGetMyTasksLoading
-  isAddingTask, // taskLoadingState.isAddEmptyLoading
   currentUserId,
   selectedMonthIndex,
+  selectedYear,
   companies,
-  onAddEmptyTask, // handleAddEmptyReckoTask
+  user,
 }) {
+  const { createEmptyTask, isAddingTask } = useReckoningActions(user);
+
   if (isLoading) {
     return (
       <div className={styles.iconWrapper}>
@@ -83,7 +86,7 @@ function ReckoningTaskList({
         <button
           type="button"
           className={styles.addNewReckoTaskButton}
-          onClick={onAddEmptyTask}
+          onClick={() => createEmptyTask(selectedMonthIndex, selectedYear)}
         >
           Dodaj pierwszy wiersz!
         </button>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-// import useShowLabel from '../../../hooks/useShowLabel';
 import { Icon } from '@iconify/react';
 import styles from './ReckoningTile.module.css';
 import {
@@ -8,7 +7,6 @@ import {
   updateDay,
   updateReckoningTask,
 } from '../../../services/reckoning-view-service';
-// import Overlay from '../../Atoms/Overlay/Overlay';
 import useReckoTasksContext from '../../../hooks/Context/useReckoTasksContext';
 import CheckboxLoader from '../../Atoms/CheckboxLoader/CheckboxLoader';
 import summarizeHours from '../../../utils/SummarizeHours';
@@ -42,33 +40,40 @@ function ReckoningTile({
   const { dispatch } = useReckoTasksContext();
   const currentDate = new Date();
 
+  // --- SAFE INITIALIZATION ---
   const filteredParticipants =
     reckTask.participants?.filter((part) => part._id === currentUserId) || [];
 
   const filteredHours =
-    filteredParticipants.length > 0
-      ? filteredParticipants[0].months?.filter((obj) => {
+    filteredParticipants.length > 0 && filteredParticipants[0].months
+      ? filteredParticipants[0].months.filter((obj) => {
           const monthIndex = new Date(obj.createdAt).getUTCMonth() + 1;
           return monthIndex === selectedMonthIndex;
-        }) || []
+        })
       : [];
 
   const [days, setDays] = useState(filteredHours);
-  // const { labelState, handleMouseEnter, handleMouseLeave } = useShowLabel();
 
   const totalHours = days.length > 0 ? summarizeHours(days[0].hours) : 0;
 
+  // --- FIXED USE EFFECT ---
   useEffect(() => {
-    const updatedFilteredParticipants = reckTask.participants.filter((part) => {
-      return part._id === currentUserId;
-    });
-
-    const updatedFilteredHours = updatedFilteredParticipants[0].months.filter(
-      (obj) => {
-        const monthIndex = new Date(obj.createdAt).getUTCMonth() + 1;
-        return monthIndex === selectedMonthIndex;
-      }
+    // 1. Find the user safely
+    const userPart = reckTask.participants.find(
+      (part) => part._id === currentUserId
     );
+
+    // 2. SAFETY CHECK: If no user or no months, set empty and return
+    if (!userPart || !userPart.months) {
+      setDays([]);
+      return;
+    }
+
+    // 3. Filter the months
+    const updatedFilteredHours = userPart.months.filter((obj) => {
+      const monthIndex = new Date(obj.createdAt).getUTCMonth() + 1;
+      return monthIndex === selectedMonthIndex;
+    });
 
     setDays(updatedFilteredHours);
   }, [reckTask.participants, selectedMonthIndex, currentUserId]);
@@ -83,7 +88,6 @@ function ReckoningTile({
   };
 
   const handleBlur = async (id, value) => {
-    // setIsEditing(false);
     try {
       setIsLoading(true);
       await updateReckoningTask({ taskId: id, value });
@@ -145,9 +149,13 @@ function ReckoningTile({
   };
 
   const handleHoursClear = async () => {
+    // 1. Safe Find
     const findUser = reckTask.participants.find((part) => {
       return part._id === currentUserId;
     });
+
+    // 2. Safety Check
+    if (!findUser || !findUser.months) return;
 
     const clearedMonthHours = findUser.months.map((m) => {
       const monthIndex = new Date(m.createdAt).getUTCMonth() + 1;
@@ -193,14 +201,20 @@ function ReckoningTile({
         };
       });
 
+      // 1. Safe Find
       const currentParticipant = reckTask.participants.find(
         (p) => p._id === currentUserId
       );
+
+      // 2. Safety Check
+      if (!currentParticipant) return;
 
       const currentMonth = currentParticipant.months.find((m) => {
         const date = new Date(m.createdAt);
         return date.getMonth() === selectedMonthIndex;
       });
+
+      if (!currentMonth) return; // Extra safety
 
       const response = await deleteReckoningTask(id, currentMonth._id);
       dispatch({ type: 'DELETE_RECKOTASK', payload: response });
@@ -216,8 +230,8 @@ function ReckoningTile({
 
     const { top, left } = position;
 
-    const style: React.CSSProperties = {
-      position: 'absolute' as const,
+    const style = {
+      position: 'absolute',
       top,
       left,
     };
@@ -255,9 +269,8 @@ function ReckoningTile({
           type="button"
           className={styles.moreButton}
           onClick={(e) => {
-            const rect = (
-              e.target as HTMLButtonElement
-            ).getBoundingClientRect();
+            const rect = e.currentTarget.getBoundingClientRect();
+
             setIsEditOpen((prev) => {
               return {
                 position: {
@@ -275,7 +288,7 @@ function ReckoningTile({
             <Icon icon="ic:outline-more-vert" width="24" height="24" />
           )}
         </button>
-        {isEditOpen && <>{ReckoTaskEditSelect(isEditOpen.position)}</>}
+        {isEditOpen.isOpen && <>{ReckoTaskEditSelect(isEditOpen.position)}</>}
       </div>
 
       <select
@@ -349,9 +362,6 @@ function ReckoningTile({
           setIsMouseOverTitle({ position: null, isOver: false })
         }
       />
-      {/* {isMouseOverTitle.isOver && formValue.title.length > 20 && (
-        <>{ReckoCommentHover(isMouseOverTitle.position, formValue.title)}</>
-      )} */}
 
       {isMouseOverTitle.isOver && formValue.title.length > 20 && (
         <HoverLabel position={isMouseOverTitle.position} root="select-root">
@@ -375,7 +385,6 @@ function ReckoningTile({
                 type="number"
                 min="0"
                 max="24"
-                // maxLength="2"
                 key={dayIndex}
                 value={dayTile.hourNum === 0 ? '' : dayTile.hourNum}
                 disabled={isLoading}

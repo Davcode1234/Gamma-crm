@@ -12,11 +12,9 @@ import useReckoTasksContext from '../../hooks/Context/useReckoTasksContext';
 import useAuth from '../../hooks/useAuth';
 import useCurrentDate from '../../hooks/useCurrentDate';
 import {
-  addReckoningTask,
   addReckoningTaskFromKanban,
   getMyReckoningTasks,
 } from '../../services/reckoning-view-service';
-import generateSearchID from '../../utils/generateSearchId';
 import styles from './ReckoningView.module.css';
 import useModal from '../../hooks/useModal';
 import ModalTemplate from '../../components/Templates/ModalTemplate/ModalTemplate';
@@ -33,10 +31,10 @@ import generateDaysArray from '../../utils/generateDaysArray';
 import useCompaniesContext from '../../hooks/Context/useCompaniesContext';
 import { getAllCompanies } from '../../services/companies-service';
 import ReckoningTaskList from '../../components/Organisms/ReckoningTaskList/ReckoningTaskList';
+import useReckoningActions from '../../hooks/useReckoningActions';
 
 function ReckoningView() {
   const [selectedMonthDaysArray, setSelectedMonthDaysArray] = useState([]);
-
   const [searchInputValue, setSearchInputValue] = useState('');
   const [hoveredCardId, setHoveredCardId] = useState(null);
   const [addTaskFromKanbanState, setAddTaskFromKanbanState] = useState({
@@ -63,13 +61,12 @@ function ReckoningView() {
   const { showModal, exitAnim, openModal, closeModal } = useModal();
   const { studioTasks, dispatch: studioTasksDispatch } =
     useStudioTasksContext();
-
   const { companies, dispatch: companiesDispatch } = useCompaniesContext();
-
   const { user } = useAuth();
   const currentUserId = user[0]._id;
   const monthIndex = new Date().getMonth();
   const selectedMonthIndex = months.indexOf(selectedMonth) + 1;
+  const { createEmptyTask, isAddingTask } = useReckoningActions(user);
 
   const handleLoadingStateChange = (key, value) => {
     setTaskLoadingState((prev) => {
@@ -185,53 +182,6 @@ function ReckoningView() {
         ) || []
     )
     .reduce((sum, hourObj) => sum + hourObj.hourNum, 0);
-
-  const handleAddEmptyReckoTask = async () => {
-    try {
-      handleLoadingStateChange('isAddEmptyLoading', true);
-
-      const startDate = new Date();
-
-      const addResponse = await addReckoningTask({
-        searchID: generateSearchID(),
-        idOfAssignedStudioTask: '',
-        client: 'Wybierz firme',
-        clientPerson: 'Wybierz klienta',
-        title: '',
-        description: '',
-        comment: '',
-        author: user[0],
-        printWhat: '',
-        printWhere: '',
-        participants: [
-          {
-            _id: user[0]._id,
-            isVisible: true,
-            name: user[0].name,
-            img: user[0].img,
-            months: [
-              {
-                createdAt: new Date(selectedYear, selectedMonthIndex, 1),
-                hours: generateDaysArray(selectedMonthIndex, 2025),
-                addedToRecko: new Date(),
-              },
-            ],
-          },
-        ],
-        startDate,
-        month: selectedMonthIndex,
-        // deadline: '',
-      });
-
-      if (addResponse !== null) {
-        dispatch({ type: 'CREATE_RECKOTASK', payload: addResponse });
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      handleLoadingStateChange('isAddEmptyLoading', false);
-    }
-  };
 
   const handleAddFromKanban = async ({
     _id,
@@ -429,7 +379,7 @@ function ReckoningView() {
                     Dodaj
                   </CTA>
                   <div className={styles.loaderWrapper}>
-                    {taskLoadingState.isAddEmptyLoading && <CheckboxLoader />}
+                    {isAddingTask && <CheckboxLoader />}
                   </div>
                   {addTaskFromKanbanState.successMessage.length > 0 && (
                     <p className={styles.successMessage}>
@@ -513,24 +463,26 @@ function ReckoningView() {
             {/* {renderReckoTasks()} */}
             <ReckoningTaskList
               tasks={matchedTasksFromSearchInput}
+              user={user}
               isLoading={taskLoadingState.isGetMyTasksLoading}
-              isAddingTask={taskLoadingState.isAddEmptyLoading}
               currentUserId={currentUserId}
               selectedMonthIndex={selectedMonthIndex}
+              selectedYear={selectedYear}
               companies={companies}
-              onAddEmptyTask={handleAddEmptyReckoTask}
             />
             {reckoTasks.length > 0 && !taskLoadingState.isGetMyTasksLoading && (
               <div className={styles.addNewReckoTaskWrapper}>
                 <button
                   type="button"
                   className={styles.addNewReckoTaskButton}
-                  onClick={handleAddEmptyReckoTask}
+                  onClick={() =>
+                    createEmptyTask(selectedMonthIndex, selectedYear)
+                  }
                 >
                   Dodaj wiersz..
                 </button>
 
-                {taskLoadingState.isAddEmptyLoading && <CheckboxLoader />}
+                {isAddingTask && <CheckboxLoader />}
               </div>
             )}
           </div>

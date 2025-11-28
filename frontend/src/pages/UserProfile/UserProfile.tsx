@@ -147,9 +147,9 @@ function UserProfile() {
             isLoading={isReckoTasksLoading}
             currentUserId={currentUserId}
             selectedMonthIndex={selectedMonthIndex}
+            selectedYear={selectedYear}
             companies={companies}
-            isAddingTask={false}
-            onAddEmptyTask={() => {}}
+            user={user}
           />
         </div>
       </ListContainer>
