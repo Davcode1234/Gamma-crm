@@ -15,6 +15,7 @@ import Select from '../../components/Atoms/Select/Select';
 import useCompaniesContext from '../../hooks/Context/useCompaniesContext';
 import { getAllCompanies } from '../../services/companies-service';
 import ReckoningTaskList from '../../components/Organisms/ReckoningTaskList/ReckoningTaskList';
+import useReckoTasksContext from '../../hooks/Context/useReckoTasksContext';
 
 function UserProfile() {
   const params = useParams();
@@ -23,7 +24,8 @@ function UserProfile() {
   const { companies, dispatch: companiesDispatch } = useCompaniesContext();
 
   const [isReckoTasksLoading, setIsReckoTasksLoading] = useState(false);
-  const [reckoTasks, setReckoTasks] = useState([]);
+  const { reckoTasks, dispatch } = useReckoTasksContext();
+
   const {
     selectedMonth,
     selectedYear,
@@ -53,7 +55,7 @@ function UserProfile() {
       const response = await getMyReckoningTasks(params.id, '2025', index);
       if (response) {
         // setReckoningTasks(response);
-        setReckoTasks(response);
+        dispatch({ type: 'SET_RECKOTASKS', payload: response });
       }
     } catch (error) {
       console.error(error);

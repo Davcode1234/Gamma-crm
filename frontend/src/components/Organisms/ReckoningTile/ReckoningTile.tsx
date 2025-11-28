@@ -40,7 +40,6 @@ function ReckoningTile({
   const { dispatch } = useReckoTasksContext();
   const currentDate = new Date();
 
-  // --- SAFE INITIALIZATION ---
   const filteredParticipants =
     reckTask.participants?.filter((part) => part._id === currentUserId) || [];
 
@@ -56,20 +55,16 @@ function ReckoningTile({
 
   const totalHours = days.length > 0 ? summarizeHours(days[0].hours) : 0;
 
-  // --- FIXED USE EFFECT ---
   useEffect(() => {
-    // 1. Find the user safely
     const userPart = reckTask.participants.find(
       (part) => part._id === currentUserId
     );
 
-    // 2. SAFETY CHECK: If no user or no months, set empty and return
     if (!userPart || !userPart.months) {
       setDays([]);
       return;
     }
 
-    // 3. Filter the months
     const updatedFilteredHours = userPart.months.filter((obj) => {
       const monthIndex = new Date(obj.createdAt).getUTCMonth() + 1;
       return monthIndex === selectedMonthIndex;
@@ -149,12 +144,10 @@ function ReckoningTile({
   };
 
   const handleHoursClear = async () => {
-    // 1. Safe Find
     const findUser = reckTask.participants.find((part) => {
       return part._id === currentUserId;
     });
 
-    // 2. Safety Check
     if (!findUser || !findUser.months) return;
 
     const clearedMonthHours = findUser.months.map((m) => {
@@ -201,12 +194,10 @@ function ReckoningTile({
         };
       });
 
-      // 1. Safe Find
       const currentParticipant = reckTask.participants.find(
         (p) => p._id === currentUserId
       );
 
-      // 2. Safety Check
       if (!currentParticipant) return;
 
       const currentMonth = currentParticipant.months.find((m) => {
@@ -214,7 +205,7 @@ function ReckoningTile({
         return date.getMonth() === selectedMonthIndex;
       });
 
-      if (!currentMonth) return; // Extra safety
+      if (!currentMonth) return;
 
       const response = await deleteReckoningTask(id, currentMonth._id);
       dispatch({ type: 'DELETE_RECKOTASK', payload: response });
