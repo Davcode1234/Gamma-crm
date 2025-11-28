@@ -202,7 +202,8 @@ function ReckoningTile({
 
       const currentMonth = currentParticipant.months.find((m) => {
         const date = new Date(m.createdAt);
-        return date.getMonth() === selectedMonthIndex;
+
+        return date.getUTCMonth() + 1 === selectedMonthIndex;
       });
 
       if (!currentMonth) return;

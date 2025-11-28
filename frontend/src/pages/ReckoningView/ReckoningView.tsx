@@ -460,7 +460,7 @@ function ReckoningView() {
                 Druk(gdzie)
               </p>
             </div>
-            {/* {renderReckoTasks()} */}
+
             <ReckoningTaskList
               tasks={matchedTasksFromSearchInput}
               user={user}
