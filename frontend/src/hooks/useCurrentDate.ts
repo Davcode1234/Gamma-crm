@@ -15,7 +15,7 @@ export const months = [
   'Grudzień',
 ];
 
-const years = [2024, 2025];
+const years = [2024, 2025, 2026];
 
 const useCurrentDate = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>(

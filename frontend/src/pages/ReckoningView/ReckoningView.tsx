@@ -85,7 +85,7 @@ function ReckoningView() {
 
       const response = await getMyReckoningTasks(
         currentUserId,
-        '2025',
+        selectedYear,
         index + 1
       );
       if (response) {
@@ -163,7 +163,7 @@ function ReckoningView() {
     if (!alreadyHasDataForMonth) {
       fetchReckoningTasks(selectedMonthIndex - 1);
     }
-  }, [selectedMonth]);
+  }, [selectedMonth, selectedYear]);
 
   const totalHours = matchedTasksFromSearchInput
     .flatMap(
