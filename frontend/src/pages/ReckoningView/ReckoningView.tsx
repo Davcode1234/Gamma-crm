@@ -1,4 +1,3 @@
-import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
 import ControlBar from '../../components/Atoms/ControlBar/ControlBar';
 import ControlBarTitle from '../../components/Atoms/ControlBar/Title/ControlBarTitle';
@@ -32,6 +31,7 @@ import useCompaniesContext from '../../hooks/Context/useCompaniesContext';
 import { getAllCompanies } from '../../services/companies-service';
 import ReckoningTaskList from '../../components/Organisms/ReckoningTaskList/ReckoningTaskList';
 import useReckoningActions from '../../hooks/useReckoningActions';
+import ReckoningInfoBar from '../../components/Molecules/ReckoningInfoBar/ReckoningInfoBar';
 
 function ReckoningView() {
   const [selectedMonthDaysArray, setSelectedMonthDaysArray] = useState([]);
@@ -431,35 +431,7 @@ function ReckoningView() {
       <ViewContainer>
         <ListContainer>
           <div className={styles.reckoningContainer}>
-            <div className={styles.commonGrid}>
-              <p className={`${styles.infoBarElement} `}>&nbsp;</p>
-              <p className={`${styles.infoBarElement} `}>Firma</p>
-              <p className={`${styles.infoBarElement} `}>Klient</p>
-              <p className={`${styles.infoBarElement} `}>Tytuł</p>
-
-              <div className={styles.daysWrapper}>
-                <div className={styles.summHoursInfoEl}>
-                  <Icon
-                    icon="tabler:circle-plus-2"
-                    width="24"
-                    height="24"
-                    // style="color: #030136"
-                  />
-                </div>
-                {selectedMonthDaysArray.map((dayTile, index) => {
-                  return (
-                    <p className={styles.dayInfoPar} key={index}>
-                      {index + 1}
-                    </p>
-                  );
-                })}
-              </div>
-              <p className={`${styles.infoBarElement} `}>Komentarz</p>
-              <p className={`${styles.infoBarElement} `}>Druk(co)</p>
-              <p className={`${styles.infoBarElement} ${styles.printPar}`}>
-                Druk(gdzie)
-              </p>
-            </div>
+            <ReckoningInfoBar selectedMonthDaysArray={selectedMonthDaysArray} />
 
             <ReckoningTaskList
               tasks={matchedTasksFromSearchInput}

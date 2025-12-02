@@ -1,0 +1,96 @@
+.reckoningTaskListElement,
+.darkerReckoningTaskListElement {
+  width: 100%;
+  font-size: 13px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  transition: all 0.3s ease;
+  animation: appear 0.3s ease forwards;
+}
+
+.darkerReckoningTaskListElement {
+  background-color: var(--color-shadow);
+}
+
+.reckoningTaskListElement:not(:first-child),
+.darkerReckoningTaskListElement:not(:first-child) {
+  cursor: pointer;
+}
+
+.reckoningTaskListElement:hover:not(:first-child),
+.darkerReckoningTaskListElement:hover:not(:first-child) {
+  background-color: var(--color-orange);
+  color: var(--color-lighter);
+}
+
+.companyInfoBar {
+  font-weight: 600;
+  width: 100%;
+  border-bottom: 3px solid var(--color-orange);
+  background-color: var(--color-navButton);
+  color: var(--color-bg);
+}
+
+.reckoningTaskListElementTile,
+.taskID,
+.taskWorker,
+.taskMonth,
+.companyInfoBarTile {
+  background-color: transparent;
+  width: 10%;
+  height: 35px;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  border-right: 1px solid var(--color-shadow);
+  border-bottom: 1px solid var(--color-shadow);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.companyInfoBarTile {
+  transition: all 0.3s ease;
+}
+
+.companyInfoBarTile:hover:not(:first-child) {
+  cursor: pointer;
+  color: var(--color-orange);
+}
+
+.reckoningTaskListElementTile:nth-child(1) {
+  width: 4.5%;
+  font-weight: 600;
+  min-width: 65px;
+}
+
+.reckoningTaskListElementTile:nth-child(2) {
+  max-width: 8.5%;
+  font-weight: 600;
+}
+
+.reckoningTaskListElementTile:nth-child(3) {
+  width: 9.5%;
+  font-weight: 600;
+}
+
+.reckoningTaskListElementTile:nth-child(4) {
+  width: 11%;
+  padding-left: 10px;
+}
+.reckoningTaskListElementTile:nth-child(5) {
+  width: 23%;
+}
+.reckoningTaskListElementTile:nth-child(6) {
+  width: 24.5%;
+}
+.reckoningTaskListElementTile:nth-child(7) {
+  width: 3%;
+  font-weight: 600;
+}
+.reckoningTaskListElementTile:nth-child(8) {
+  width: 5%;
+}

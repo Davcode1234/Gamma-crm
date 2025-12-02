@@ -16,9 +16,13 @@ import useCompaniesContext from '../../hooks/Context/useCompaniesContext';
 import { getAllCompanies } from '../../services/companies-service';
 import ReckoningTaskList from '../../components/Organisms/ReckoningTaskList/ReckoningTaskList';
 import useReckoTasksContext from '../../hooks/Context/useReckoTasksContext';
+import ReckoningInfoBar from '../../components/Molecules/ReckoningInfoBar/ReckoningInfoBar';
+import generateDaysArray from '../../utils/generateDaysArray';
 
 function UserProfile() {
   const params = useParams();
+  const [selectedMonthDaysArray, setSelectedMonthDaysArray] = useState([]);
+
   const [user, setUser] = useState<User[]>([]);
   const currentUserId = user.length > 0 && user[0]._id;
   const { companies, dispatch: companiesDispatch } = useCompaniesContext();
@@ -52,7 +56,11 @@ function UserProfile() {
 
       // DODANE +1 PO ZMIANIE REQUESTOW NA LOCALHOST NIE WIEM DLACZEGO, PEWNIE TRZEBA ZMIENIC TAK JAK BYLO NA MAINE I FETCHOW Z API
 
-      const response = await getMyReckoningTasks(params.id, '2025', index);
+      const response = await getMyReckoningTasks(
+        params.id,
+        selectedYear,
+        index
+      );
       if (response) {
         // setReckoningTasks(response);
         dispatch({ type: 'SET_RECKOTASKS', payload: response });
@@ -81,8 +89,10 @@ function UserProfile() {
   }, [params.id]);
 
   useEffect(() => {
+    setSelectedMonthDaysArray(generateDaysArray(selectedMonthIndex, 2025));
+
     fetchReckoningTasks(selectedMonthIndex);
-  }, [selectedMonth]);
+  }, [selectedMonth, selectedYear]);
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -144,6 +154,8 @@ function UserProfile() {
           </div>
         </ProfileTopBar>
         <div className={styles.reckoTilesContainer}>
+          <ReckoningInfoBar selectedMonthDaysArray={selectedMonthDaysArray} />
+
           <ReckoningTaskList
             tasks={reckoTasks}
             isLoading={isReckoTasksLoading}

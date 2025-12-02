@@ -1,0 +1,78 @@
+.commonGrid {
+  display: grid;
+  grid-template-columns:
+    30px /* selectPar */
+    8% /* companyPar */
+    8% /* clientPar */
+    15% /* titlePar */
+    auto /* days, you can calculate exact count with JS */
+    20% /* commentPar */
+    145px /* printWhat */
+    145px; /* printWhere */
+  align-items: center;
+  background-color: var(--color-navButton);
+  border-bottom: 2px solid var(--color-orange);
+  margin-bottom: 15px;
+  background-color: var(--color-navButton);
+  color: var(--color-lighter);
+}
+
+.infoBarElement {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  /* border-bottom: 1px solid var(--color-orange); */
+  background-color: var(--color-navButton);
+}
+
+.daysWrapper {
+  height: 100%;
+  display: flex;
+  gap: 2px;
+  /* margin: 0 0 0 2px; */
+}
+
+.summHoursInfoEl {
+  min-width: 14px;
+  max-width: 14px;
+  text-overflow: hidden;
+  height: 30px;
+  padding: 0 7px;
+  background-color: var(--color-navButton);
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dayInfoPar {
+  font-size: 14px;
+  font-weight: 600;
+  height: 100%;
+  min-width: 22px;
+  text-align: center;
+  margin: 0;
+  background-color: var(--color-navButton);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* padding: 0 0.1px; */
+  border-bottom: 2px solid var(--color-orange);
+}
+
+.printPar {
+  width: 145px;
+  background-color: var(--color-navButton);
+  height: 105%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 2px solid var(--color-orange);
+}
