@@ -74,9 +74,9 @@ export const CompanyController = {
     return filteredCompanies;
   },
 
-  async getCompanyReckoTasks(company, monthIndex) {
+  async getCompanyReckoTasks(company, monthIndex, yearIndex) {
     const month = parseInt(monthIndex);
-    const year = new Date().getFullYear(); // lub podaj jako parametr
+    const year = parseInt(yearIndex); // lub podaj jako parametr
 
     const startDate = new Date(Date.UTC(year, month - 1, 1));
     const endDate = new Date(Date.UTC(year, month, 1));

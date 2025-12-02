@@ -56,6 +56,7 @@ const useClientStats = (
         getAssignedReckoTasks({
           company: company.name,
           monthIndex: currentMonthIndex + 1,
+          yearIndex: selectedYear,
         }).then((reckoTasks) => {
           if (reckoTasks.reckoTasks.length > 0) {
             const filteredRecko = reckoTasks.reckoTasks.filter((rt) => {

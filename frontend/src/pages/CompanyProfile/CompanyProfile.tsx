@@ -152,6 +152,7 @@ function CompanyProfile() {
         const reckoTasks = await getAssignedReckoTasks({
           company: currentCompany.name,
           monthIndex: currentMonthIndex + 1,
+          yearIndex: selectedYear,
         });
 
         setReckoningTasks(reckoTasks.reckoTasks);
@@ -173,7 +174,7 @@ function CompanyProfile() {
 
   useEffect(() => {
     fetchCompany();
-  }, [currentMonthIndex]);
+  }, [currentMonthIndex, selectedYear]);
 
   const handleDeleteCompany = async (id) => {
     await deleteCompany(id);

@@ -138,16 +138,18 @@ CompanyRouter.get(
 );
 
 CompanyRouter.get(
-  '/reckoning/:company/:monthIndex',
+  '/reckoning/:company/:monthIndex/:yearIndex',
   passport.authenticate('jwt', { session: false }),
   permit('admin'),
   async (req, res) => {
     try {
       const company = req.params.company || '';
       const monthIndex = req.params.monthIndex;
+      const yearIndex = req.params.yearIndex;
       const reckoTasks = await CompanyController.getCompanyReckoTasks(
         company,
         monthIndex,
+        yearIndex,
       );
       res.status(StatusCodes.ACCEPTED).json({ reckoTasks });
     } catch (error) {

@@ -207,12 +207,16 @@ export async function SearchCompany(query) {
     }
   }
 }
-export async function getAssignedReckoTasks({ company, monthIndex }) {
+export async function getAssignedReckoTasks({
+  company,
+  monthIndex,
+  yearIndex,
+}) {
   try {
     const response = await fetch(
       `${
         import.meta.env.VITE_API_URL
-      }/api/companies/reckoning/${company}/${monthIndex}`,
+      }/api/companies/reckoning/${company}/${monthIndex}/${yearIndex}`,
       {
         method: 'GET',
         credentials: 'include',
