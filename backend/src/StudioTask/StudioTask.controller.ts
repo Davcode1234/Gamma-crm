@@ -32,33 +32,27 @@ export const StudioTaskController = {
 
   async getPlackerTasks() {
     const plackerTasks = await StudioTaskModel.aggregate([
-      // 1. OPTIMIZATION: Filter first.
-      // Only process tasks that are actually active.
       {
         $match: {
           status: { $in: ['do_zrobienia', 'w_trakcie'] },
         },
       },
 
-      // 2. Backup the full participants array (The fix from before)
       {
         $addFields: {
           allParticipants: '$participants',
         },
       },
 
-      // 3. Split the documents by participant
       {
         $unwind: '$participants',
       },
 
-      // 4. Group by Participant ID
       {
         $group: {
           _id: '$participants._id',
           tasks: {
             $push: {
-              // We no longer need $cond here because we filtered at step 1
               _id: '$_id',
               searchID: '$searchID',
               reckoTaskID: '$reckoTaskID',
@@ -79,10 +73,6 @@ export const StudioTaskController = {
         },
       },
 
-      // (We deleted the $addFields/$filter stage here because
-      // we no longer generate 'null' tasks)
-
-      // 5. Final formatting
       {
         $group: {
           _id: 'Placker Tasks',
@@ -92,6 +82,49 @@ export const StudioTaskController = {
     ]);
 
     return plackerTasks;
+  },
+
+  async getTasksByCompany() {
+    const companyTasks = await StudioTaskModel.aggregate([
+      {
+        $match: {
+          status: { $in: ['do_zrobienia', 'w_trakcie'] },
+        },
+      },
+      {
+        $group: {
+          _id: '$client',
+          tasks: {
+            $push: {
+              _id: '$_id',
+              searchID: '$searchID',
+              reckoTaskID: '$reckoTaskID',
+              title: '$title',
+              client: '$client',
+              clientPerson: '$clientPerson',
+              status: '$status',
+              index: '$index',
+              startDate: '$startDate',
+              participants: '$participants',
+              deadline: '$deadline',
+              createdAt: '$createdAt',
+              author: '$author',
+              taskType: '$taskType',
+              description: '$description',
+            },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: 'Company Tasks',
+
+          pairs: { $push: { id: '$_id', tasks: '$tasks' } },
+        },
+      },
+    ]);
+
+    return companyTasks;
   },
   async addStudioTask(studioTask) {
     await StudioTaskModel.validate(studioTask);

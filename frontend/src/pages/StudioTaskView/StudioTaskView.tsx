@@ -69,6 +69,13 @@ const VIEWS = {
 
 const viewOptions = [VIEWS.ACTIVE, VIEWS.ARCHIVE, VIEWS.PLACKER];
 
+const PLACKER_VIEW = {
+  GRAPHIC: 'Graficy',
+  COMPANY: 'Firmy',
+};
+
+const plackerViewOptions = [PLACKER_VIEW.GRAPHIC, PLACKER_VIEW.COMPANY];
+
 function StudioTaskView() {
   const [viewVariable, setViewVariable] = useState('Aktywne');
   const { studioTasks, dispatch } = useStudioTasksContext();
@@ -83,6 +90,7 @@ function StudioTaskView() {
     company: '',
     userAdd: '',
   });
+  const [plackerDataVariable, setPlackerDataVariable] = useState('Graficy');
 
   // const [loadingState, setLoadingState] = useState({
   //   isLoading: false,
@@ -150,6 +158,10 @@ function StudioTaskView() {
 
   const handleViewChange = (e) => {
     setViewVariable(e.target.value);
+  };
+
+  const handlePlackerViewChange = (e) => {
+    setPlackerDataVariable(e.target.value);
   };
 
   useEffect(() => {
@@ -275,7 +287,7 @@ function StudioTaskView() {
         matchingTasks={matchingTasks}
       />
     ),
-    [VIEWS.PLACKER]: <PlackerView />,
+    [VIEWS.PLACKER]: <PlackerView plackerDataVariable={plackerDataVariable} />,
   };
 
   return (
@@ -307,6 +319,14 @@ function StudioTaskView() {
           handleValueChange={handleViewChange}
           optionData={viewOptions}
         />
+        {viewVariable === 'Placker' && (
+          <Select
+            value={plackerDataVariable}
+            handleValueChange={handlePlackerViewChange}
+            optionData={plackerViewOptions}
+          />
+        )}
+
         <div className={styles.searchContainer}>
           <SearchInput {...getInputProps()} />
           <div

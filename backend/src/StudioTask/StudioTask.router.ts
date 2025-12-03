@@ -33,6 +33,19 @@ StudioTaskRouter.get(
     }
   },
 );
+StudioTaskRouter.get(
+  '/placker/bycompanies',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const studioTasks = await StudioTaskController.getTasksByCompany();
+      res.status(StatusCodes.ACCEPTED).json(studioTasks);
+    } catch (error) {
+      console.error(error);
+      res.status(StatusCodes.BAD_REQUEST).json({ message: error });
+    }
+  },
+);
 
 StudioTaskRouter.get(
   '/:id',

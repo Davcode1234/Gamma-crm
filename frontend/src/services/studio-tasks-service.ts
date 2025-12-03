@@ -80,6 +80,31 @@ export async function getPlackerTasks() {
   }
 }
 
+export async function getPlackerTasksByCompany() {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/studiotasks/placker/bycompanies`,
+      {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (response.ok) {
+      return await response.json();
+    }
+    throw new Error(`${response.status} ${response.statusText}`);
+  } catch (error) {
+    if (Config.isDev) {
+      throw new Error('Get users', error.message);
+    }
+    console.error(error.message);
+    return null;
+  }
+}
+
 export async function getStudioTask(id: string) {
   try {
     const response = await fetch(

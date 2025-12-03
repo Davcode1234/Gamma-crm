@@ -4,6 +4,7 @@ import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
 import {
   getAllStudioTasks,
   getPlackerTasks,
+  getPlackerTasksByCompany,
   UpdateStudioTask,
 } from '../../../services/studio-tasks-service';
 import styles from './PlackerView.module.css';
@@ -15,7 +16,7 @@ import socket from '../../../socket';
 import useStudioTasksContext from '../../../hooks/Context/useStudioTasksContext';
 import usePlackerTasksContext from '../../../hooks/Context/usePlackerTasksContext';
 
-function PlackerView() {
+function PlackerView({ plackerDataVariable }) {
   // const [tasks, setTasks] = useState([]);
   const { plackerTasks: tasks, dispatch: plackerTasksDispatch } =
     usePlackerTasksContext();
@@ -23,6 +24,7 @@ function PlackerView() {
     isLoading: false,
     isError: false,
   });
+
   const [isDragAllowed, setIsDragAllowed] = useState(true);
   const { users, dispatch } = useUsersContext();
   const { dispatch: studioTasksDispatch } = useStudioTasksContext();
@@ -90,11 +92,27 @@ function PlackerView() {
         isLoading: true,
         isError: false,
       }));
-      const plackerTasks = await getPlackerTasks();
-      if (plackerTasks && plackerTasks.length > 0 && plackerTasks[0].pairs) {
-        plackerTasks[0].pairs.sort((a, b) => b.tasks.length - a.tasks.length);
+      if (plackerDataVariable === 'Graficy') {
+        const plackerTasks = await getPlackerTasks();
+        if (plackerTasks && plackerTasks.length > 0 && plackerTasks[0].pairs) {
+          plackerTasks[0].pairs.sort((a, b) => b.tasks.length - a.tasks.length);
+        }
+        plackerTasksDispatch({
+          type: 'SET_PLACKERTASKS',
+          payload: plackerTasks,
+        });
+      } else {
+        const plackerTasks = await getPlackerTasksByCompany();
+        if (plackerTasks && plackerTasks.length > 0 && plackerTasks[0].pairs) {
+          plackerTasks[0].pairs.sort((a, b) => b.tasks.length - a.tasks.length);
+        }
+
+        console.log(plackerTasks);
+        plackerTasksDispatch({
+          type: 'SET_PLACKERTASKS',
+          payload: plackerTasks,
+        });
       }
-      plackerTasksDispatch({ type: 'SET_PLACKERTASKS', payload: plackerTasks });
     } catch (error) {
       errorHappened = true;
       setLoadingState(() => ({
@@ -112,7 +130,7 @@ function PlackerView() {
 
   useEffect(() => {
     fetchPlackerTasks();
-  }, []);
+  }, [plackerDataVariable]);
 
   const onDragEnd: OnDragEndResponder = async (result) => {
     const { destination, source } = result;
@@ -215,32 +233,54 @@ function PlackerView() {
             role="region"
             aria-label="Kanban Board"
           >
-            {[...tasks[0].pairs].map((col) => {
-              const userColumn =
-                users.length > 0 && users.find((us) => us._id === col.id);
+            {plackerDataVariable === 'Graficy'
+              ? [...tasks[0].pairs].map((col) => {
+                  const userColumn =
+                    users.length > 0 && users.find((us) => us._id === col.id);
 
-              if (!userColumn) return null;
+                  if (!userColumn) return null;
 
-              return (
-                <div
-                  key={col.id}
-                  // className={`${
-                  //   index % 2 === 0 ? styles.darker : styles.lighter
-                  // }`}
-                >
-                  <div className={styles.headerWrapper}>
-                    <p className={styles.tasksNumber}>{col.tasks.length}</p>
-                    <p className={styles.columnName}>{userColumn.name}</p>
-                  </div>
+                  return (
+                    <div
+                      key={col.id}
+                      // className={`${
+                      //   index % 2 === 0 ? styles.darker : styles.lighter
+                      // }`}
+                    >
+                      <div className={styles.headerWrapper}>
+                        <p className={styles.tasksNumber}>{col.tasks.length}</p>
+                        <p className={styles.columnName}>{userColumn.name}</p>
+                      </div>
 
-                  <PlackerColumn
-                    tasks={col.tasks}
-                    columnId={col.id}
-                    isDragAllowed={isDragAllowed}
-                  />
-                </div>
-              );
-            })}
+                      <PlackerColumn
+                        tasks={col.tasks}
+                        columnId={col.id}
+                        isDragAllowed={isDragAllowed}
+                      />
+                    </div>
+                  );
+                })
+              : [...tasks[0].pairs].map((col) => {
+                  return (
+                    <div
+                      key={col.id}
+                      // className={`${
+                      //   index % 2 === 0 ? styles.darker : styles.lighter
+                      // }`}
+                    >
+                      <div className={styles.headerWrapper}>
+                        <p className={styles.tasksNumber}>{col.tasks.length}</p>
+                        <p className={styles.columnName}>{col.id}</p>
+                      </div>
+
+                      <PlackerColumn
+                        tasks={col.tasks}
+                        columnId={col.id}
+                        isDragAllowed={isDragAllowed}
+                      />
+                    </div>
+                  );
+                })}
           </div>
         </DragDropContext>
       </div>
