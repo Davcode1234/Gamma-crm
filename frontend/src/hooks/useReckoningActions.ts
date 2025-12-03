@@ -2,11 +2,21 @@ import { useState } from 'react';
 import useReckoTasksContext from './Context/useReckoTasksContext';
 import generateSearchID from '../utils/generateSearchId';
 import generateDaysArray from '../utils/generateDaysArray';
-import { addReckoningTask } from '../services/reckoning-view-service';
+import {
+  addReckoningTask,
+  addReckoningTaskFromKanban,
+  getMyReckoningTasks,
+} from '../services/reckoning-view-service';
+import {
+  getStudioTask,
+  UpdateStudioTask,
+} from '../services/studio-tasks-service';
+import socket from '../socket';
 
 const useReckoningActions = (user) => {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const { dispatch } = useReckoTasksContext();
+  const currentUserId = user[0]._id;
 
   const createEmptyTask = async (selectedMonthIndex, selectedYear) => {
     try {
@@ -56,9 +66,111 @@ const useReckoningActions = (user) => {
       setIsAddingTask(false);
     }
   };
+
+  const handleAddFromKanban = async ({
+    _id,
+    searchID,
+    client,
+    clientPerson,
+    title,
+    description,
+    participants,
+    createdAt,
+    selectedMonthIndex,
+    selectedYear,
+    setAddTaskFromKanbanState,
+    studioTasksDispatch,
+  }) => {
+    try {
+      setIsAddingTask(true);
+
+      // const startDate = new Date(selectedYear, selectedMonthIndex, 1);
+
+      const addResponse = await addReckoningTaskFromKanban({
+        searchID,
+        idOfAssignedStudioTask: _id,
+        client,
+        clientPerson,
+        title,
+        description,
+        comment: '',
+        author: user[0],
+        printWhat: '',
+        printWhere: '',
+        participants: participants.map((part) => {
+          return {
+            _id: part._id,
+            isVisible: currentUserId === part._id,
+            name: part.name,
+            img: part.img,
+            months: [
+              {
+                createdAt: new Date(selectedYear, selectedMonthIndex, 1),
+                hours: generateDaysArray(selectedMonthIndex, 2025),
+                addedToRecko: new Date(),
+              },
+            ],
+          };
+        }),
+        startDate: new Date(createdAt ?? Date.now()),
+        month: selectedMonthIndex,
+        // deadline: '',
+      });
+
+      if (addResponse.alreadyExist) {
+        setAddTaskFromKanbanState((prev) => {
+          return {
+            ...prev,
+            isAlreadyExist: true,
+          };
+        });
+      }
+
+      const updatedTask = await UpdateStudioTask({
+        id: _id,
+        studioTaskData: { reckoTaskID: addResponse._id },
+      });
+
+      const res = await getStudioTask(updatedTask._id);
+      studioTasksDispatch({
+        type: 'UPDATE_STUDIOTASK',
+        payload: res,
+      });
+      socket.emit('tasksUpdated', res);
+
+      const response = await getMyReckoningTasks(
+        currentUserId,
+        '2025',
+        selectedMonthIndex
+      );
+      if (response) {
+        // setReckoningTasks(response);
+        dispatch({ type: 'SET_RECKOTASKS', payload: response });
+      }
+    } catch (error) {
+      console.error(error);
+      setAddTaskFromKanbanState((prev) => {
+        return {
+          ...prev,
+          errorMessage: 'Coś poszło nie tak :(',
+        };
+      });
+    } finally {
+      setIsAddingTask(false);
+
+      setAddTaskFromKanbanState((prev) => {
+        return {
+          ...prev,
+          successMessage: 'Zlecenie utworzone!',
+        };
+      });
+    }
+  };
+
   return {
     createEmptyTask,
     isAddingTask,
+    handleAddFromKanban,
   };
 };
 

@@ -10,22 +10,15 @@ import ViewContainer from '../../components/Atoms/ViewContainer/ViewContainer';
 import useReckoTasksContext from '../../hooks/Context/useReckoTasksContext';
 import useAuth from '../../hooks/useAuth';
 import useCurrentDate from '../../hooks/useCurrentDate';
-import {
-  addReckoningTaskFromKanban,
-  getMyReckoningTasks,
-} from '../../services/reckoning-view-service';
+import { getMyReckoningTasks } from '../../services/reckoning-view-service';
 import styles from './ReckoningView.module.css';
 import useModal from '../../hooks/useModal';
 import ModalTemplate from '../../components/Templates/ModalTemplate/ModalTemplate';
 import useStudioTasksContext from '../../hooks/Context/useStudioTasksContext';
-import {
-  getAllStudioTasks,
-  getStudioTask,
-  UpdateStudioTask,
-} from '../../services/studio-tasks-service';
+import { getAllStudioTasks } from '../../services/studio-tasks-service';
 import CompanyBatch from '../../components/Atoms/CompanyBatch/CompanyBatch';
 import UsersDisplay from '../../components/Organisms/UsersDisplay/UsersDisplay';
-import socket from '../../socket';
+
 import generateDaysArray from '../../utils/generateDaysArray';
 import useCompaniesContext from '../../hooks/Context/useCompaniesContext';
 import { getAllCompanies } from '../../services/companies-service';
@@ -66,7 +59,8 @@ function ReckoningView() {
   const currentUserId = user[0]._id;
   const monthIndex = new Date().getMonth();
   const selectedMonthIndex = months.indexOf(selectedMonth) + 1;
-  const { createEmptyTask, isAddingTask } = useReckoningActions(user);
+  const { createEmptyTask, isAddingTask, handleAddFromKanban } =
+    useReckoningActions(user);
 
   const handleLoadingStateChange = (key, value) => {
     setTaskLoadingState((prev) => {
@@ -183,102 +177,6 @@ function ReckoningView() {
     )
     .reduce((sum, hourObj) => sum + hourObj.hourNum, 0);
 
-  const handleAddFromKanban = async ({
-    _id,
-    searchID,
-    client,
-    clientPerson,
-    title,
-    description,
-    participants,
-    createdAt,
-  }) => {
-    try {
-      handleLoadingStateChange('isAddEmptyLoading', true);
-
-      // const startDate = new Date(selectedYear, selectedMonthIndex, 1);
-
-      const addResponse = await addReckoningTaskFromKanban({
-        searchID,
-        idOfAssignedStudioTask: _id,
-        client,
-        clientPerson,
-        title,
-        description,
-        comment: '',
-        author: user[0],
-        printWhat: '',
-        printWhere: '',
-        participants: participants.map((part) => {
-          return {
-            _id: part._id,
-            isVisible: currentUserId === part._id,
-            name: part.name,
-            img: part.img,
-            months: [
-              {
-                createdAt: new Date(selectedYear, selectedMonthIndex, 1),
-                hours: generateDaysArray(selectedMonthIndex, 2025),
-                addedToRecko: new Date(),
-              },
-            ],
-          };
-        }),
-        startDate: new Date(createdAt ?? Date.now()),
-        month: selectedMonthIndex,
-        // deadline: '',
-      });
-
-      if (addResponse.alreadyExist) {
-        setAddTaskFromKanbanState((prev) => {
-          return {
-            ...prev,
-            isAlreadyExist: true,
-          };
-        });
-      }
-
-      const updatedTask = await UpdateStudioTask({
-        id: _id,
-        studioTaskData: { reckoTaskID: addResponse._id },
-      });
-
-      const res = await getStudioTask(updatedTask._id);
-      studioTasksDispatch({
-        type: 'UPDATE_STUDIOTASK',
-        payload: res,
-      });
-      socket.emit('tasksUpdated', res);
-
-      const response = await getMyReckoningTasks(
-        currentUserId,
-        '2025',
-        selectedMonthIndex
-      );
-      if (response) {
-        // setReckoningTasks(response);
-        dispatch({ type: 'SET_RECKOTASKS', payload: response });
-      }
-    } catch (error) {
-      console.error(error);
-      setAddTaskFromKanbanState((prev) => {
-        return {
-          ...prev,
-          errorMessage: 'Coś poszło nie tak :(',
-        };
-      });
-    } finally {
-      handleLoadingStateChange('isAddEmptyLoading', false);
-
-      setAddTaskFromKanbanState((prev) => {
-        return {
-          ...prev,
-          successMessage: 'Zlecenie utworzone!',
-        };
-      });
-    }
-  };
-
   const studioTasksAssignedTome = studioTasks.filter((task) => {
     return task.participants.some((participant) => {
       return participant._id === currentUserId;
@@ -362,18 +260,20 @@ function ReckoningView() {
                 >
                   <CTA
                     onClick={() => {
-                      handleAddFromKanban(
-                        studioTask as {
-                          _id: string;
-                          searchID: number;
-                          client: string;
-                          clientPerson: string;
-                          title: string;
-                          description: string;
-                          participants: any[];
-                          createdAt: Date;
-                        }
-                      );
+                      handleAddFromKanban({
+                        _id: studioTask._id,
+                        searchID: studioTask.searchID,
+                        client: studioTask.client,
+                        clientPerson: studioTask.clientPerson,
+                        title: studioTask.title,
+                        description: studioTask.description,
+                        participants: studioTask.participants,
+                        createdAt: studioTask.createdAt,
+                        selectedMonthIndex,
+                        selectedYear,
+                        setAddTaskFromKanbanState,
+                        studioTasksDispatch,
+                      });
                     }}
                   >
                     Dodaj
