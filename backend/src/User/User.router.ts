@@ -25,7 +25,7 @@ UserRouter.get(
 UserRouter.get(
   '/:id',
   passport.authenticate('jwt', { session: false }),
-  permit('admin', 'grafik'),
+  UserController.permitOwnerOrAdmin,
   async (req, res) => {
     const id = req.params.id === 'me' ? req.user.id : req.params.id;
     try {

@@ -20,4 +20,20 @@ export const UserController = {
   async deleteUser(id) {
     return await UserModel.findByIdAndRemove(id);
   },
+
+  permitOwnerOrAdmin(req, res, next) {
+    const requestedId = req.params.id;
+    const loggedUser = req.user;
+
+    const isAdmin = loggedUser.roles && loggedUser.roles.includes('admin');
+    const isOwner = requestedId === 'me' || requestedId === loggedUser.id;
+
+    if (isAdmin || isOwner) {
+      return next();
+    }
+
+    return res
+      .status(403)
+      .json({ message: 'You are not allowed to view this profile.' });
+  },
 };

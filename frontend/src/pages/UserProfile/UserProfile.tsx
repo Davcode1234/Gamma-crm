@@ -18,6 +18,7 @@ import ReckoningTaskList from '../../components/Organisms/ReckoningTaskList/Reck
 import useReckoTasksContext from '../../hooks/Context/useReckoTasksContext';
 import ReckoningInfoBar from '../../components/Molecules/ReckoningInfoBar/ReckoningInfoBar';
 import generateDaysArray from '../../utils/generateDaysArray';
+import hasRole from '../../utils/hasRole';
 
 function UserProfile() {
   const params = useParams();
@@ -116,30 +117,33 @@ function UserProfile() {
           <div className={styles.topBarContainer}>
             <BackButton path="użytkownicy" />
             <h2>{user.length > 0 && user[0].name}</h2>
-            <div className={styles.multiSelectWrapper}>
-              <MultiselectDropdown
-                isSelectOpen={isSelectOpen}
-                setIsSelectOpen={setIsSelectOpen}
-                label="Rola"
-                inputKey="role"
-                inputValue={selectFilterValue}
-                handleInputValue={handleFilterDropdownInputValue}
-                isBigger={false}
-                isSquare={false}
-              >
-                {filteredRolesForDropdown.map((role) => {
-                  return (
-                    <FilterCheckbox
-                      key={role}
-                      name={role}
-                      isSelected={assignedRoles.includes(role)}
-                      toggleCompany={handleRoleAssign}
-                      filterVariable={role}
-                    />
-                  );
-                })}
-              </MultiselectDropdown>
-            </div>
+            {user.length > 0 && hasRole(user, ['admin']) && (
+              <div className={styles.multiSelectWrapper}>
+                <MultiselectDropdown
+                  isSelectOpen={isSelectOpen}
+                  setIsSelectOpen={setIsSelectOpen}
+                  label="Rola"
+                  inputKey="role"
+                  inputValue={selectFilterValue}
+                  handleInputValue={handleFilterDropdownInputValue}
+                  isBigger={false}
+                  isSquare={false}
+                >
+                  {filteredRolesForDropdown.map((role) => {
+                    return (
+                      <FilterCheckbox
+                        key={role}
+                        name={role}
+                        isSelected={assignedRoles.includes(role)}
+                        toggleCompany={handleRoleAssign}
+                        filterVariable={role}
+                      />
+                    );
+                  })}
+                </MultiselectDropdown>
+              </div>
+            )}
+
             <Select
               value={selectedMonth}
               handleValueChange={handleMonthChange}

@@ -18,6 +18,7 @@ import ClientsView from '../ClientsView/ClientsView';
 import ClientProfile from '../ClientProfile/ClientProfile';
 import RouteProtection from '../../components/Templates/RouteProtection/RouteProtection';
 import hasRole from '../../utils/hasRole';
+import UserProfileGuard from '../../components/Templates/UserProfileGuard/UserProfileGuard';
 
 function App() {
   const { user } = useAuth();
@@ -55,7 +56,14 @@ function App() {
             </RouteProtection>
           }
         />
-        <Route path="/użytkownicy/:id" element={<UserProfile />} />
+        <Route
+          path="/użytkownicy/:id"
+          element={
+            <UserProfileGuard>
+              <UserProfile />
+            </UserProfileGuard>
+          }
+        />
         <Route path="/zlecenia" element={<StudioTaskView />} />
         <Route path="/zlecenia/:id" element={<TaskProfile />} />
         <Route path="/rozliczenie" element={<ReckoningView />} />
