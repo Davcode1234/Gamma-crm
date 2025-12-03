@@ -16,9 +16,13 @@ import socket from '../socket';
 const useReckoningActions = (user) => {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const { dispatch } = useReckoTasksContext();
-  const currentUserId = user[0]._id;
+  const currentUserId = user.length > 0 && user[0]._id;
 
   const createEmptyTask = async (selectedMonthIndex, selectedYear) => {
+    if (!currentUserId || !user?.[0]) {
+      console.error('User data is missing');
+      return false;
+    }
     try {
       setIsAddingTask(true);
       const startDate = new Date();
