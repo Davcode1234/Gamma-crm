@@ -17,3 +17,10 @@
   gap: 3px;
   overflow: scroll;
 }
+
+.buttonsWrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-left: 20px;
+}

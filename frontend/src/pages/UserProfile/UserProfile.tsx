@@ -19,14 +19,25 @@ import useReckoTasksContext from '../../hooks/Context/useReckoTasksContext';
 import ReckoningInfoBar from '../../components/Molecules/ReckoningInfoBar/ReckoningInfoBar';
 import generateDaysArray from '../../utils/generateDaysArray';
 import hasRole from '../../utils/hasRole';
+import useAuth from '../../hooks/useAuth';
+import SaveButton from '../../components/Atoms/SaveButton/SaveButton';
+import DeleteButton from '../../components/Atoms/DeleteButton/DeleteButton';
+
+const VIEW = {
+  PROFILE: 'Profil',
+  RECKO: 'Rozliczenie',
+};
+
+const viewOptions = [VIEW.PROFILE, VIEW.RECKO];
 
 function UserProfile() {
   const params = useParams();
   const [selectedMonthDaysArray, setSelectedMonthDaysArray] = useState([]);
-
+  const [viewVariable, setViewVariable] = useState('Profil');
   const [user, setUser] = useState<User[]>([]);
   const currentUserId = user.length > 0 && user[0]._id;
   const { companies, dispatch: companiesDispatch } = useCompaniesContext();
+  const { user: loggedUser } = useAuth();
 
   const [isReckoTasksLoading, setIsReckoTasksLoading] = useState(false);
   const { reckoTasks, dispatch } = useReckoTasksContext();
@@ -110,6 +121,29 @@ function UserProfile() {
     fetchCompanies();
   }, [companiesDispatch, companies]);
 
+  const handleViewChange = (e) => {
+    setViewVariable(e.target.value);
+  };
+
+  const viewRender = {
+    [VIEW.PROFILE]: <p>profil</p>,
+    [VIEW.RECKO]: (
+      <div className={styles.reckoTilesContainer}>
+        <ReckoningInfoBar selectedMonthDaysArray={selectedMonthDaysArray} />
+
+        <ReckoningTaskList
+          tasks={reckoTasks}
+          isLoading={isReckoTasksLoading}
+          currentUserId={currentUserId}
+          selectedMonthIndex={selectedMonthIndex}
+          selectedYear={selectedYear}
+          companies={companies}
+          user={user}
+        />
+      </div>
+    ),
+  };
+
   return (
     <ViewContainer>
       <ListContainer>
@@ -117,59 +151,67 @@ function UserProfile() {
           <div className={styles.topBarContainer}>
             <BackButton path="użytkownicy" />
             <h2>{user.length > 0 && user[0].name}</h2>
-            {user.length > 0 && hasRole(user, ['admin']) && (
-              <div className={styles.multiSelectWrapper}>
-                <MultiselectDropdown
-                  isSelectOpen={isSelectOpen}
-                  setIsSelectOpen={setIsSelectOpen}
-                  label="Rola"
-                  inputKey="role"
-                  inputValue={selectFilterValue}
-                  handleInputValue={handleFilterDropdownInputValue}
-                  isBigger={false}
-                  isSquare={false}
-                >
-                  {filteredRolesForDropdown.map((role) => {
-                    return (
-                      <FilterCheckbox
-                        key={role}
-                        name={role}
-                        isSelected={assignedRoles.includes(role)}
-                        toggleCompany={handleRoleAssign}
-                        filterVariable={role}
-                      />
-                    );
-                  })}
-                </MultiselectDropdown>
+
+            {viewVariable === 'Profil' && (
+              <div className={styles.buttonsWrapper}>
+                <SaveButton callbackFunc={() => {}}>Zapisz</SaveButton>
+                <DeleteButton callbackFunc={() => {}}>Usuń</DeleteButton>
               </div>
             )}
 
             <Select
-              value={selectedMonth}
-              handleValueChange={handleMonthChange}
-              optionData={months}
+              value={viewVariable}
+              handleValueChange={handleViewChange}
+              optionData={viewOptions}
             />
 
-            <Select
-              value={selectedYear}
-              handleValueChange={handleYearChange}
-              optionData={years}
-            />
+            {user.length > 0 &&
+              hasRole(loggedUser, ['admin']) &&
+              viewVariable === 'Profil' && (
+                <div className={styles.multiSelectWrapper}>
+                  <MultiselectDropdown
+                    isSelectOpen={isSelectOpen}
+                    setIsSelectOpen={setIsSelectOpen}
+                    label="Rola"
+                    inputKey="role"
+                    inputValue={selectFilterValue}
+                    handleInputValue={handleFilterDropdownInputValue}
+                    isBigger={false}
+                    isSquare={false}
+                  >
+                    {filteredRolesForDropdown.map((role) => {
+                      return (
+                        <FilterCheckbox
+                          key={role}
+                          name={role}
+                          isSelected={assignedRoles.includes(role)}
+                          toggleCompany={handleRoleAssign}
+                          filterVariable={role}
+                        />
+                      );
+                    })}
+                  </MultiselectDropdown>
+                </div>
+              )}
+
+            {viewVariable === 'Rozliczenie' && (
+              <>
+                <Select
+                  value={selectedMonth}
+                  handleValueChange={handleMonthChange}
+                  optionData={months}
+                />
+
+                <Select
+                  value={selectedYear}
+                  handleValueChange={handleYearChange}
+                  optionData={years}
+                />
+              </>
+            )}
           </div>
         </ProfileTopBar>
-        <div className={styles.reckoTilesContainer}>
-          <ReckoningInfoBar selectedMonthDaysArray={selectedMonthDaysArray} />
-
-          <ReckoningTaskList
-            tasks={reckoTasks}
-            isLoading={isReckoTasksLoading}
-            currentUserId={currentUserId}
-            selectedMonthIndex={selectedMonthIndex}
-            selectedYear={selectedYear}
-            companies={companies}
-            user={user}
-          />
-        </div>
+        {viewRender[viewVariable]}
       </ListContainer>
     </ViewContainer>
   );
