@@ -24,3 +24,22 @@
   gap: 10px;
   margin-left: 20px;
 }
+
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5px;
+
+  label {
+    font-size: 14px;
+    color: var(--color-navButton);
+    margin-bottom: 5px;
+    font-weight: 400;
+  }
+}
+
+.editInput {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 12px 10px;
+}

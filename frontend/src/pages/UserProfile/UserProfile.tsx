@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getUserById, User } from '../../services/users-service';
+import { getUserById, UpdateUser, User } from '../../services/users-service';
 import styles from './UserProfile.module.css';
 import ViewContainer from '../../components/Atoms/ViewContainer/ViewContainer';
 import BackButton from '../../components/Atoms/BackButton/BackButton';
@@ -30,16 +30,25 @@ const VIEW = {
 
 const viewOptions = [VIEW.PROFILE, VIEW.RECKO];
 
+const initialUserObject = {
+  name: '',
+  lastname: '',
+  email: '',
+  phone: 0,
+  job: '',
+  roles: [],
+};
+
 function UserProfile() {
   const params = useParams();
   const [selectedMonthDaysArray, setSelectedMonthDaysArray] = useState([]);
+  const [formValue, setFormValue] = useState(initialUserObject);
   const [viewVariable, setViewVariable] = useState('Profil');
+  const [isReckoTasksLoading, setIsReckoTasksLoading] = useState(false);
   const [user, setUser] = useState<User[]>([]);
   const currentUserId = user.length > 0 && user[0]._id;
   const { companies, dispatch: companiesDispatch } = useCompaniesContext();
   const { user: loggedUser } = useAuth();
-
-  const [isReckoTasksLoading, setIsReckoTasksLoading] = useState(false);
   const { reckoTasks, dispatch } = useReckoTasksContext();
 
   const {
@@ -84,12 +93,22 @@ function UserProfile() {
     }
   };
 
-  useEffect(() => {
+  const fetchUser = () => {
     getUserById(params.id)
       .then((singleUserArray: User | User[]) => {
         if (Array.isArray(singleUserArray)) {
           if (singleUserArray.length > 0) {
+            const formUser = singleUserArray[0];
             setUser(singleUserArray);
+            console.log(singleUserArray[0]);
+            setFormValue({
+              name: formUser.name,
+              lastname: formUser.lastname,
+              email: formUser.email,
+              phone: formUser.phone,
+              job: formUser.job,
+              roles: formUser.roles,
+            });
           }
         } else {
           setUser([singleUserArray]);
@@ -98,6 +117,10 @@ function UserProfile() {
       .catch((error) => {
         console.error('Error fetching user:', error);
       });
+  };
+
+  useEffect(() => {
+    fetchUser();
   }, [params.id]);
 
   useEffect(() => {
@@ -125,46 +148,100 @@ function UserProfile() {
     setViewVariable(e.target.value);
   };
 
-  const viewRender = {
-    [VIEW.PROFILE]: <p>profil</p>,
-    [VIEW.RECKO]: (
-      <div className={styles.reckoTilesContainer}>
-        <ReckoningInfoBar selectedMonthDaysArray={selectedMonthDaysArray} />
-
-        <ReckoningTaskList
-          tasks={reckoTasks}
-          isLoading={isReckoTasksLoading}
-          currentUserId={currentUserId}
-          selectedMonthIndex={selectedMonthIndex}
-          selectedYear={selectedYear}
-          companies={companies}
-          user={user}
-        />
-      </div>
-    ),
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    key: keyof typeof initialUserObject
+  ) => {
+    setFormValue((prev) => ({
+      ...prev,
+      [key]: e.target.value,
+    }));
   };
 
-  return (
-    <ViewContainer>
-      <ListContainer>
-        <ProfileTopBar>
-          <div className={styles.topBarContainer}>
-            <BackButton path="użytkownicy" />
-            <h2>{user.length > 0 && user[0].name}</h2>
+  const handleUpdateUser = async () => {
+    const updatedUser = await UpdateUser({
+      id: currentUserId,
+      userData: formValue,
+    });
+    fetchUser();
+    console.log(updatedUser);
+  };
 
-            {viewVariable === 'Profil' && (
-              <div className={styles.buttonsWrapper}>
-                <SaveButton callbackFunc={() => {}}>Zapisz</SaveButton>
-                <DeleteButton callbackFunc={() => {}}>Usuń</DeleteButton>
-              </div>
-            )}
-
-            <Select
-              value={viewVariable}
-              handleValueChange={handleViewChange}
-              optionData={viewOptions}
+  const viewRender = {
+    [VIEW.PROFILE]: (
+      <div className={styles.columnsWrapper}>
+        <div className={styles.leftColumn}>
+          <div className={styles.inputWrapper}>
+            <label htmlFor="userName">Imie </label>
+            <input
+              type="text"
+              name="userName"
+              id="userName"
+              maxLength={30}
+              value={formValue.name}
+              onChange={(e) => {
+                handleFormChange(e, 'name');
+              }}
+              className={styles.editInput}
             />
-
+          </div>
+          <div className={styles.inputWrapper}>
+            <label htmlFor="userLastname">Nazwisko</label>
+            <input
+              type="text"
+              name="userLastname"
+              id="userLastname"
+              maxLength={40}
+              value={formValue.lastname}
+              onChange={(e) => {
+                handleFormChange(e, 'lastname');
+              }}
+              className={styles.editInput}
+            />
+          </div>
+          <div className={styles.inputWrapper}>
+            <label htmlFor="userEmail">Email</label>
+            <input
+              type="text"
+              name="userEmail"
+              id="userEmail"
+              maxLength={100}
+              value={formValue.email}
+              onChange={(e) => {
+                handleFormChange(e, 'email');
+              }}
+              className={styles.editInput}
+            />
+          </div>
+          <div className={styles.inputWrapper}>
+            <label htmlFor="userPhone">Numer</label>
+            <input
+              type="text"
+              name="userPhone"
+              id="userPhone"
+              maxLength={15}
+              value={formValue.phone}
+              onChange={(e) => {
+                handleFormChange(e, 'phone');
+              }}
+              className={styles.editInput}
+            />
+          </div>
+          <div className={styles.inputWrapper}>
+            <label htmlFor="userJob">Stanowisko</label>
+            <input
+              type="text"
+              name="userJob"
+              id="userJob"
+              maxLength={20}
+              value={formValue.job}
+              onChange={(e) => {
+                handleFormChange(e, 'job');
+              }}
+              className={styles.editInput}
+            />
+          </div>
+          <div className={styles.inputWrapper}>
             {user.length > 0 &&
               hasRole(loggedUser, ['admin']) &&
               viewVariable === 'Profil' && (
@@ -193,6 +270,53 @@ function UserProfile() {
                   </MultiselectDropdown>
                 </div>
               )}
+          </div>
+        </div>
+      </div>
+    ),
+    [VIEW.RECKO]: (
+      <div className={styles.reckoTilesContainer}>
+        <ReckoningInfoBar selectedMonthDaysArray={selectedMonthDaysArray} />
+
+        <ReckoningTaskList
+          tasks={reckoTasks}
+          isLoading={isReckoTasksLoading}
+          currentUserId={currentUserId}
+          selectedMonthIndex={selectedMonthIndex}
+          selectedYear={selectedYear}
+          companies={companies}
+          user={user}
+        />
+      </div>
+    ),
+  };
+
+  return (
+    <ViewContainer>
+      <ListContainer>
+        <ProfileTopBar>
+          <div className={styles.topBarContainer}>
+            <BackButton path="użytkownicy" />
+            <h2>{user.length > 0 && user[0].name}</h2>
+
+            {viewVariable === 'Profil' && (
+              <div className={styles.buttonsWrapper}>
+                <SaveButton
+                  callbackFunc={() => {
+                    handleUpdateUser();
+                  }}
+                >
+                  Zapisz
+                </SaveButton>
+                <DeleteButton callbackFunc={() => {}}>Usuń</DeleteButton>
+              </div>
+            )}
+
+            <Select
+              value={viewVariable}
+              handleValueChange={handleViewChange}
+              optionData={viewOptions}
+            />
 
             {viewVariable === 'Rozliczenie' && (
               <>

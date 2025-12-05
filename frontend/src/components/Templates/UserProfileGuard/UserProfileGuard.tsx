@@ -7,12 +7,8 @@ function UserProfileGuard({ children }) {
   const { user } = useAuth();
   const userID = user[0]?._id;
 
-  console.log(user);
-
   const isAdmin = hasRole(user, ['admin']);
   const isOwner = id === 'me' || id === userID;
-
-  console.log(isOwner, 'params id', id, 'user id', userID);
 
   if (isAdmin || isOwner) {
     return children;
