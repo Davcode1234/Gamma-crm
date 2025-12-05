@@ -171,106 +171,111 @@ function UserProfile() {
     [VIEW.PROFILE]: (
       <div className={styles.columnsWrapper}>
         <div className={styles.leftColumn}>
-          <div className={styles.inputWrapper}>
-            <label htmlFor="userName">Imie </label>
-            <input
-              type="text"
-              name="userName"
-              id="userName"
-              maxLength={30}
-              value={formValue.name}
-              onChange={(e) => {
-                handleFormChange(e, 'name');
-              }}
-              className={styles.editInput}
-            />
+          <div className={styles.infoInputsWrapper}>
+            <div className={styles.inputWrapper}>
+              <label htmlFor="userName">Imie </label>
+              <input
+                type="text"
+                name="userName"
+                id="userName"
+                maxLength={30}
+                value={formValue.name}
+                onChange={(e) => {
+                  handleFormChange(e, 'name');
+                }}
+                className={styles.editInput}
+              />
+            </div>
+            <div className={styles.inputWrapper}>
+              <label htmlFor="userLastname">Nazwisko</label>
+              <input
+                type="text"
+                name="userLastname"
+                id="userLastname"
+                maxLength={40}
+                value={formValue.lastname}
+                onChange={(e) => {
+                  handleFormChange(e, 'lastname');
+                }}
+                className={styles.editInput}
+              />
+            </div>
+            <div className={styles.inputWrapper}>
+              <label htmlFor="userEmail">Email</label>
+              <input
+                type="text"
+                name="userEmail"
+                id="userEmail"
+                maxLength={100}
+                value={formValue.email}
+                onChange={(e) => {
+                  handleFormChange(e, 'email');
+                }}
+                className={styles.editInput}
+              />
+            </div>
+            <div className={styles.inputWrapper}>
+              <label htmlFor="userPhone">Numer</label>
+              <input
+                type="text"
+                name="userPhone"
+                id="userPhone"
+                maxLength={15}
+                value={formValue.phone}
+                onChange={(e) => {
+                  handleFormChange(e, 'phone');
+                }}
+                className={styles.editInput}
+              />
+            </div>
+            <div className={styles.inputWrapper}>
+              <label htmlFor="userJob">Stanowisko</label>
+              <input
+                type="text"
+                name="userJob"
+                id="userJob"
+                maxLength={20}
+                value={formValue.job}
+                onChange={(e) => {
+                  handleFormChange(e, 'job');
+                }}
+                className={styles.editInput}
+              />
+            </div>
+            <div className={styles.inputWrapper}>
+              {user.length > 0 &&
+                hasRole(loggedUser, ['admin']) &&
+                viewVariable === 'Profil' && (
+                  <div className={styles.multiSelectWrapper}>
+                    <MultiselectDropdown
+                      isSelectOpen={isSelectOpen}
+                      setIsSelectOpen={setIsSelectOpen}
+                      label="Rola"
+                      inputKey="role"
+                      inputValue={selectFilterValue}
+                      handleInputValue={handleFilterDropdownInputValue}
+                      isBigger={false}
+                      isSquare={false}
+                    >
+                      {filteredRolesForDropdown.map((role) => {
+                        return (
+                          <FilterCheckbox
+                            key={role}
+                            name={role}
+                            isSelected={assignedRoles.includes(role)}
+                            toggleCompany={handleRoleAssign}
+                            filterVariable={role}
+                          />
+                        );
+                      })}
+                    </MultiselectDropdown>
+                  </div>
+                )}
+            </div>
           </div>
-          <div className={styles.inputWrapper}>
-            <label htmlFor="userLastname">Nazwisko</label>
-            <input
-              type="text"
-              name="userLastname"
-              id="userLastname"
-              maxLength={40}
-              value={formValue.lastname}
-              onChange={(e) => {
-                handleFormChange(e, 'lastname');
-              }}
-              className={styles.editInput}
-            />
-          </div>
-          <div className={styles.inputWrapper}>
-            <label htmlFor="userEmail">Email</label>
-            <input
-              type="text"
-              name="userEmail"
-              id="userEmail"
-              maxLength={100}
-              value={formValue.email}
-              onChange={(e) => {
-                handleFormChange(e, 'email');
-              }}
-              className={styles.editInput}
-            />
-          </div>
-          <div className={styles.inputWrapper}>
-            <label htmlFor="userPhone">Numer</label>
-            <input
-              type="text"
-              name="userPhone"
-              id="userPhone"
-              maxLength={15}
-              value={formValue.phone}
-              onChange={(e) => {
-                handleFormChange(e, 'phone');
-              }}
-              className={styles.editInput}
-            />
-          </div>
-          <div className={styles.inputWrapper}>
-            <label htmlFor="userJob">Stanowisko</label>
-            <input
-              type="text"
-              name="userJob"
-              id="userJob"
-              maxLength={20}
-              value={formValue.job}
-              onChange={(e) => {
-                handleFormChange(e, 'job');
-              }}
-              className={styles.editInput}
-            />
-          </div>
-          <div className={styles.inputWrapper}>
-            {user.length > 0 &&
-              hasRole(loggedUser, ['admin']) &&
-              viewVariable === 'Profil' && (
-                <div className={styles.multiSelectWrapper}>
-                  <MultiselectDropdown
-                    isSelectOpen={isSelectOpen}
-                    setIsSelectOpen={setIsSelectOpen}
-                    label="Rola"
-                    inputKey="role"
-                    inputValue={selectFilterValue}
-                    handleInputValue={handleFilterDropdownInputValue}
-                    isBigger={false}
-                    isSquare={false}
-                  >
-                    {filteredRolesForDropdown.map((role) => {
-                      return (
-                        <FilterCheckbox
-                          key={role}
-                          name={role}
-                          isSelected={assignedRoles.includes(role)}
-                          toggleCompany={handleRoleAssign}
-                          filterVariable={role}
-                        />
-                      );
-                    })}
-                  </MultiselectDropdown>
-                </div>
-              )}
-          </div>
+        </div>
+        <div className={styles.rightColumn}>
+          <p>trg</p>
         </div>
       </div>
     ),
