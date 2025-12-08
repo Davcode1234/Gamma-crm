@@ -113,33 +113,33 @@ function UserProfileViewComponent({
               />
             </div>
             <div className={styles.inputWrapper}>
+              <label htmlFor="userJob">Rola</label>
+
               {user.length > 0 &&
                 hasRole(loggedUser, ['admin']) &&
                 viewVariable === 'Profil' && (
-                  <div className={styles.multiSelectWrapper}>
-                    <MultiselectDropdown
-                      isSelectOpen={isSelectOpen}
-                      setIsSelectOpen={setIsSelectOpen}
-                      label="Rola"
-                      inputKey="role"
-                      inputValue={selectFilterValue}
-                      handleInputValue={handleFilterDropdownInputValue}
-                      isBigger={false}
-                      isSquare={false}
-                    >
-                      {filteredRolesForDropdown.map((role) => {
-                        return (
-                          <FilterCheckbox
-                            key={role}
-                            name={role}
-                            isSelected={assignedRoles.includes(role)}
-                            toggleCompany={handleRoleAssign}
-                            filterVariable={role}
-                          />
-                        );
-                      })}
-                    </MultiselectDropdown>
-                  </div>
+                  <MultiselectDropdown
+                    isSelectOpen={isSelectOpen}
+                    setIsSelectOpen={setIsSelectOpen}
+                    label="Rola"
+                    inputKey="role"
+                    inputValue={selectFilterValue}
+                    handleInputValue={handleFilterDropdownInputValue}
+                    isBigger
+                    isSquare
+                  >
+                    {filteredRolesForDropdown.map((role) => {
+                      return (
+                        <FilterCheckbox
+                          key={role}
+                          name={role}
+                          isSelected={assignedRoles.includes(role)}
+                          toggleCompany={handleRoleAssign}
+                          filterVariable={role}
+                        />
+                      );
+                    })}
+                  </MultiselectDropdown>
                 )}
             </div>
           </div>

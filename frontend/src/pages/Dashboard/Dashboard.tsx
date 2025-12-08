@@ -172,32 +172,6 @@ function Dashboard() {
     fetchAll();
   }, [selectedMonth, selectedYear, viewVariable]);
 
-  // console.log(
-  //   'monthly:',
-  //   usersPerCompanyMonthly,
-  //   'yearly:',
-  //   usersPerCompanyYearly
-  // );
-
-  // useEffect(() => {
-  //   const fetchToCompare = async () => {
-  //     const compareSelectedMonthIndex = months.indexOf(compareSelectedMonth);
-  //     try {
-  //       if (compareSelectedMonth === selectedMonth) return;
-  //       const clientsToCompare = await getClientsMonthSummary(
-  //         compareSelectedMonthIndex + 1,
-  //         selectedYear
-  //       );
-
-  //       setCompareData(clientsToCompare);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   fetchToCompare();
-  // }, [compareSelectedMonth]);
-
   const clientsMonthSummaryByRevenue = clientsMonthSummary.map((client) => {
     const [filteredCompany] = companies.filter(
       (com) => com.name === client._id

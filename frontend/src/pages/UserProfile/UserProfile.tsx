@@ -20,7 +20,6 @@ import ReckoningTaskList from '../../components/Organisms/ReckoningTaskList/Reck
 import useReckoTasksContext from '../../hooks/Context/useReckoTasksContext';
 import ReckoningInfoBar from '../../components/Molecules/ReckoningInfoBar/ReckoningInfoBar';
 import generateDaysArray from '../../utils/generateDaysArray';
-
 import SaveButton from '../../components/Atoms/SaveButton/SaveButton';
 import DeleteButton from '../../components/Atoms/DeleteButton/DeleteButton';
 import UserProfileViewComponent from '../../components/Organisms/UserProfileViewComponent/UserProfileViewComponent';
@@ -177,8 +176,7 @@ function UserProfile() {
 
   const handleDeleteUser = async (id) => {
     try {
-      const test = await deleteUser(id);
-      console.log(test);
+      await deleteUser(id);
     } catch (error) {
       console.error('Error deleting user', error.message);
     } finally {
