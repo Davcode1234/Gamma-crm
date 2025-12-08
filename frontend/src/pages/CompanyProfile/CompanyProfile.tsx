@@ -321,8 +321,9 @@ function CompanyProfile() {
       >
         {deleteCaptcha ? (
           <Captcha
-            handleDeleteCompany={handleDeleteCompany}
-            setDeleteCaptcha={setDeleteCaptcha}
+            handleDelete={handleDeleteCompany}
+            closeFunction={setDeleteCaptcha}
+            isUserProfile={false}
             id={companyID}
           />
         ) : (

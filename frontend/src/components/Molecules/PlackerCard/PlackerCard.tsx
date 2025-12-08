@@ -37,8 +37,9 @@ function PlackerCard({ task, index, isDragAllowed, userId }) {
       >
         {deleteCaptcha ? (
           <Captcha
-            handleDeleteCompany={handleDeleteTask}
-            setDeleteCaptcha={setDeleteCaptcha}
+            handleDelete={handleDeleteTask}
+            closeFunction={setDeleteCaptcha}
+            isUserProfile={false}
             id={task._id}
           />
         ) : (

@@ -1,6 +1,6 @@
 import styles from './Captcha.module.css';
 
-function Captcha({ handleDeleteCompany, setDeleteCaptcha, id }) {
+function Captcha({ handleDelete, closeFunction, id, isUserProfile }) {
   console.log(id);
   return (
     <div className={styles.captchaContainer}>
@@ -9,14 +9,16 @@ function Captcha({ handleDeleteCompany, setDeleteCaptcha, id }) {
         <button
           type="button"
           className={styles.confirmDeleteButton}
-          onClick={() => handleDeleteCompany(id)}
+          onClick={() => handleDelete(id)}
         >
           Tak
         </button>{' '}
         <button
           type="button"
           className={styles.cancelDeleteButton}
-          onClick={() => setDeleteCaptcha(false)}
+          onClick={() =>
+            isUserProfile ? closeFunction() : closeFunction(false)
+          }
         >
           Anuluj
         </button>

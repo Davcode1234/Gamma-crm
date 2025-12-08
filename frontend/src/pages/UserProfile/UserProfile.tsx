@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getUserById, UpdateUser, User } from '../../services/users-service';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  deleteUser,
+  getUserById,
+  UpdateUser,
+  User,
+} from '../../services/users-service';
 import styles from './UserProfile.module.css';
 import ViewContainer from '../../components/Atoms/ViewContainer/ViewContainer';
 import BackButton from '../../components/Atoms/BackButton/BackButton';
 import ListContainer from '../../components/Atoms/ListContainer/ListContainer';
 import ProfileTopBar from '../../components/Atoms/ProfileTopBar/ProfileTopBar';
-import MultiselectDropdown from '../../components/Molecules/MultiselectDropdown/MultiselectDropdown';
-import useMultiSelect from '../../hooks/useMultiSelect';
-import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterCheckbox';
 import { getMyReckoningTasks } from '../../services/reckoning-view-service';
 import useCurrentDate from '../../hooks/useCurrentDate';
 import Select from '../../components/Atoms/Select/Select';
@@ -18,10 +20,14 @@ import ReckoningTaskList from '../../components/Organisms/ReckoningTaskList/Reck
 import useReckoTasksContext from '../../hooks/Context/useReckoTasksContext';
 import ReckoningInfoBar from '../../components/Molecules/ReckoningInfoBar/ReckoningInfoBar';
 import generateDaysArray from '../../utils/generateDaysArray';
-import hasRole from '../../utils/hasRole';
-import useAuth from '../../hooks/useAuth';
+
 import SaveButton from '../../components/Atoms/SaveButton/SaveButton';
 import DeleteButton from '../../components/Atoms/DeleteButton/DeleteButton';
+import UserProfileViewComponent from '../../components/Organisms/UserProfileViewComponent/UserProfileViewComponent';
+import CheckboxLoader from '../../components/Atoms/CheckboxLoader/CheckboxLoader';
+import ModalTemplate from '../../components/Templates/ModalTemplate/ModalTemplate';
+import Captcha from '../../components/Molecules/Captcha/Captcha';
+import useModal from '../../hooks/useModal';
 
 const VIEW = {
   PROFILE: 'Profil',
@@ -44,12 +50,15 @@ function UserProfile() {
   const [selectedMonthDaysArray, setSelectedMonthDaysArray] = useState([]);
   const [formValue, setFormValue] = useState(initialUserObject);
   const [viewVariable, setViewVariable] = useState('Profil');
+  const { showModal, exitAnim, openModal, closeModal } = useModal();
   const [isReckoTasksLoading, setIsReckoTasksLoading] = useState(false);
+  const [isUpdateProfileLoading, setIsUpdateProfileLoading] = useState(false);
+  const [isUserProfileLoading, setIsUserProfileLoading] = useState(false);
   const [user, setUser] = useState<User[]>([]);
   const currentUserId = user.length > 0 && user[0]._id;
   const { companies, dispatch: companiesDispatch } = useCompaniesContext();
-  const { user: loggedUser } = useAuth();
   const { reckoTasks, dispatch } = useReckoTasksContext();
+  const navigate = useNavigate();
 
   const {
     selectedMonth,
@@ -60,16 +69,6 @@ function UserProfile() {
     years,
   } = useCurrentDate();
   const selectedMonthIndex = months.indexOf(selectedMonth) + 1;
-
-  const {
-    isSelectOpen,
-    setIsSelectOpen,
-    selectFilterValue,
-    handleFilterDropdownInputValue,
-    assignedRoles,
-    filteredRolesForDropdown,
-    handleRoleAssign,
-  } = useMultiSelect(user);
 
   const fetchReckoningTasks = async (index) => {
     try {
@@ -93,32 +92,33 @@ function UserProfile() {
     }
   };
 
-  const fetchUser = () => {
-    getUserById(params.id)
-      .then((singleUserArray: User | User[]) => {
-        if (Array.isArray(singleUserArray)) {
-          if (singleUserArray.length > 0) {
-            const formUser = singleUserArray[0];
-            setUser(singleUserArray);
-            console.log(singleUserArray[0]);
-            setFormValue({
-              name: formUser.name,
-              lastname: formUser.lastname,
-              email: formUser.email,
-              phone: formUser.phone,
-              job: formUser.job,
-              roles: formUser.roles,
-            });
-          }
-        } else {
-          setUser([singleUserArray]);
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching user:', error);
-      });
-  };
+  const fetchUser = async () => {
+    try {
+      setIsUserProfileLoading(true);
+      const result = await getUserById(params.id);
 
+      if (Array.isArray(result)) {
+        if (result.length > 0) {
+          const formUser = result[0];
+          setUser(result);
+          setFormValue({
+            name: formUser.name,
+            lastname: formUser.lastname,
+            email: formUser.email,
+            phone: formUser.phone,
+            job: formUser.job,
+            roles: formUser.roles,
+          });
+        }
+      } else {
+        setUser([result]);
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    } finally {
+      setIsUserProfileLoading(false);
+    }
+  };
   useEffect(() => {
     fetchUser();
   }, [params.id]);
@@ -159,130 +159,46 @@ function UserProfile() {
   };
 
   const handleUpdateUser = async () => {
-    const updatedUser = await UpdateUser({
-      id: currentUserId,
-      userData: formValue,
-    });
-    fetchUser();
-    console.log(updatedUser);
+    try {
+      setIsUpdateProfileLoading(true);
+      const updatedUser = await UpdateUser({
+        id: currentUserId,
+        userData: formValue,
+      });
+      if (Object.keys(updatedUser).length !== 0) {
+        fetchUser();
+      }
+    } catch (error) {
+      console.error('Error updating a user', error.message);
+    } finally {
+      setIsUpdateProfileLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (id) => {
+    try {
+      const test = await deleteUser(id);
+      console.log(test);
+    } catch (error) {
+      console.error('Error deleting user', error.message);
+    } finally {
+      navigate('/użytkownicy');
+    }
   };
 
   const viewRender = {
     [VIEW.PROFILE]: (
-      <div className={styles.columnsWrapper}>
-        <div className={styles.leftColumn}>
-          <div className={styles.infoInputsWrapper}>
-            <div className={styles.inputWrapper}>
-              <label htmlFor="userName">Imie </label>
-              <input
-                type="text"
-                name="userName"
-                id="userName"
-                maxLength={30}
-                value={formValue.name}
-                onChange={(e) => {
-                  handleFormChange(e, 'name');
-                }}
-                className={styles.editInput}
-              />
-            </div>
-            <div className={styles.inputWrapper}>
-              <label htmlFor="userLastname">Nazwisko</label>
-              <input
-                type="text"
-                name="userLastname"
-                id="userLastname"
-                maxLength={40}
-                value={formValue.lastname}
-                onChange={(e) => {
-                  handleFormChange(e, 'lastname');
-                }}
-                className={styles.editInput}
-              />
-            </div>
-            <div className={styles.inputWrapper}>
-              <label htmlFor="userEmail">Email</label>
-              <input
-                type="text"
-                name="userEmail"
-                id="userEmail"
-                maxLength={100}
-                value={formValue.email}
-                onChange={(e) => {
-                  handleFormChange(e, 'email');
-                }}
-                className={styles.editInput}
-              />
-            </div>
-            <div className={styles.inputWrapper}>
-              <label htmlFor="userPhone">Numer</label>
-              <input
-                type="text"
-                name="userPhone"
-                id="userPhone"
-                maxLength={15}
-                value={formValue.phone}
-                onChange={(e) => {
-                  handleFormChange(e, 'phone');
-                }}
-                className={styles.editInput}
-              />
-            </div>
-            <div className={styles.inputWrapper}>
-              <label htmlFor="userJob">Stanowisko</label>
-              <input
-                type="text"
-                name="userJob"
-                id="userJob"
-                maxLength={20}
-                value={formValue.job}
-                onChange={(e) => {
-                  handleFormChange(e, 'job');
-                }}
-                className={styles.editInput}
-              />
-            </div>
-            <div className={styles.inputWrapper}>
-              {user.length > 0 &&
-                hasRole(loggedUser, ['admin']) &&
-                viewVariable === 'Profil' && (
-                  <div className={styles.multiSelectWrapper}>
-                    <MultiselectDropdown
-                      isSelectOpen={isSelectOpen}
-                      setIsSelectOpen={setIsSelectOpen}
-                      label="Rola"
-                      inputKey="role"
-                      inputValue={selectFilterValue}
-                      handleInputValue={handleFilterDropdownInputValue}
-                      isBigger={false}
-                      isSquare={false}
-                    >
-                      {filteredRolesForDropdown.map((role) => {
-                        return (
-                          <FilterCheckbox
-                            key={role}
-                            name={role}
-                            isSelected={assignedRoles.includes(role)}
-                            toggleCompany={handleRoleAssign}
-                            filterVariable={role}
-                          />
-                        );
-                      })}
-                    </MultiselectDropdown>
-                  </div>
-                )}
-            </div>
-          </div>
-        </div>
-        <div className={styles.rightColumn}>
-          <p>trg</p>
-        </div>
-      </div>
+      <UserProfileViewComponent
+        isLoading={isUserProfileLoading}
+        profileData={formValue}
+        handleFormChange={handleFormChange}
+        user={user}
+        viewVariable={viewVariable}
+      />
     ),
     [VIEW.RECKO]: (
       <div className={styles.reckoTilesContainer}>
         <ReckoningInfoBar selectedMonthDaysArray={selectedMonthDaysArray} />
-
         <ReckoningTaskList
           tasks={reckoTasks}
           isLoading={isReckoTasksLoading}
@@ -297,52 +213,77 @@ function UserProfile() {
   };
 
   return (
-    <ViewContainer>
-      <ListContainer>
-        <ProfileTopBar>
-          <div className={styles.topBarContainer}>
-            <BackButton path="użytkownicy" />
-            <h2>{user.length > 0 && user[0].name}</h2>
+    <>
+      <ModalTemplate
+        isOpen={showModal}
+        onClose={() => {
+          closeModal();
+        }}
+        exitAnim={exitAnim}
+      >
+        <Captcha
+          handleDelete={handleDeleteUser}
+          closeFunction={closeModal}
+          isUserProfile
+          id={currentUserId}
+        />
+      </ModalTemplate>
+      <ViewContainer>
+        <ListContainer>
+          <ProfileTopBar>
+            <div className={styles.topBarContainer}>
+              <BackButton path="użytkownicy" />
+              <h2>{user.length > 0 && user[0].name}</h2>
 
-            {viewVariable === 'Profil' && (
-              <div className={styles.buttonsWrapper}>
-                <SaveButton
-                  callbackFunc={() => {
-                    handleUpdateUser();
-                  }}
-                >
-                  Zapisz
-                </SaveButton>
-                <DeleteButton callbackFunc={() => {}}>Usuń</DeleteButton>
-              </div>
-            )}
+              {viewVariable === 'Profil' && (
+                <div className={styles.buttonsWrapper}>
+                  <div className={styles.loaderWrapper}>
+                    {isUpdateProfileLoading && <CheckboxLoader />}
+                  </div>
+                  <SaveButton
+                    callbackFunc={() => {
+                      handleUpdateUser();
+                    }}
+                  >
+                    Zapisz
+                  </SaveButton>
+                  <DeleteButton
+                    callbackFunc={() => {
+                      openModal();
+                    }}
+                  >
+                    Usuń
+                  </DeleteButton>
+                </div>
+              )}
 
-            <Select
-              value={viewVariable}
-              handleValueChange={handleViewChange}
-              optionData={viewOptions}
-            />
+              <Select
+                value={viewVariable}
+                handleValueChange={handleViewChange}
+                optionData={viewOptions}
+              />
 
-            {viewVariable === 'Rozliczenie' && (
-              <>
-                <Select
-                  value={selectedMonth}
-                  handleValueChange={handleMonthChange}
-                  optionData={months}
-                />
+              {viewVariable === 'Rozliczenie' && (
+                <>
+                  <Select
+                    value={selectedMonth}
+                    handleValueChange={handleMonthChange}
+                    optionData={months}
+                  />
 
-                <Select
-                  value={selectedYear}
-                  handleValueChange={handleYearChange}
-                  optionData={years}
-                />
-              </>
-            )}
-          </div>
-        </ProfileTopBar>
-        {viewRender[viewVariable]}
-      </ListContainer>
-    </ViewContainer>
+                  <Select
+                    value={selectedYear}
+                    handleValueChange={handleYearChange}
+                    optionData={years}
+                  />
+                </>
+              )}
+            </div>
+          </ProfileTopBar>
+          {viewRender[viewVariable]}
+        </ListContainer>
+      </ViewContainer>
+    </>
   );
 }
 
