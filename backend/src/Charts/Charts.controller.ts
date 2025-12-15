@@ -369,6 +369,68 @@ export const ChartsController = {
     return await monthHoursSummary;
   },
 
+  ///////User HOURS PER DAY/////////////
+
+  async getUsersHoursPerDay(month, year, userId) {
+    const monthHoursSummary = await ReckoningTaskModel.aggregate([
+      { $unwind: '$participants' },
+      { $unwind: '$participants.months' },
+      { $unwind: '$participants.months.hours' },
+
+      {
+        $addFields: {
+          date: {
+            $toDate: '$participants.months.createdAt',
+          },
+        },
+      },
+
+      {
+        $addFields: {
+          // Convert DB ObjectId to string to ensure safe matching against the userId argument
+          userIdStr: { $toString: '$participants._id' },
+          day: '$participants.months.hours.dayIndex',
+          hourNum: '$participants.months.hours.hourNum',
+          month: { $month: { $toDate: '$participants.months.createdAt' } },
+          year: { $year: { $toDate: '$participants.months.createdAt' } },
+        },
+      },
+
+      {
+        $match: {
+          ...(month ? { month: parseInt(month) } : {}),
+          ...(year ? { year: parseInt(year) } : {}),
+          // Filter specifically for this user
+          ...(userId ? { userIdStr: userId } : {}),
+        },
+      },
+
+      {
+        $group: {
+          _id: {
+            day: '$day',
+          },
+          totalHours: { $sum: '$hourNum' },
+        },
+      },
+
+      // Clean up the output to match { day: 1, totalHours: 5 } format
+      {
+        $project: {
+          _id: 0,
+          day: '$_id.day',
+          totalHours: 1,
+        },
+      },
+
+      {
+        $sort: { day: 1 },
+      },
+    ]);
+
+    return await monthHoursSummary;
+  },
+
   async getHoursPerMonthYearly(year) {
     const monthHoursSummary = await ReckoningTaskModel.aggregate([
       { $unwind: '$participants' },

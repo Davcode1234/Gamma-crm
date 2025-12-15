@@ -125,6 +125,28 @@ ChartsRouter.get(
 );
 
 ChartsRouter.get(
+  '/reckoning/month-user-hours-per-day/:month/:year/:userID',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const month = req.params.month;
+    const year = req.params.year;
+    const userID = req.params.userID;
+
+    try {
+      const result = await ChartsController.getUsersHoursPerDay(
+        month,
+        year,
+        userID,
+      );
+      res.status(StatusCodes.ACCEPTED).json(result);
+    } catch (err) {
+      console.error(err);
+      res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');
+    }
+  },
+);
+
+ChartsRouter.get(
   '/reckoning/month-hours-per-year/:year',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {

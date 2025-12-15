@@ -255,27 +255,29 @@ function UserProfile() {
                 </div>
               )}
 
-              <Select
-                value={viewVariable}
-                handleValueChange={handleViewChange}
-                optionData={viewOptions}
-              />
+              <div>
+                <Select
+                  value={viewVariable}
+                  handleValueChange={handleViewChange}
+                  optionData={viewOptions}
+                />
 
-              {viewVariable === 'Rozliczenie' && (
-                <>
-                  <Select
-                    value={selectedMonth}
-                    handleValueChange={handleMonthChange}
-                    optionData={months}
-                  />
+                {viewVariable === 'Rozliczenie' && (
+                  <>
+                    <Select
+                      value={selectedMonth}
+                      handleValueChange={handleMonthChange}
+                      optionData={months}
+                    />
 
-                  <Select
-                    value={selectedYear}
-                    handleValueChange={handleYearChange}
-                    optionData={years}
-                  />
-                </>
-              )}
+                    <Select
+                      value={selectedYear}
+                      handleValueChange={handleYearChange}
+                      optionData={years}
+                    />
+                  </>
+                )}
+              </div>
             </div>
           </ProfileTopBar>
           {viewRender[viewVariable]}
