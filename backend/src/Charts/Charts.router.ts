@@ -147,6 +147,23 @@ ChartsRouter.get(
 );
 
 ChartsRouter.get(
+  '/reckoning/user-hours-per-year/:year/:userId',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const year = req.params.year;
+    const userId = req.params.userId;
+
+    try {
+      const result = await ChartsController.getUserHoursYearly(year, userId);
+      res.status(StatusCodes.ACCEPTED).json(result);
+    } catch (err) {
+      console.error(err);
+      res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');
+    }
+  },
+);
+
+ChartsRouter.get(
   '/reckoning/month-hours-per-year/:year',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {

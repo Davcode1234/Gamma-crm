@@ -387,7 +387,6 @@ export const ChartsController = {
 
       {
         $addFields: {
-          // Convert DB ObjectId to string to ensure safe matching against the userId argument
           userIdStr: { $toString: '$participants._id' },
           day: '$participants.months.hours.dayIndex',
           hourNum: '$participants.months.hours.hourNum',
@@ -400,7 +399,6 @@ export const ChartsController = {
         $match: {
           ...(month ? { month: parseInt(month) } : {}),
           ...(year ? { year: parseInt(year) } : {}),
-          // Filter specifically for this user
           ...(userId ? { userIdStr: userId } : {}),
         },
       },
@@ -414,7 +412,6 @@ export const ChartsController = {
         },
       },
 
-      // Clean up the output to match { day: 1, totalHours: 5 } format
       {
         $project: {
           _id: 0,
@@ -429,6 +426,64 @@ export const ChartsController = {
     ]);
 
     return await monthHoursSummary;
+  },
+
+  async getUserHoursYearly(year, userId) {
+    console.log('test');
+    const userYearSummary = await ReckoningTaskModel.aggregate([
+      { $unwind: '$participants' },
+      { $unwind: '$participants.months' },
+      { $unwind: '$participants.months.hours' },
+
+      {
+        $addFields: {
+          date: {
+            $toDate: '$participants.months.createdAt',
+          },
+        },
+      },
+
+      {
+        $addFields: {
+          userIdStr: { $toString: '$participants._id' },
+
+          day: '$participants.months.hours.dayIndex',
+          hourNum: '$participants.months.hours.hourNum',
+          month: { $month: { $toDate: '$participants.months.createdAt' } },
+          year: { $year: { $toDate: '$participants.months.createdAt' } },
+        },
+      },
+
+      {
+        $match: {
+          ...(year ? { year: parseInt(year) } : {}),
+          ...(userId ? { userIdStr: userId } : {}),
+        },
+      },
+
+      {
+        $group: {
+          _id: {
+            month: '$month',
+          },
+          totalHours: { $sum: '$hourNum' },
+        },
+      },
+
+      {
+        $project: {
+          _id: 0,
+          month: '$_id.month',
+          totalHours: 1,
+        },
+      },
+
+      {
+        $sort: { month: 1 },
+      },
+    ]);
+
+    return await userYearSummary;
   },
 
   async getHoursPerMonthYearly(year) {
