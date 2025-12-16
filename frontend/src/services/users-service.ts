@@ -131,3 +131,34 @@ export async function deleteUser(id: string) {
     return null;
   }
 }
+
+export async function getUserProfileSummary(
+  month: number,
+  year: number,
+  yearlySummary: boolean,
+  userId: string
+) {
+  const fetchUrl = yearlySummary
+    ? `/api/dashboard/reckoning/user-hours-per-year/${year}/${userId}`
+    : `/api/dashboard/reckoning/user-hours-per-day/${month}/${year}/${userId}`;
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}${fetchUrl}`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      return await response.json();
+    }
+    throw new Error(`${response.status} ${response.statusText}`);
+  } catch (error) {
+    if (Config.isDev) {
+      throw new Error('Get month summary', error.message);
+    }
+    console.error(error.message);
+    return null;
+  }
+}
