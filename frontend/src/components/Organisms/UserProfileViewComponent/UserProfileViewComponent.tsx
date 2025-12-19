@@ -5,6 +5,7 @@ import hasRole from '../../../utils/hasRole';
 import FilterCheckbox from '../../Molecules/FilterCheckbox/FilterCheckbox';
 import useAuth from '../../../hooks/useAuth';
 import useMultiSelect from '../../../hooks/useMultiSelect';
+import MonthPerDaySummaryChart from '../Charts/MonthPerDaySummaryChart/MonthPerDaySummaryChart';
 
 function UserProfileViewComponent({
   isLoading,
@@ -12,6 +13,12 @@ function UserProfileViewComponent({
   handleFormChange,
   user,
   viewVariable,
+  selectedMonth,
+  selectedYear,
+  dataReady,
+  monthDaysSummary,
+  chartViewVariable,
+  isChartLoading,
 }) {
   const { user: loggedUser } = useAuth();
   const {
@@ -145,7 +152,14 @@ function UserProfileViewComponent({
           </div>
         </div>
         <div className={styles.rightColumn}>
-          <p>trg</p>
+          <MonthPerDaySummaryChart
+            selectedMonth={selectedMonth}
+            monthDaysSummary={monthDaysSummary}
+            dataReady={dataReady}
+            isYearly={chartViewVariable === 'Roczne'}
+            year={selectedYear}
+            isLoading={isChartLoading}
+          />
         </div>
       </div>
     );

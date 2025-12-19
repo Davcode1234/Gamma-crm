@@ -140,7 +140,7 @@ export async function getUserProfileSummary(
 ) {
   const fetchUrl = yearlySummary
     ? `/api/dashboard/reckoning/user-hours-per-year/${year}/${userId}`
-    : `/api/dashboard/reckoning/user-hours-per-day/${month}/${year}/${userId}`;
+    : `/api/dashboard/reckoning/month-user-hours-per-day/${month}/${year}/${userId}`;
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}${fetchUrl}`, {
       method: 'GET',

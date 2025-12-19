@@ -67,6 +67,10 @@
   gap: 50px;
 }
 
+.rightColumn {
+  padding-top: 20px;
+}
+
 .infoInputsWrapper {
   width: 70%;
   display: flex;

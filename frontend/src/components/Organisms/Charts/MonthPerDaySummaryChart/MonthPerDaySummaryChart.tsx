@@ -18,6 +18,7 @@ function MonthPerDaySummaryChart({
   dataReady,
   isYearly,
   year,
+  isLoading,
 }) {
   const chartTitle = isYearly
     ? `[h] Podsumowanie roku - ${year}`
@@ -51,6 +52,19 @@ function MonthPerDaySummaryChart({
         };
       })
     : monthDaysSummary;
+
+  if (isLoading) {
+    return (
+      <div className={styles.iconWrapper}>
+        <Icon
+          icon="line-md:loading-twotone-loop"
+          width="121"
+          height="121"
+          className={styles.loadingIcon}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.lineChartContainer}>

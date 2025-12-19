@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
   deleteUser,
   getUserById,
+  getUserProfileSummary,
   UpdateUser,
   User,
 } from '../../services/users-service';
@@ -44,6 +45,8 @@ const initialUserObject = {
   roles: [],
 };
 
+const viewVariableSelectValue = ['Miesięczne', 'Roczne'];
+
 function UserProfile() {
   const params = useParams();
   const [selectedMonthDaysArray, setSelectedMonthDaysArray] = useState([]);
@@ -57,6 +60,10 @@ function UserProfile() {
   const currentUserId = user.length > 0 && user[0]._id;
   const { companies, dispatch: companiesDispatch } = useCompaniesContext();
   const { reckoTasks, dispatch } = useReckoTasksContext();
+  const [chartData, setChartData] = useState([]);
+  const [chartDataLoading, setChartDataLoading] = useState(false);
+  const [chartViewVariable, setChartViewVariable] = useState('Miesięczne');
+  const [dataReady, setDataReady] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -91,6 +98,28 @@ function UserProfile() {
     }
   };
 
+  const fetchChartData = async () => {
+    try {
+      setChartDataLoading(true);
+      const response = await getUserProfileSummary(
+        selectedMonthIndex,
+        selectedYear,
+        chartViewVariable === 'Roczne',
+        params.id
+      );
+      if (response.length > 0) {
+        setChartData(response);
+        setDataReady(true);
+        return;
+      }
+      throw new Error('Something went wrong while fetching chart data');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setChartDataLoading(false);
+    }
+  };
+
   const fetchUser = async () => {
     try {
       setIsUserProfileLoading(true);
@@ -118,15 +147,21 @@ function UserProfile() {
       setIsUserProfileLoading(false);
     }
   };
+
+  useEffect(() => {
+    setDataReady(false);
+  }, [selectedMonth, selectedYear, chartViewVariable]);
+
   useEffect(() => {
     fetchUser();
   }, [params.id]);
 
   useEffect(() => {
     setSelectedMonthDaysArray(generateDaysArray(selectedMonthIndex, 2025));
+    fetchChartData();
 
     fetchReckoningTasks(selectedMonthIndex);
-  }, [selectedMonth, selectedYear]);
+  }, [selectedMonth, selectedYear, chartViewVariable]);
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -145,6 +180,10 @@ function UserProfile() {
 
   const handleViewChange = (e) => {
     setViewVariable(e.target.value);
+  };
+
+  const handleChartViewChange = (e) => {
+    setChartViewVariable(e.target.value);
   };
 
   const handleFormChange = (
@@ -192,6 +231,12 @@ function UserProfile() {
         handleFormChange={handleFormChange}
         user={user}
         viewVariable={viewVariable}
+        selectedMonth={selectedMonth}
+        selectedYear={selectedYear}
+        dataReady={dataReady}
+        monthDaysSummary={chartData}
+        chartViewVariable={chartViewVariable}
+        isChartLoading={chartDataLoading}
       />
     ),
     [VIEW.RECKO]: (
@@ -262,20 +307,26 @@ function UserProfile() {
                   optionData={viewOptions}
                 />
 
-                {viewVariable === 'Rozliczenie' && (
-                  <>
-                    <Select
-                      value={selectedMonth}
-                      handleValueChange={handleMonthChange}
-                      optionData={months}
-                    />
+                {chartViewVariable === 'Miesięczne' && (
+                  <Select
+                    value={selectedMonth}
+                    handleValueChange={handleMonthChange}
+                    optionData={months}
+                  />
+                )}
 
-                    <Select
-                      value={selectedYear}
-                      handleValueChange={handleYearChange}
-                      optionData={years}
-                    />
-                  </>
+                <Select
+                  value={selectedYear}
+                  handleValueChange={handleYearChange}
+                  optionData={years}
+                />
+
+                {viewVariable === 'Profil' && (
+                  <Select
+                    value={chartViewVariable}
+                    handleValueChange={handleChartViewChange}
+                    optionData={viewVariableSelectValue}
+                  />
                 )}
               </div>
             </div>

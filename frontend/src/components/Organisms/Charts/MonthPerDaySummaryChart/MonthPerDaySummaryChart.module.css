@@ -1,5 +1,6 @@
 .leftColumnSecondRowContainer,
-.lineChartContainer {
+.lineChartContainer,
+.iconWrapper {
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -9,7 +10,8 @@
   /* padding-right: 20px; */
 }
 
-.lineChartContainer {
+.lineChartContainer,
+.iconWrapper {
   background-color: var(--color-lighter);
   border-radius: 10px;
   box-shadow: 0 0px 3px var(--color-shadow);
@@ -23,4 +25,14 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingIcon {
+  color: var(--color-orange);
 }

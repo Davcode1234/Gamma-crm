@@ -443,6 +443,7 @@ function Dashboard() {
               dataReady={dataReady}
               isYearly={viewVariable === 'Roczne'}
               year={selectedYear}
+              isLoading={isLoading}
             />
           </div>
         </div>
