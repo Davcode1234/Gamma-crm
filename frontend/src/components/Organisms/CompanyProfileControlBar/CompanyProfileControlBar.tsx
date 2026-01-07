@@ -163,8 +163,8 @@ function CompanyProfileControlBar({
       const [dayA, monthA] = a.Data.split('.').map(Number);
       const [dayB, monthB] = b.Data.split('.').map(Number);
 
-      const dateA = new Date(2025, monthA - 1, dayA);
-      const dateB = new Date(2025, monthB - 1, dayB);
+      const dateA = new Date(selectedYear, monthA - 1, dayA);
+      const dateB = new Date(selectedYear, monthB - 1, dayB);
 
       return dateA.getTime() - dateB.getTime();
     });

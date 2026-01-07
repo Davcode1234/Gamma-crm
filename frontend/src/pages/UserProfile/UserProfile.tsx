@@ -65,7 +65,6 @@ function UserProfile() {
   const [chartViewVariable, setChartViewVariable] = useState('Miesięczne');
   const [dataReady, setDataReady] = useState(false);
   const navigate = useNavigate();
-  const currentYear = new Date().getFullYear();
 
   const {
     selectedMonth,
@@ -159,7 +158,7 @@ function UserProfile() {
 
   useEffect(() => {
     setSelectedMonthDaysArray(
-      generateDaysArray(selectedMonthIndex, currentYear)
+      generateDaysArray(selectedMonthIndex, selectedYear)
     );
     fetchChartData();
 

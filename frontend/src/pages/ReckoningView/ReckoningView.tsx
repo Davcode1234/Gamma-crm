@@ -39,7 +39,6 @@ function ReckoningView() {
     isGetMyTasksLoading: false,
     isAddEmptyLoading: false,
   });
-  const currentYear = new Date().getFullYear();
 
   const {
     selectedMonth,
@@ -150,7 +149,7 @@ function ReckoningView() {
 
   useEffect(() => {
     setSelectedMonthDaysArray(
-      generateDaysArray(selectedMonthIndex, currentYear)
+      generateDaysArray(selectedMonthIndex, selectedYear)
     );
 
     const alreadyHasDataForMonth = reckoTasks.some(

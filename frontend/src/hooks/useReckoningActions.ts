@@ -17,7 +17,6 @@ const useReckoningActions = (user) => {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const { dispatch } = useReckoTasksContext();
   const currentUserId = user.length > 0 && user[0]._id;
-  const currentYear = new Date().getFullYear();
 
   const createEmptyTask = async (selectedMonthIndex, selectedYear) => {
     if (!currentUserId || !user?.[0]) {
@@ -48,7 +47,7 @@ const useReckoningActions = (user) => {
             months: [
               {
                 createdAt: new Date(selectedYear, selectedMonthIndex, 1),
-                hours: generateDaysArray(selectedMonthIndex, currentYear),
+                hours: generateDaysArray(selectedMonthIndex, selectedYear),
                 addedToRecko: new Date(),
               },
             ],
@@ -111,7 +110,7 @@ const useReckoningActions = (user) => {
             months: [
               {
                 createdAt: new Date(selectedYear, selectedMonthIndex, 1),
-                hours: generateDaysArray(selectedMonthIndex, currentYear),
+                hours: generateDaysArray(selectedMonthIndex, selectedYear),
                 addedToRecko: new Date(),
               },
             ],
@@ -145,7 +144,7 @@ const useReckoningActions = (user) => {
 
       const response = await getMyReckoningTasks(
         currentUserId,
-        '2025',
+        `${selectedYear}`,
         selectedMonthIndex
       );
       if (response) {

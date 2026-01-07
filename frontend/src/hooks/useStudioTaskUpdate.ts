@@ -28,7 +28,6 @@ const useStudioTaskUpdate = (task, closeModal, isPlacker) => {
     isLoading: false,
     loadPlace: '',
   });
-  const currentYear = new Date().getFullYear();
 
   const { users } = useUsersContext();
   const { companies } = useCompaniesContext();
@@ -154,7 +153,7 @@ const useStudioTaskUpdate = (task, closeModal, isPlacker) => {
             name: userToAdd.name,
             img: userToAdd.img,
             isVisible: false,
-            hours: generateDaysArray(date.getMonth() + 1, currentYear),
+            hours: generateDaysArray(date.getMonth() + 1, date.getFullYear()),
             createdAt: new Date(date.getFullYear(), date.getMonth() + 1, 1),
           },
         ],
