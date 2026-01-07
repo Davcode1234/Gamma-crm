@@ -47,7 +47,7 @@ const useReckoningActions = (user) => {
             months: [
               {
                 createdAt: new Date(selectedYear, selectedMonthIndex, 1),
-                hours: generateDaysArray(selectedMonthIndex, 2025),
+                hours: generateDaysArray(selectedMonthIndex, 2026),
                 addedToRecko: new Date(),
               },
             ],

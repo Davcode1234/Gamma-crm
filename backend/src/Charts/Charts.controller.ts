@@ -48,6 +48,51 @@ export const ChartsController = {
     return await companiesMonthSummary;
   },
 
+  async getUserClientsMonthly(month, year, userId) {
+    const userClientsSummary = ReckoningTaskModel.aggregate([
+      {
+        $unwind: '$participants',
+      },
+      {
+        $unwind: '$participants.months',
+      },
+      {
+        $unwind: '$participants.months.hours',
+      },
+      {
+        $addFields: {
+          monthDate: {
+            $toDate: '$participants.months.createdAt',
+          },
+        },
+      },
+      {
+        $addFields: {
+          month: { $month: '$monthDate' },
+          year: { $year: '$monthDate' },
+        },
+      },
+      {
+        $match: {
+          ...(month ? { month: parseInt(month) } : {}),
+          ...(year ? { year: parseInt(year) } : {}),
+          ...(userId ? { userIdStr: userId } : {}),
+        },
+      },
+
+      {
+        $group: {
+          _id: '$client',
+          Suma_godzin: { $sum: '$participants.months.hours.hourNum' },
+        },
+      },
+      {
+        $sort: { Suma_godzin: -1 },
+      },
+    ]);
+    return await userClientsSummary;
+  },
+
   async getClientPersonParticipantsSummary(month, year, clientName) {
     const result = await ReckoningTaskModel.aggregate([
       // Dopasowanie po nazwie klienta
