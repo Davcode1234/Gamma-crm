@@ -257,6 +257,10 @@ function UserProfile() {
     };
   });
 
+  const filteredClientsChartData = clientsChartData.filter((client) => {
+    return client.Suma_godzin > 0;
+  });
+
   const viewRender = {
     [VIEW.PROFILE]: (
       <UserProfileViewComponent
@@ -271,7 +275,7 @@ function UserProfile() {
         monthDaysSummary={chartData}
         chartViewVariable={chartViewVariable}
         isChartLoading={chartDataLoading}
-        clientsMonthSummary={clientsChartData}
+        clientsMonthSummary={filteredClientsChartData}
         clientsMonthSummaryByRevenue={clientsMonthSummaryByRevenue}
       />
     ),

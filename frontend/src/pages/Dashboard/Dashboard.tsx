@@ -350,6 +350,7 @@ function Dashboard() {
               clientsMonthSummaryByRevenue={clientsMonthSummaryByRevenue}
               isYearly={viewVariable === 'Roczne'}
               year={selectedYear}
+              isLoading={isLoading}
             />
 
             <div className={styles.leftColumnSecondRowContainer}>

@@ -170,6 +170,7 @@ function UserProfileViewComponent({
             clientsMonthSummaryByRevenue={clientsMonthSummaryByRevenue}
             isYearly={viewVariable === 'Roczne'}
             year={selectedYear}
+            isLoading={isChartLoading}
           />
         </div>
       </div>

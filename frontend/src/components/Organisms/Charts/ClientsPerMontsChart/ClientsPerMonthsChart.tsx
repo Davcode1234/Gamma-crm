@@ -26,6 +26,7 @@ function ClientsPerMonthsChart({
   clientsMonthSummaryByRevenue,
   isYearly,
   year,
+  isLoading,
 }) {
   const [selectValue, setSelectValue] = useState('Godziny');
 
@@ -113,6 +114,19 @@ function ClientsPerMonthsChart({
   const chartTitle = isYearly
     ? `Podsumowanie klientów - ${year}`
     : `Podsumowanie klientów - ${selectedMonth}`;
+
+  if (isLoading) {
+    return (
+      <div className={styles.iconWrapper}>
+        <Icon
+          icon="line-md:loading-twotone-loop"
+          width="121"
+          height="121"
+          className={styles.loadingIcon}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>

@@ -1,4 +1,5 @@
-.container {
+.container,
+.iconWrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,7 +24,8 @@
   margin: 0;
 }
 
-.chartInfoContainer {
+.chartInfoContainer,
+.iconWrapper {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -40,4 +42,14 @@
     text-align: center;
     font-weight: 600;
   }
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingIcon {
+  color: var(--color-orange);
 }
