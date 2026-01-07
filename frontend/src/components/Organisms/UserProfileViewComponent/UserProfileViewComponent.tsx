@@ -6,6 +6,7 @@ import FilterCheckbox from '../../Molecules/FilterCheckbox/FilterCheckbox';
 import useAuth from '../../../hooks/useAuth';
 import useMultiSelect from '../../../hooks/useMultiSelect';
 import MonthPerDaySummaryChart from '../Charts/MonthPerDaySummaryChart/MonthPerDaySummaryChart';
+import ClientsPerMonthsChart from '../Charts/ClientsPerMontsChart/ClientsPerMonthsChart';
 
 function UserProfileViewComponent({
   isLoading,
@@ -19,6 +20,8 @@ function UserProfileViewComponent({
   monthDaysSummary,
   chartViewVariable,
   isChartLoading,
+  clientsMonthSummary,
+  clientsMonthSummaryByRevenue,
 }) {
   const { user: loggedUser } = useAuth();
   const {
@@ -159,6 +162,14 @@ function UserProfileViewComponent({
             isYearly={chartViewVariable === 'Roczne'}
             year={selectedYear}
             isLoading={isChartLoading}
+          />
+          <ClientsPerMonthsChart
+            dataReady={dataReady}
+            clientsMonthSummary={clientsMonthSummary}
+            selectedMonth={selectedMonth}
+            clientsMonthSummaryByRevenue={clientsMonthSummaryByRevenue}
+            isYearly={viewVariable === 'Roczne'}
+            year={selectedYear}
           />
         </div>
       </div>

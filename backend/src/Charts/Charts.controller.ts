@@ -70,6 +70,7 @@ export const ChartsController = {
         $addFields: {
           month: { $month: '$monthDate' },
           year: { $year: '$monthDate' },
+          userIdStr: { $toString: '$participants._id' },
         },
       },
       {

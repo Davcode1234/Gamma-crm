@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
   deleteUser,
   getUserById,
+  getUserClientsChart,
   getUserProfileSummary,
   UpdateUser,
   User,
@@ -61,6 +62,7 @@ function UserProfile() {
   const { companies, dispatch: companiesDispatch } = useCompaniesContext();
   const { reckoTasks, dispatch } = useReckoTasksContext();
   const [chartData, setChartData] = useState([]);
+  const [clientsChartData, setClientsChartData] = useState([]);
   const [chartDataLoading, setChartDataLoading] = useState(false);
   const [chartViewVariable, setChartViewVariable] = useState('Miesięczne');
   const [dataReady, setDataReady] = useState(false);
@@ -107,8 +109,17 @@ function UserProfile() {
         chartViewVariable === 'Roczne',
         params.id
       );
-      if (response.length > 0) {
+
+      const clientsChartResponse = await getUserClientsChart(
+        selectedMonthIndex,
+        selectedYear,
+        chartViewVariable === 'Roczne',
+        params.id
+      );
+
+      if (response.length > 0 && clientsChartResponse.length > 0) {
         setChartData(response);
+        setClientsChartData(clientsChartResponse);
         setDataReady(true);
         return;
       }
@@ -225,6 +236,27 @@ function UserProfile() {
     }
   };
 
+  const clientsMonthSummaryByRevenue = clientsChartData.map((client) => {
+    const [filteredCompany] = companies.filter(
+      (com) => com.name === client._id
+    );
+
+    if (!filteredCompany) {
+      console.warn(`Company not found for client ID: ${client._id}`);
+      return {
+        ...client,
+        przychód: 0,
+      };
+    }
+
+    const { hourRate } = filteredCompany;
+
+    return {
+      ...client,
+      przychód: client.Suma_godzin * Number(hourRate),
+    };
+  });
+
   const viewRender = {
     [VIEW.PROFILE]: (
       <UserProfileViewComponent
@@ -239,6 +271,8 @@ function UserProfile() {
         monthDaysSummary={chartData}
         chartViewVariable={chartViewVariable}
         isChartLoading={chartDataLoading}
+        clientsMonthSummary={clientsChartData}
+        clientsMonthSummaryByRevenue={clientsMonthSummaryByRevenue}
       />
     ),
     [VIEW.RECKO]: (
