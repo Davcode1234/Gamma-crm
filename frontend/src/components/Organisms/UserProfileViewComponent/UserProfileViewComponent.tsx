@@ -64,6 +64,7 @@ function UserProfileViewComponent({
                   handleFormChange(e, 'name');
                 }}
                 className={styles.editInput}
+                disabled={!hasRole(loggedUser, ['admin'])}
               />
             </div>
             <div className={styles.inputWrapper}>
@@ -78,6 +79,7 @@ function UserProfileViewComponent({
                   handleFormChange(e, 'lastname');
                 }}
                 className={styles.editInput}
+                disabled={!hasRole(loggedUser, ['admin'])}
               />
             </div>
             <div className={styles.inputWrapper}>
@@ -92,6 +94,7 @@ function UserProfileViewComponent({
                   handleFormChange(e, 'email');
                 }}
                 className={styles.editInput}
+                disabled={!hasRole(loggedUser, ['admin'])}
               />
             </div>
             <div className={styles.inputWrapper}>
@@ -106,6 +109,7 @@ function UserProfileViewComponent({
                   handleFormChange(e, 'phone');
                 }}
                 className={styles.editInput}
+                disabled={!hasRole(loggedUser, ['admin'])}
               />
             </div>
             <div className={styles.inputWrapper}>
@@ -120,14 +124,14 @@ function UserProfileViewComponent({
                   handleFormChange(e, 'job');
                 }}
                 className={styles.editInput}
+                disabled={!hasRole(loggedUser, ['admin'])}
               />
             </div>
-            <div className={styles.inputWrapper}>
-              <label htmlFor="userJob">Rola</label>
+            {hasRole(loggedUser, ['admin']) && (
+              <div className={styles.inputWrapper}>
+                <label htmlFor="userJob">Rola</label>
 
-              {user.length > 0 &&
-                hasRole(loggedUser, ['admin']) &&
-                viewVariable === 'Profil' && (
+                {user.length > 0 && viewVariable === 'Profil' && (
                   <MultiselectDropdown
                     isSelectOpen={isSelectOpen}
                     setIsSelectOpen={setIsSelectOpen}
@@ -151,7 +155,8 @@ function UserProfileViewComponent({
                     })}
                   </MultiselectDropdown>
                 )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
         <div className={styles.rightColumn}>
@@ -171,6 +176,7 @@ function UserProfileViewComponent({
             isYearly={viewVariable === 'Roczne'}
             year={selectedYear}
             isLoading={isChartLoading}
+            displayRevenue={hasRole(loggedUser, ['admin'])}
           />
         </div>
       </div>

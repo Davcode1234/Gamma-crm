@@ -26,6 +26,8 @@ import TypesRadarChart from '../../components/Organisms/Charts/TypesRadarChart/T
 import SummaryTile from '../../components/Organisms/Charts/SummaryTile/SummaryTile';
 import UsersPerMonthChart from '../../components/Organisms/Charts/UsersPerMonthChart/UsersPerMonthChart';
 import CheckboxLoader from '../../components/Atoms/CheckboxLoader/CheckboxLoader';
+import hasRole from '../../utils/hasRole';
+import useAuth from '../../hooks/useAuth';
 
 function Dashboard() {
   const [viewVariable, setViewVariable] = useState('Miesięczne');
@@ -51,6 +53,7 @@ function Dashboard() {
   // );
   const [isLoading, setIsLoading] = useState(false);
   const [dataReady, setDataReady] = useState(false);
+  const { user: loggedUser } = useAuth();
 
   const { companies, dispatch: companiesDispatch } = useCompaniesContext();
 
@@ -351,6 +354,7 @@ function Dashboard() {
               isYearly={viewVariable === 'Roczne'}
               year={selectedYear}
               isLoading={isLoading}
+              displayRevenue={hasRole(loggedUser, ['admin'])}
             />
 
             <div className={styles.leftColumnSecondRowContainer}>

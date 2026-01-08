@@ -27,6 +27,7 @@ function ClientsPerMonthsChart({
   isYearly,
   year,
   isLoading,
+  displayRevenue,
 }) {
   const [selectValue, setSelectValue] = useState('Godziny');
 
@@ -131,11 +132,14 @@ function ClientsPerMonthsChart({
   return (
     <div className={styles.container}>
       <div className={styles.chartInfoContainer}>
-        <Select
-          value={selectValue}
-          handleValueChange={handleSelectValue}
-          optionData={selectValues}
-        />
+        {displayRevenue && (
+          <Select
+            value={selectValue}
+            handleValueChange={handleSelectValue}
+            optionData={selectValues}
+          />
+        )}
+
         <p>{`${selectValue === 'Godziny' ? '[h]' : '[zł]'}  ${chartTitle}`}</p>
       </div>
 

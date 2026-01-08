@@ -44,6 +44,7 @@ const sideNavButtons = [
   // {
   //   name: 'ankiety',
   //   icon: 'fluent:poll-24-regular',
+  //   roles: ['admin', 'grafik'],
   // },
   {
     name: 'magazyn',

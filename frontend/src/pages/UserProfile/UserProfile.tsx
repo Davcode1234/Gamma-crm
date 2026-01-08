@@ -29,6 +29,8 @@ import CheckboxLoader from '../../components/Atoms/CheckboxLoader/CheckboxLoader
 import ModalTemplate from '../../components/Templates/ModalTemplate/ModalTemplate';
 import Captcha from '../../components/Molecules/Captcha/Captcha';
 import useModal from '../../hooks/useModal';
+import useAuth from '../../hooks/useAuth';
+import hasRole from '../../utils/hasRole';
 
 const VIEW = {
   PROFILE: 'Profil',
@@ -67,6 +69,7 @@ function UserProfile() {
   const [chartViewVariable, setChartViewVariable] = useState('Miesięczne');
   const [dataReady, setDataReady] = useState(false);
   const navigate = useNavigate();
+  const { user: loggedUser } = useAuth();
 
   const {
     selectedMonth,
@@ -318,7 +321,7 @@ function UserProfile() {
               <BackButton path="użytkownicy" />
               <h2>{user.length > 0 && user[0].name}</h2>
 
-              {viewVariable === 'Profil' && (
+              {viewVariable === 'Profil' && hasRole(loggedUser, ['admin']) && (
                 <div className={styles.buttonsWrapper}>
                   <div className={styles.loaderWrapper}>
                     {isUpdateProfileLoading && <CheckboxLoader />}
@@ -341,11 +344,13 @@ function UserProfile() {
               )}
 
               <div>
-                <Select
-                  value={viewVariable}
-                  handleValueChange={handleViewChange}
-                  optionData={viewOptions}
-                />
+                {hasRole(loggedUser, ['admin']) && (
+                  <Select
+                    value={viewVariable}
+                    handleValueChange={handleViewChange}
+                    optionData={viewOptions}
+                  />
+                )}
 
                 {chartViewVariable === 'Miesięczne' && (
                   <Select
