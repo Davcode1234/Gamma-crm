@@ -10,6 +10,12 @@
   }
 }
 
+.pieChartContainer {
+  width: 200px;
+  height: 200px;
+  background-color: red;
+}
+
 .noTasksContainer {
   width: 100%;
   display: flex;

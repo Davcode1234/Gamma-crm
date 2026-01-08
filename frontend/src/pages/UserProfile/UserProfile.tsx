@@ -264,6 +264,21 @@ function UserProfile() {
     return client.Suma_godzin > 0;
   });
 
+  const pieChartData = filteredClientsChartData.reduce(
+    (acc, client) => {
+      if (client._id === 'COTE' || client._id === 'GAMMA') {
+        acc[0].value += client.Suma_godzin;
+      } else {
+        acc[1].value += client.Suma_godzin;
+      }
+      return acc;
+    },
+    [
+      { status: 'Wewnętrzne', value: 0 },
+      { status: 'Zewnętrzne', value: 0 },
+    ]
+  );
+
   const viewRender = {
     [VIEW.PROFILE]: (
       <UserProfileViewComponent
@@ -280,6 +295,7 @@ function UserProfile() {
         isChartLoading={chartDataLoading}
         clientsMonthSummary={filteredClientsChartData}
         clientsMonthSummaryByRevenue={clientsMonthSummaryByRevenue}
+        pieChartsData={pieChartData}
       />
     ),
     [VIEW.RECKO]: (

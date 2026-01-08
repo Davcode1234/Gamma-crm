@@ -1,4 +1,12 @@
 import { Icon } from '@iconify/react';
+import {
+  Cell,
+  Pie,
+  PieChart,
+  PieLabelRenderProps,
+  ResponsiveContainer,
+} from 'recharts';
+
 import styles from './UserProfileViewComponent.module.css';
 import MultiselectDropdown from '../../Molecules/MultiselectDropdown/MultiselectDropdown';
 import hasRole from '../../../utils/hasRole';
@@ -7,6 +15,40 @@ import useAuth from '../../../hooks/useAuth';
 import useMultiSelect from '../../../hooks/useMultiSelect';
 import MonthPerDaySummaryChart from '../Charts/MonthPerDaySummaryChart/MonthPerDaySummaryChart';
 import ClientsPerMonthsChart from '../Charts/ClientsPerMontsChart/ClientsPerMonthsChart';
+
+const RADIAN = Math.PI / 180;
+const COLORS = ['#22C55E', '#06B6D4'];
+
+const renderCustomizedLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+}: PieLabelRenderProps) => {
+  if (cx == null || cy == null || innerRadius == null || outerRadius == null) {
+    return null;
+  }
+  const radius =
+    Number(innerRadius) + (Number(outerRadius) - Number(innerRadius)) * 0.5;
+  const ncx = Number(cx);
+  const x = ncx + radius * Math.cos(-(midAngle ?? 0) * RADIAN);
+  const ncy = Number(cy);
+  const y = ncy + radius * Math.sin(-(midAngle ?? 0) * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor={x > ncx ? 'start' : 'end'}
+      dominantBaseline="central"
+    >
+      {`${((percent ?? 1) * 100).toFixed(0)}%`}
+    </text>
+  );
+};
 
 function UserProfileViewComponent({
   isLoading,
@@ -22,6 +64,7 @@ function UserProfileViewComponent({
   isChartLoading,
   clientsMonthSummary,
   clientsMonthSummaryByRevenue,
+  pieChartsData,
 }) {
   const { user: loggedUser } = useAuth();
   const {
@@ -157,6 +200,27 @@ function UserProfileViewComponent({
                 )}
               </div>
             )}
+          </div>
+          <div style={{ width: '100%', height: '200px', maxWidth: '500px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieChartsData}
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  fill="#8884d8"
+                  dataKey="value"
+                  isAnimationActive
+                >
+                  {pieChartsData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${entry.status}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
         <div className={styles.rightColumn}>
