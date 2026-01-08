@@ -10,7 +10,6 @@ ChartsRouter.get(
   '/reckoning/client-per-hour/:month/:year',
   passport.authenticate('jwt', { session: false }),
   permit('admin'),
-
   async (req, res) => {
     const month = req.params.month;
     const year = req.params.year;
@@ -27,8 +26,7 @@ ChartsRouter.get(
 ChartsRouter.get(
   '/reckoning/user-clients-per-hour/:month/:year/:userId',
   passport.authenticate('jwt', { session: false }),
-  permit('admin'),
-
+  permit('admin', 'grafik'),
   async (req, res) => {
     const month = req.params.month;
     const year = req.params.year;
