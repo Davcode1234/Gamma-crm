@@ -201,7 +201,7 @@ function UserProfileViewComponent({
               </div>
             )}
           </div>
-          <div style={{ width: '100%', height: '200px', maxWidth: '500px' }}>
+          <div className={styles.pieChartContainer}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -221,6 +221,16 @@ function UserProfileViewComponent({
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
+            <div className={styles.pieChartLegendContainer}>
+              <div className={styles.legendItemWrapper}>
+                <div className={styles.legendInnerIcon} />
+                <p>Wewnętrzne</p>
+              </div>
+              <div className={styles.legendItemWrapper}>
+                <div className={styles.legendOuterIcon} />
+                <p>Zewnętrzne</p>
+              </div>
+            </div>
           </div>
         </div>
         <div className={styles.rightColumn}>

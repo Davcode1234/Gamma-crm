@@ -11,9 +11,37 @@
 }
 
 .pieChartContainer {
-  width: 200px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
   height: 200px;
-  background-color: red;
+  max-width: 300px;
+  box-shadow: 0 0px 3px var(--color-shadow);
+  padding: 0px 10px;
+  p {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+    padding: 0;
+  }
+}
+
+.legendItemWrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legendInnerIcon,
+.legendOuterIcon {
+  width: 15px;
+  height: 5px;
+  border-radius: 10px;
+  background-color: #22c55e;
+}
+.legendOuterIcon {
+  background-color: #06b6d4;
 }
 
 .noTasksContainer {
