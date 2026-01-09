@@ -54,7 +54,7 @@ function UserProfile() {
   const params = useParams();
   const [selectedMonthDaysArray, setSelectedMonthDaysArray] = useState([]);
   const [formValue, setFormValue] = useState(initialUserObject);
-  const [viewVariable, setViewVariable] = useState('Profil');
+
   const { showModal, exitAnim, openModal, closeModal } = useModal();
   const [isReckoTasksLoading, setIsReckoTasksLoading] = useState(false);
   const [isUpdateProfileLoading, setIsUpdateProfileLoading] = useState(false);
@@ -65,12 +65,15 @@ function UserProfile() {
   const { reckoTasks, dispatch } = useReckoTasksContext();
   const [chartData, setChartData] = useState([]);
   const [clientsChartData, setClientsChartData] = useState([]);
+  const [pieChartData, setPieChartData] = useState([]);
   const [chartDataLoading, setChartDataLoading] = useState(false);
   const [chartViewVariable, setChartViewVariable] = useState('Miesięczne');
   const [dataReady, setDataReady] = useState(false);
   const navigate = useNavigate();
   const { user: loggedUser } = useAuth();
-
+  const [viewVariable, setViewVariable] = useState(() => {
+    return params.id === loggedUser[0]._id ? 'Profil' : 'Rozliczenie';
+  });
   const {
     selectedMonth,
     selectedYear,
@@ -80,6 +83,8 @@ function UserProfile() {
     years,
   } = useCurrentDate();
   const selectedMonthIndex = months.indexOf(selectedMonth) + 1;
+
+  console.log(loggedUser);
 
   const fetchReckoningTasks = async (index) => {
     try {
@@ -121,8 +126,24 @@ function UserProfile() {
       );
 
       if (response.length > 0 && clientsChartResponse.length > 0) {
+        const structuredForPieChat = clientsChartResponse.reduce(
+          (acc, client) => {
+            if (client._id === 'COTE' || client._id === 'GAMMA') {
+              acc[0].value += client.Suma_godzin;
+            } else {
+              acc[1].value += client.Suma_godzin;
+            }
+            return acc;
+          },
+          [
+            { status: 'Wewnętrzne', value: 0 },
+            { status: 'Zewnętrzne', value: 0 },
+          ]
+        );
+
         setChartData(response);
         setClientsChartData(clientsChartResponse);
+        setPieChartData(structuredForPieChat);
         setDataReady(true);
         return;
       }
@@ -263,21 +284,6 @@ function UserProfile() {
   const filteredClientsChartData = clientsChartData.filter((client) => {
     return client.Suma_godzin > 0;
   });
-
-  const pieChartData = filteredClientsChartData.reduce(
-    (acc, client) => {
-      if (client._id === 'COTE' || client._id === 'GAMMA') {
-        acc[0].value += client.Suma_godzin;
-      } else {
-        acc[1].value += client.Suma_godzin;
-      }
-      return acc;
-    },
-    [
-      { status: 'Wewnętrzne', value: 0 },
-      { status: 'Zewnętrzne', value: 0 },
-    ]
-  );
 
   const viewRender = {
     [VIEW.PROFILE]: (
