@@ -202,33 +202,36 @@ function UserProfileViewComponent({
             )}
           </div>
           <div className={styles.pieChartContainer}>
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={pieChartsData}
-                  labelLine={false}
-                  label={renderCustomizedLabel}
-                  fill="#8884d8"
-                  dataKey="value"
-                  isAnimationActive
-                >
-                  {pieChartsData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${entry.status}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className={styles.pieChartLegendContainer}>
-              <div className={styles.legendItemWrapper}>
-                <div className={styles.legendInnerIcon} />
-                <p>Wewnętrzne</p>
-              </div>
-              <div className={styles.legendItemWrapper}>
-                <div className={styles.legendOuterIcon} />
-                <p>Zewnętrzne</p>
+            <p>Rozliczenie</p>
+            <div className={styles.chartWrapper}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieChartsData}
+                    labelLine={false}
+                    label={renderCustomizedLabel}
+                    fill="#8884d8"
+                    dataKey="value"
+                    isAnimationActive
+                  >
+                    {pieChartsData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${entry.status}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+              <div className={styles.pieChartLegendContainer}>
+                <div className={styles.legendItemWrapper}>
+                  <div className={styles.legendInnerIcon} />
+                  <p>Wewnętrzne</p>
+                </div>
+                <div className={styles.legendItemWrapper}>
+                  <div className={styles.legendOuterIcon} />
+                  <p>Zewnętrzne</p>
+                </div>
               </div>
             </div>
           </div>

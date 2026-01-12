@@ -84,8 +84,6 @@ function UserProfile() {
   } = useCurrentDate();
   const selectedMonthIndex = months.indexOf(selectedMonth) + 1;
 
-  console.log(loggedUser);
-
   const fetchReckoningTasks = async (index) => {
     try {
       setIsReckoTasksLoading(true);
