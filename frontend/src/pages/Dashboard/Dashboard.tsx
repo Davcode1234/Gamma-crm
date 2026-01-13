@@ -363,10 +363,12 @@ function Dashboard() {
                   <SummaryTile
                     title="Suma godzin"
                     iconValue="ic:baseline-access-time"
+                    isUserProfile={false}
                   >{`${summedHours} h`}</SummaryTile>
                   <SummaryTile
                     title="Suma przychodów"
                     iconValue="ic:outline-monetization-on"
+                    isUserProfile={false}
                   >{`${summedRevenue} zł`}</SummaryTile>
                 </div>
                 {/* <div className={styles.compareTitle}>

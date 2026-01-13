@@ -15,6 +15,7 @@ import useAuth from '../../../hooks/useAuth';
 import useMultiSelect from '../../../hooks/useMultiSelect';
 import MonthPerDaySummaryChart from '../Charts/MonthPerDaySummaryChart/MonthPerDaySummaryChart';
 import ClientsPerMonthsChart from '../Charts/ClientsPerMontsChart/ClientsPerMonthsChart';
+import SummaryTile from '../Charts/SummaryTile/SummaryTile';
 
 const RADIAN = Math.PI / 180;
 const COLORS = ['#22C55E', '#06B6D4'];
@@ -65,6 +66,8 @@ function UserProfileViewComponent({
   clientsMonthSummary,
   clientsMonthSummaryByRevenue,
   pieChartsData,
+  summedHours,
+  summedRevenue,
 }) {
   const { user: loggedUser } = useAuth();
   const {
@@ -201,38 +204,58 @@ function UserProfileViewComponent({
               </div>
             )}
           </div>
-          <div className={styles.pieChartContainer}>
-            <p>Rozliczenie</p>
-            <div className={styles.chartWrapper}>
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={pieChartsData}
-                    labelLine={false}
-                    label={renderCustomizedLabel}
-                    fill="#8884d8"
-                    dataKey="value"
-                    isAnimationActive
-                  >
-                    {pieChartsData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${entry.status}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-              <div className={styles.pieChartLegendContainer}>
-                <div className={styles.legendItemWrapper}>
-                  <div className={styles.legendInnerIcon} />
-                  <p>Wewnętrzne</p>
-                </div>
-                <div className={styles.legendItemWrapper}>
-                  <div className={styles.legendOuterIcon} />
-                  <p>Zewnętrzne</p>
+          <div className={styles.leftColumnStatsContainer}>
+            <div className={styles.pieChartContainer}>
+              <p>Zlecenia</p>
+              <div className={styles.chartWrapper}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={pieChartsData}
+                      labelLine={false}
+                      label={renderCustomizedLabel}
+                      fill="#8884d8"
+                      dataKey="value"
+                      isAnimationActive
+                    >
+                      {pieChartsData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${entry.status}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className={styles.pieChartLegendContainer}>
+                  <div className={styles.legendItemWrapper}>
+                    <div className={styles.legendInnerIcon} />
+                    <p>Wewnętrzne</p>
+                  </div>
+                  <div className={styles.legendItemWrapper}>
+                    <div className={styles.legendOuterIcon} />
+                    <p>Zewnętrzne</p>
+                  </div>
                 </div>
               </div>
+            </div>
+            <div className={styles.summaryTilesWrapper}>
+              <SummaryTile
+                title="Suma godzin"
+                iconValue="ic:baseline-access-time"
+                isUserProfile
+              >
+                {`${summedHours} h`}
+              </SummaryTile>
+              {hasRole(loggedUser, ['admin']) && (
+                <SummaryTile
+                  title="Suma przychodów "
+                  iconValue="ic:outline-monetization-on"
+                  isUserProfile
+                >
+                  {`${summedRevenue} zł`}
+                </SummaryTile>
+              )}
             </div>
           </div>
         </div>

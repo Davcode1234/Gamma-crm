@@ -1,9 +1,13 @@
 import { Icon } from '@iconify/react';
 import styles from './SummaryTile.module.css';
 
-function SummaryTile({ children, title, iconValue }) {
+function SummaryTile({ children, title, iconValue, isUserProfile }) {
   return (
-    <div className={styles.summaryTile}>
+    <div
+      className={`${
+        isUserProfile ? styles.userProfileSummaryTile : styles.summaryTile
+      }`}
+    >
       <p>{title}</p>
 
       <div className={styles.summaryValueWrapper}>

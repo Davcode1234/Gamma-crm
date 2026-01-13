@@ -283,6 +283,14 @@ function UserProfile() {
     return client.Suma_godzin > 0;
   });
 
+  const summedHours = clientsChartData.reduce((acc, client) => {
+    return Number(acc) + Number(client.Suma_godzin);
+  }, 0);
+
+  const summedRevenue = clientsMonthSummaryByRevenue.reduce((acc, client) => {
+    return Number(acc) + Number(client.przychód);
+  }, 0);
+
   const viewRender = {
     [VIEW.PROFILE]: (
       <UserProfileViewComponent
@@ -300,6 +308,8 @@ function UserProfile() {
         clientsMonthSummary={filteredClientsChartData}
         clientsMonthSummaryByRevenue={clientsMonthSummaryByRevenue}
         pieChartsData={pieChartData}
+        summedHours={summedHours}
+        summedRevenue={summedRevenue}
       />
     ),
     [VIEW.RECKO]: (
