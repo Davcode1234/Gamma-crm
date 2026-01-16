@@ -1,5 +1,6 @@
 // import { randomUUID } from 'crypto';
 // import { ReckoningTaskModel } from '../Reckoning/Reckoning.model';
+import { ArchivedStudioTaskModel } from '../ArchivedStudioTask/ArchivedStudioTask.model';
 import { StudioTaskModel } from './StudioTask.model';
 import mongoose from 'mongoose';
 
@@ -23,10 +24,37 @@ export const StudioTaskController = {
     })
       .sort({ searchID: 1 })
       .exec();
-    if (tasks.length === 0) {
+
+    const archivedTasks = await ArchivedStudioTaskModel.find({
+      createdAt: { $gte: startDate },
+    })
+      .sort({ searchID: 1 })
+      .exec();
+
+    if (tasks.length === 0 && archivedTasks.length === 0) {
       return `${year.slice(2, 4)}${month.padStart(2, 0)}0000`;
     }
+
     const lastItem = tasks[tasks.length - 1];
+    const archivedLastItem = archivedTasks[archivedTasks.length - 1];
+
+    // console.log(
+    //   'active',
+    //   lastItem.searchID,
+    //   'archived',
+    //   archivedLastItem.searchID,
+    //   'większe',
+    //   archivedLastItem.searchID > lastItem.searchID,
+    //   'równe',
+    //   archivedLastItem.searchID === lastItem.searchID,
+    // );
+
+    if (
+      archivedLastItem.searchID > lastItem.searchID ||
+      archivedLastItem.searchID === lastItem.searchID
+    ) {
+      return String(archivedLastItem.searchID);
+    }
     return String(lastItem.searchID);
   },
 
