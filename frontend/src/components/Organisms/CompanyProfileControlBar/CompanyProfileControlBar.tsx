@@ -34,6 +34,7 @@ function CompanyProfileControlBar({
   const [filterDropdown, setFilterDropdown] = useState(false);
   const [downloadDropdown, setDownloadDropdown] = useState(false);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const [isMonthSelectOpen, setIsMonthSelectOpen] = useState(false);
   const [isSecondSelectOpen, setIsSecondSelectOpen] = useState(false);
   const [selectFilterValue, setSelectFilterValue] = useState({
     client: '',
@@ -80,7 +81,7 @@ function CompanyProfileControlBar({
     }
   };
 
-  const viewData = ['Główne', 'Dodatkowe'];
+  // const viewData = ['Główne', 'Dodatkowe'];
 
   const handleFilterDropdownInputValue = (e, key) => {
     const { value } = e.target;
@@ -214,17 +215,26 @@ function CompanyProfileControlBar({
           <div className={styles.companyNameLoader} />
         )}
 
-        <Select
+        {/* <Select
           value={selectedMonth}
           handleValueChange={handleMonthChange}
           optionData={viewData}
-        />
+        /> */}
 
         <Select
           value={selectedMonth}
           handleValueChange={handleMonthChange}
           optionData={months}
         />
+
+        <div className={styles.multiSelectWrapper}>
+          <MultiselectDropdown
+            isSelectOpen={isMonthSelectOpen}
+            setIsSelectOpen={setIsMonthSelectOpen}
+            label="Miesiąc"
+            inputKey="month"
+          ></MultiselectDropdown>
+        </div>
 
         <Select
           value={selectedYear}

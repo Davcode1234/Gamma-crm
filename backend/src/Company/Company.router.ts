@@ -146,10 +146,12 @@ CompanyRouter.get(
       const company = req.params.company || '';
       const monthIndex = req.params.monthIndex;
       const yearIndex = req.params.yearIndex;
+      const isMultiMonth = true;
       const reckoTasks = await CompanyController.getCompanyReckoTasks(
         company,
         monthIndex,
         yearIndex,
+        isMultiMonth,
       );
       res.status(StatusCodes.ACCEPTED).json({ reckoTasks });
     } catch (error) {

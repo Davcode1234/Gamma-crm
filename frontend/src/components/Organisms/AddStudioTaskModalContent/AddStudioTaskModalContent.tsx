@@ -280,23 +280,6 @@ function AddStudioTaskModalContent({
             </div>
 
             <div className={styles.selectsWrapper}>
-              {/* <button
-                type="button"
-                className={styles.usersMultiselectOpenButton}
-                onClick={() => setIsSelectOpen(true)}
-              >
-                <Icon
-                  icon="material-symbols:keyboard-arrow-down-rounded"
-                  width="17"
-                  height="17"
-                  className={`${
-                    isSelectOpen ? styles.upArrow : styles.downArrow
-                  }`}
-                />
-              </button>
-
-              {isSelectOpen && <div></div>} */}
-
               <MultiselectDropdown
                 isSelectOpen={isSelectOpen}
                 setIsSelectOpen={setIsSelectOpen}

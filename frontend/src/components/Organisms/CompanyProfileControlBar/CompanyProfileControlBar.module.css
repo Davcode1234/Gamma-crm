@@ -30,6 +30,11 @@
   width: 200px;
 }
 
+.multiSelectWrapper {
+  width: 110px;
+  margin-right: 10px;
+}
+
 .editCompanyWrapper {
   background-color: transparent;
   border: none;

@@ -74,7 +74,24 @@ export const CompanyController = {
     return filteredCompanies;
   },
 
-  async getCompanyReckoTasks(company, monthIndex, yearIndex) {
+  async getCompanyReckoTasks(company, monthIndex, yearIndex, isMultiMonth) {
+    if (isMultiMonth) {
+      const year = parseInt(yearIndex);
+
+      console.log('trtertertertertvxc');
+
+      const startDate = new Date(Date.UTC(year));
+
+      const tasks = await ReckoningTaskModel.find({
+        client: company,
+        'participants.months.createdAt': {
+          $gte: startDate,
+        },
+      }).exec();
+
+      return tasks;
+    }
+
     const month = parseInt(monthIndex);
     const year = parseInt(yearIndex);
 
