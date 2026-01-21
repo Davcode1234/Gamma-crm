@@ -441,139 +441,136 @@ function UpdateTaskModalContent({
             className={styles.descriptionInput}
             placeholder="Dodaj opis zlecenia..."
           />
-          {!isPlacker && (
-            <>
-              <ModalSectionTitle iconName="pajamas:task-done">
-                <p className={styles.descriptionTitle}>Lista zadań</p>
-              </ModalSectionTitle>
-              <div className={styles.subtasksContainer}>
-                {task.subtasks.map((subtask) => {
-                  return (
-                    <div key={subtask._id} className={styles.subtaskContainer}>
-                      {editSubtaskContent.isLoading &&
-                      editSubtaskContent.subtaskId === subtask._id ? (
-                        <CheckboxLoader />
-                      ) : (
-                        <input
-                          type="checkbox"
-                          checked={subtask.done}
-                          onChange={() => {
-                            if (subtask.done) {
-                              handleUpdateSubtask(task._id, subtask._id, {
-                                done: false,
-                              });
-                            } else {
-                              handleUpdateSubtask(task._id, subtask._id, {
-                                done: true,
-                              });
-                            }
-                          }}
-                        />
-                      )}
 
-                      {editSubtaskContent.isEditing &&
-                      editSubtaskContent.subtaskId === subtask._id ? (
-                        <input
-                          autoFocus
-                          type="text"
-                          name="subtask content"
-                          id="subtask content"
-                          className={`${styles.subtaskInput} ${styles.subtaskInputEditMode}`}
-                          onChange={(e) => {
-                            handleEditSubtask({
-                              contentValue: e.target.value,
-                            });
-                          }}
-                          onBlur={() => {
-                            handleUpdateSubtask(task._id, subtask._id, {
-                              content: editSubtaskContent.contentValue,
-                            });
-
-                            handleEditSubtask({
-                              contentValue: '',
-                              isEditing: false,
-                              subtaskId: '',
-                            });
-                          }}
-                          onClick={() => {
-                            handleEditSubtask({ isEditing: true });
-                          }}
-                          value={editSubtaskContent.contentValue}
-                        />
-                      ) : (
-                        <p
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              handleEditSubtask({
-                                contentValue: subtask.content,
-                                isEditing: true,
-                                subtaskId: subtask._id,
-                              });
-                            }
-                          }}
-                          className={styles.subtaskContent}
-                          onClick={() => {
-                            handleEditSubtask({
-                              contentValue: subtask.content,
-                              isEditing: true,
-                              subtaskId: subtask._id,
-                            });
-                          }}
-                        >
-                          {subtask.content}
-                        </p>
-                      )}
-
-                      <Icon
-                        className={styles.trashIcon}
-                        icon="solar:trash-bin-minimalistic-broken"
-                        width="22"
-                        height="22"
-                        onClick={() => {
-                          handleDeleteSubtask(task._id, subtask._id);
-                        }}
-                      />
-                    </div>
-                  );
-                })}
-                {!addSubtaskInput.isInputOpen && (
-                  <button
-                    type="button"
-                    className={styles.addSubtaskButton}
-                    onClick={() =>
-                      handleAddSubtaskInput({
-                        isInputOpen: !addSubtaskInput.isInputOpen,
-                      })
-                    }
-                  >
-                    Dodaj...
-                  </button>
-                )}
-                {addSubtaskInput.isInputOpen && (
-                  <div className={styles.addSubtaskInputWrapper}>
+          <ModalSectionTitle iconName="pajamas:task-done">
+            <p className={styles.descriptionTitle}>Lista zadań</p>
+          </ModalSectionTitle>
+          <div className={styles.subtasksContainer}>
+            {task.subtasks.map((subtask) => {
+              return (
+                <div key={subtask._id} className={styles.subtaskContainer}>
+                  {editSubtaskContent.isLoading &&
+                  editSubtaskContent.subtaskId === subtask._id ? (
+                    <CheckboxLoader />
+                  ) : (
                     <input
-                      type="text"
-                      className={styles.addSubtaskInput}
-                      placeholder="Tytuł zadania..."
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          handleAddSubtask();
+                      type="checkbox"
+                      checked={subtask.done}
+                      onChange={() => {
+                        if (subtask.done) {
+                          handleUpdateSubtask(task._id, subtask._id, {
+                            done: false,
+                          });
+                        } else {
+                          handleUpdateSubtask(task._id, subtask._id, {
+                            done: true,
+                          });
                         }
                       }}
-                      onChange={(e) => {
-                        handleAddSubtaskInput({ inputValue: e.target.value });
-                      }}
-                      onBlur={handleAddSubtask}
-                      autoFocus
                     />
-                    {addSubtaskInput.isSubtaskLoading && <CheckboxLoader />}
-                  </div>
-                )}
+                  )}
+
+                  {editSubtaskContent.isEditing &&
+                  editSubtaskContent.subtaskId === subtask._id ? (
+                    <input
+                      autoFocus
+                      type="text"
+                      name="subtask content"
+                      id="subtask content"
+                      className={`${styles.subtaskInput} ${styles.subtaskInputEditMode}`}
+                      onChange={(e) => {
+                        handleEditSubtask({
+                          contentValue: e.target.value,
+                        });
+                      }}
+                      onBlur={() => {
+                        handleUpdateSubtask(task._id, subtask._id, {
+                          content: editSubtaskContent.contentValue,
+                        });
+
+                        handleEditSubtask({
+                          contentValue: '',
+                          isEditing: false,
+                          subtaskId: '',
+                        });
+                      }}
+                      onClick={() => {
+                        handleEditSubtask({ isEditing: true });
+                      }}
+                      value={editSubtaskContent.contentValue}
+                    />
+                  ) : (
+                    <p
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          handleEditSubtask({
+                            contentValue: subtask.content,
+                            isEditing: true,
+                            subtaskId: subtask._id,
+                          });
+                        }
+                      }}
+                      className={styles.subtaskContent}
+                      onClick={() => {
+                        handleEditSubtask({
+                          contentValue: subtask.content,
+                          isEditing: true,
+                          subtaskId: subtask._id,
+                        });
+                      }}
+                    >
+                      {subtask.content}
+                    </p>
+                  )}
+
+                  <Icon
+                    className={styles.trashIcon}
+                    icon="solar:trash-bin-minimalistic-broken"
+                    width="22"
+                    height="22"
+                    onClick={() => {
+                      handleDeleteSubtask(task._id, subtask._id);
+                    }}
+                  />
+                </div>
+              );
+            })}
+            {!addSubtaskInput.isInputOpen && (
+              <button
+                type="button"
+                className={styles.addSubtaskButton}
+                onClick={() =>
+                  handleAddSubtaskInput({
+                    isInputOpen: !addSubtaskInput.isInputOpen,
+                  })
+                }
+              >
+                Dodaj...
+              </button>
+            )}
+            {addSubtaskInput.isInputOpen && (
+              <div className={styles.addSubtaskInputWrapper}>
+                <input
+                  type="text"
+                  className={styles.addSubtaskInput}
+                  placeholder="Tytuł zadania..."
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleAddSubtask();
+                    }
+                  }}
+                  onChange={(e) => {
+                    handleAddSubtaskInput({ inputValue: e.target.value });
+                  }}
+                  onBlur={handleAddSubtask}
+                  autoFocus
+                />
+                {addSubtaskInput.isSubtaskLoading && <CheckboxLoader />}
               </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
         <div className={styles.actionColumn}>
           <div className={styles.joinContainer}>

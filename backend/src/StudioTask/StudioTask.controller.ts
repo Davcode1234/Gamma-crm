@@ -96,6 +96,7 @@ export const StudioTaskController = {
               author: '$author',
               taskType: '$taskType',
               description: '$description',
+              subtasks: '$subtasks',
             },
           },
         },

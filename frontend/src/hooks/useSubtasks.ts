@@ -2,13 +2,27 @@ import { useEffect, useState } from 'react';
 import {
   addSubtask,
   deleteSubtask,
+  getPlackerTasks,
   updateSubtask,
 } from '../services/studio-tasks-service';
 import useStudioTasksContext from './Context/useStudioTasksContext';
 import socket from '../socket';
+import usePlackerTasksContext from './Context/usePlackerTasksContext';
 
 const useSubtask = (task) => {
   const { dispatch } = useStudioTasksContext();
+  const { dispatch: plackerTasksDispatch } = usePlackerTasksContext();
+
+  const refreshPlacker = async () => {
+    const plackerTasks = await getPlackerTasks();
+    if (plackerTasks && plackerTasks.length > 0 && plackerTasks[0].pairs) {
+      plackerTasks[0].pairs.sort((a, b) => b.tasks.length - a.tasks.length);
+    }
+    plackerTasksDispatch({
+      type: 'SET_PLACKERTASKS',
+      payload: plackerTasks,
+    });
+  };
 
   const [addSubtaskInput, setAddSubtaskInput] = useState({
     isInputOpen: false,
@@ -51,6 +65,8 @@ const useSubtask = (task) => {
       handleEditSubtask({ isLoading: true, subtaskId });
       const response = await updateSubtask({ taskId, subtaskId, subtaskData });
       dispatch({ type: 'UPDATE_SUBTASK', payload: response });
+      refreshPlacker();
+
       socket.emit('subtaskUpdated', response);
     } catch (error) {
       console.error('Error saving value:', error);
@@ -70,6 +86,8 @@ const useSubtask = (task) => {
           done: false,
         });
         dispatch({ type: 'UPDATE_SUBTASK', payload: response });
+        refreshPlacker();
+
         socket.emit('subtaskUpdated', response);
       }
     } catch (error) {
@@ -87,6 +105,7 @@ const useSubtask = (task) => {
     try {
       const response = await deleteSubtask(taskId, subtaskId);
       dispatch({ type: 'UPDATE_SUBTASK', payload: response });
+      refreshPlacker();
       socket.emit('subtaskUpdated', response);
     } catch (error) {
       console.error('Error saving value:', error);
