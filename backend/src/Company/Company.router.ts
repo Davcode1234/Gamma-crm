@@ -127,7 +127,7 @@ CompanyRouter.get(
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     try {
-      const query = req.params.query || '';
+      const { query } = req.params as { query?: string };
       const searchResult = await CompanyController.companySearch(query);
       res.status(StatusCodes.ACCEPTED).json(searchResult);
     } catch (error) {
