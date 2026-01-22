@@ -105,7 +105,8 @@ ArchivedStudioTaskRouter.get(
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     try {
-      const query = req.params.query;
+      const params = req.params as { query?: string };
+      const query = params.query || '';
       const searchResult =
         await ArchivedStudioTaskController.archivedStudioTaskSearch(query);
       res.status(StatusCodes.ACCEPTED).json(searchResult);
