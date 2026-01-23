@@ -214,7 +214,6 @@ function CompanyProfile() {
     const rate = Number(company?.hourRate ?? 0);
     const title = `${company?.name ?? ''} — ${selectedMonth} ${selectedYear}`;
 
-    // Build AoA so we can insert formulas easily
     const header = [
       'Data',
       'Klient',
@@ -223,7 +222,7 @@ function CompanyProfile() {
       'Autor',
       'Firma',
       'Sum',
-      'Przychód', // <- calculated
+      'Przychód',
       'Opis',
       'Komentarz',
       'Rozliczone',
@@ -245,7 +244,7 @@ function CompanyProfile() {
         r.Autor,
         r.Firma,
         r.Godziny,
-        { f: `G${excelRowIndex}*${rate}` }, // Przychód = Godziny * rate
+        { f: `G${excelRowIndex}*${rate}` },
         r.Opis,
         r.Komentarz,
         r.Rozliczone ? 'TAK' : 'NIE',
