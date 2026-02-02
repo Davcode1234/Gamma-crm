@@ -173,6 +173,7 @@ function UpdateTaskModalContent({
                 <img className={styles.heroImg} src={`${art.img}`} alt="" />
                 <p className={styles.reckoSectionPartName}>{art.name}:</p>
               </Link>
+
               <div className={styles.reckoMonthCells}>
                 {art.months
                   .sort(
@@ -182,9 +183,13 @@ function UpdateTaskModalContent({
                   )
                   .map((m) => {
                     const monthIndex = new Date(m.createdAt).getUTCMonth();
+                    // const yearIndex = new Date(m.createdAt).getUTCFullYear();
                     return (
                       <div key={m._id} className={styles.reckoMonthCell}>
-                        <p>{months[monthIndex].slice(0, 3)}</p>
+                        <p>
+                          {/* {yearIndex.toString().slice(2, 4)} */}
+                          {months[monthIndex].slice(0, 3)}
+                        </p>
                         <p>{summarizeHours(m.hours)}h</p>
                       </div>
                     );

@@ -352,6 +352,11 @@
 .reckoSectionPartName {
   font-size: 14px;
   font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: var(--color-orange);
+  }
 }
 
 .heroImg {
@@ -394,7 +399,8 @@
   /* padding-left: 25%; */
   margin-bottom: 15px;
   width: 80%;
-  min-height: 70px;
+  min-height: fit-content;
+  max-height: 200px;
   /* max-height: 150px; */
   overflow-y: scroll;
 }
@@ -421,7 +427,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 130px;
+  min-width: 120px;
   text-decoration: none;
   color: inherit;
 }
@@ -429,7 +435,9 @@
 .reckoMonthCells {
   display: flex;
   gap: 20px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  padding: 0px 15px;
 }
 
 .reckoMonthCell {

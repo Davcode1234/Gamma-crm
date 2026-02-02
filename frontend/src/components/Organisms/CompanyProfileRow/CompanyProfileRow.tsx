@@ -63,7 +63,7 @@ function CompanyProfileRow({
         }}
         exitAnim={taskExitAnim}
       >
-        <p>tetet</p>
+        <p>{task.title}</p>
         {/* {deleteCaptcha ? (
           <Captcha
             handleDelete={handleDeleteTask}
