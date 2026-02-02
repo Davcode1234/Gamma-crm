@@ -1,7 +1,6 @@
 # 🌟 Gamma CRM
 
-**Gamma CRM** is a lightweight and modern Customer Relationship Management (CRM) application built to simplify client, company, and task management.  
-The project uses the **MERN stack** (MongoDB, Express, React, Node.js) and supports real-time collaboration.
+A bespoke ERP/CRM system developed internally for Gamma Advertising Agency. Designed to replace legacy manual workflows, this tool currently manages active client projects and streamlines communication between the creative and production departments
 
 ---
 
