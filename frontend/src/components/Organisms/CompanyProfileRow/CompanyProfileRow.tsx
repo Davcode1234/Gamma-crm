@@ -3,6 +3,8 @@ import { updateReckoningTask } from '../../../services/reckoning-view-service';
 import summarizeCompanyProfHours from '../../../utils/summarizeCompanyProfHours';
 import UsersDisplay from '../UsersDisplay/UsersDisplay';
 import styles from './CompanyProfileRow.module.css';
+import useModal from '../../../hooks/useModal';
+import ModalTemplate from '../../Templates/ModalTemplate/ModalTemplate';
 
 const tileClass = (tileIndex) => {
   return tileIndex % 2 === 0
@@ -24,6 +26,13 @@ function CompanyProfileRow({
     checkedID: task._id,
     checkedValue: task.isSettled,
   });
+  const {
+    showModal: taskShowModal,
+    exitAnim: taskExitAnim,
+    openModal: taskOpenModal,
+    closeModal: taskCloseModal,
+  } = useModal();
+
   const handleCheckboxChange = async (e, taskId) => {
     try {
       const res = await updateReckoningTask({
@@ -46,64 +55,99 @@ function CompanyProfileRow({
     }
   };
   return (
-    <div
-      key={task._id}
-      className={`${tileClass(index)}  ${
-        isChecked.checkedValue && isChecked.checkedID === task._id
-          ? styles.checked
-          : null
-      } ${tileHeight(task.participants.length)}`}
-    >
-      <div className={styles.reckoningTaskListElementTile}>
-        <input
-          type="checkbox"
-          className={styles.cprtCheckbox}
-          checked={isChecked.checkedValue}
-          onChange={(e) => {
-            handleCheckboxChange(e, task._id);
-          }}
-        />
-        <p>{task.searchID}</p>
-      </div>
+    <>
+      <ModalTemplate
+        isOpen={taskShowModal}
+        onClose={() => {
+          taskCloseModal();
+        }}
+        exitAnim={taskExitAnim}
+      >
+        <p>tetet</p>
+        {/* {deleteCaptcha ? (
+          <Captcha
+            handleDelete={handleDeleteTask}
+            closeFunction={setDeleteCaptcha}
+            isUserProfile={false}
+            id={task._id}
+          />
+        ) : (
+          <UpdateTaskModalContent
+            task={task}
+            closeModal={taskCloseModal}
+            setDeleteCaptcha={setDeleteCaptcha}
+            companyClass={companyClass}
+            isPlacker
+          />
+        )} */}
+      </ModalTemplate>
+      <div
+        key={task._id}
+        className={`${tileClass(index)}  ${
+          isChecked.checkedValue && isChecked.checkedID === task._id
+            ? styles.checked
+            : null
+        } ${tileHeight(task.participants.length)}`}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === 'Escape') {
+            taskOpenModal();
+          }
+        }}
+        onClick={() => taskOpenModal()}
+      >
+        <div className={styles.reckoningTaskListElementTile}>
+          <input
+            type="checkbox"
+            className={styles.cprtCheckbox}
+            checked={isChecked.checkedValue}
+            onChange={(e) => {
+              handleCheckboxChange(e, task._id);
+            }}
+          />
+          <p>{task.searchID}</p>
+        </div>
 
-      <div className={`${styles.reckoningTaskListElementTile}`}>
-        <p>{task.client}</p>
-      </div>
-      <div className={styles.reckoningTaskListElementTile}>
-        <p>{task.clientPerson}</p>
-      </div>
-      {/* <div className={styles.reckoningTaskListElementTile}>
+        <div className={`${styles.reckoningTaskListElementTile}`}>
+          <p>{task.client}</p>
+        </div>
+        <div className={styles.reckoningTaskListElementTile}>
+          <p>{task.clientPerson}</p>
+        </div>
+        {/* <div className={styles.reckoningTaskListElementTile}>
         <p>{task.startDate.slice(0, 10)}</p>
       </div> */}
-      <div className={styles.reckoningTaskListElementTile}>
-        <UsersDisplay
-          data={task}
-          usersArray={task.participants}
-          isSmall={false}
-        />
-      </div>
-      <div className={styles.reckoningTaskListElementTile}>
-        <p>{task.title}</p>
-      </div>
+        <div className={styles.reckoningTaskListElementTile}>
+          <UsersDisplay
+            data={task}
+            usersArray={task.participants}
+            isSmall={false}
+          />
+        </div>
+        <div className={styles.reckoningTaskListElementTile}>
+          <p>{task.title}</p>
+        </div>
 
-      <div className={styles.reckoningTaskListElementTile}>
-        <p>{task.comment}</p>
-      </div>
-      <div className={styles.reckoningTaskListElementTile}>
-        <p>{summarizeCompanyProfHours(task, currentMonthIndex)}</p>
-      </div>
+        <div className={styles.reckoningTaskListElementTile}>
+          <p>{task.comment}</p>
+        </div>
+        <div className={styles.reckoningTaskListElementTile}>
+          <p>{summarizeCompanyProfHours(task, currentMonthIndex)}</p>
+        </div>
 
-      <div className={styles.reckoningTaskListElementTile}>
-        <p>
-          {summarizeCompanyProfHours(task, currentMonthIndex) *
-            Number(companyHourRate)}{' '}
-          zł
-        </p>
+        <div className={styles.reckoningTaskListElementTile}>
+          <p>
+            {summarizeCompanyProfHours(task, currentMonthIndex) *
+              Number(companyHourRate)}{' '}
+            zł
+          </p>
+        </div>
+        <div className={styles.reckoningTaskListElementTile}>
+          <p>{task.printWhere}</p>
+        </div>
       </div>
-      <div className={styles.reckoningTaskListElementTile}>
-        <p>{task.printWhere}</p>
-      </div>
-    </div>
+    </>
   );
 }
 

@@ -35,6 +35,7 @@ function CompanyProfile() {
   const [searchInputValue, setSearchInputValue] = useState('');
   const [reckoningTasks, setReckoningTasks] = useState([]);
   const { showModal, exitAnim, openModal, closeModal } = useModal();
+
   const [deleteCaptcha, setDeleteCaptcha] = useState(false);
   const [loadingState, setLoadingState] = useState({
     isLoading: false,
@@ -126,11 +127,6 @@ function CompanyProfile() {
     const tileHeight = 35;
     const headerHeight = 300;
     const availableHeight = viewportHeight - headerHeight;
-
-    // const tileHeight =
-    //   currentTasks.reduce((summ, task) => {
-    //     return summ + (task.participants.length > 5 ? 70 : 30);
-    //   }, 0) / currentTasks.length;
 
     const itemsPerPage = Math.floor(availableHeight / tileHeight);
     setItemsPerPage(itemsPerPage > 0 ? itemsPerPage : 1);
@@ -334,6 +330,7 @@ function CompanyProfile() {
           />
         )}
       </ModalTemplate>
+
       <ControlBar>
         <CompanyProfileControlBar
           company={company}
