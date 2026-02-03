@@ -53,15 +53,21 @@ export const ReckoningTaskController = {
     const participant = existingTask.participants.find((p) => p._id === userId);
     if (!participant) return;
 
-    const monthNumber = Number(monthCreated);
-    const monthExists = participant.months.some(
-      (month) => new Date(month.createdAt).getUTCMonth() + 1 === monthNumber,
-    );
-
     const requestParticipant = taskData.participants.find(
       (p) => p._id === userId,
     );
     const requestMonth = requestParticipant?.months[0];
+
+    const monthNumber = Number(monthCreated);
+    const yearNumber = new Date(requestMonth.createdAt).getUTCFullYear();
+
+    const monthExists = participant.months.some((month) => {
+      const date = new Date(month.createdAt);
+      return (
+        date.getUTCMonth() + 1 === monthNumber &&
+        date.getUTCFullYear() === yearNumber
+      );
+    });
 
     if (monthExists && participant.isVisible) {
       // Month exists and participant is visible; nothing to do
