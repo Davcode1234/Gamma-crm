@@ -423,13 +423,64 @@
   /* overflow-x: scroll; */
 }
 
+.taskHoursSumContainer {
+  display: flex;
+  align-items: center;
+  background-color: #eef3f7;
+  border: 1px solid #d5e0ea;
+  border-radius: 10px;
+  padding: 3px 15px;
+  margin-bottom: 10px;
+  position: absolute;
+  right: 12%;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  p:nth-child(2) {
+    font-size: 15px;
+    font-weight: 600;
+    margin-left: 5px;
+    margin-right: 10px;
+  }
+}
+
+.tileSummWrapper {
+  background-color: var(--color-green);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+  padding: 0 5px;
+  width: 30px;
+  opacity: 0.7;
+
+  p {
+    font-weight: 600;
+    font-size: 14px;
+    margin: 0;
+  }
+}
+
+.summTileIcon {
+  margin-top: 5px;
+}
+
+.tileSummValue {
+  font-weight: 600;
+  font-size: 14px;
+}
+
 .reckoUserCell {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 120px;
   text-decoration: none;
   color: inherit;
+  min-width: 110px;
 }
 
 .reckoMonthCells {
@@ -455,13 +506,6 @@
 .reckoMonthCell p:first-child {
   font-weight: 600;
   font-size: 14px;
-}
-
-.checkboxLoaderContainer {
-  min-height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .userPar {

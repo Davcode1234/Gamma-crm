@@ -128,7 +128,6 @@ const useReckoningActions = (user) => {
             isAlreadyExist: true,
           };
         });
-        console.log(addResponse);
       }
 
       const updatedTask = await UpdateStudioTask({

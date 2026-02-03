@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import { Icon } from '@iconify/react';
 import { DayPicker, DateRange } from 'react-day-picker';
 import 'react-day-picker/style.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { pl } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 import DateFormatter from '../../../utils/dateFormatter';
@@ -146,6 +146,24 @@ function UpdateTaskModalContent({
     }
   };
 
+  const totalHours = useMemo(() => {
+    if (assignedReckoTask.length === 0) return 0;
+    return assignedReckoTask[0].participants.reduce((summ, part) => {
+      return (
+        summ +
+        part.months.reduce((monthSumm, month) => {
+          return (
+            monthSumm +
+            month.hours.reduce(
+              (daysSumm, day) => Number(daysSumm) + Number(day.hourNum),
+              0
+            )
+          );
+        }, 0)
+      );
+    }, 0);
+  }, [assignedReckoTask]);
+
   const renderReckoSection = () => {
     if (isReckoTaskLoading) {
       return (
@@ -173,6 +191,25 @@ function UpdateTaskModalContent({
                 <img className={styles.heroImg} src={`${art.img}`} alt="" />
                 <p className={styles.reckoSectionPartName}>{art.name}:</p>
               </Link>
+              <div className={styles.tileSummWrapper}>
+                <Icon
+                  icon="line-md:calendar"
+                  width="17"
+                  height="17"
+                  className={styles.summTileIcon}
+                />
+                <p className={styles.tileSummValue}>
+                  {art.months.reduce((summ, month) => {
+                    return (
+                      summ +
+                      month.hours.reduce((daysSumm, day) => {
+                        return Number(daysSumm) + Number(day.hourNum);
+                      }, 0)
+                    );
+                  }, 0)}
+                  h
+                </p>
+              </div>
 
               <div className={styles.reckoMonthCells}>
                 {art.months
@@ -424,6 +461,12 @@ function UpdateTaskModalContent({
 
           <ModalSectionTitle iconName="mdi:account-clock-outline">
             <p className={styles.descriptionTitle}>Rozliczenie</p>
+
+            <div className={styles.taskHoursSumContainer}>
+              <Icon icon="ic:baseline-access-time" width="16" height="16" />
+              <p>{totalHours}h</p>
+              <p>łącznie</p>
+            </div>
           </ModalSectionTitle>
 
           <div className={`${styles.reckoTableWrapper} `}>
