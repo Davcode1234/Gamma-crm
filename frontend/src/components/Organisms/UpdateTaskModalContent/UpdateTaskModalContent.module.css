@@ -349,16 +349,6 @@
   }
 }
 
-.reckoSectionPartName {
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-
-  &:hover {
-    color: var(--color-orange);
-  }
-}
-
 .heroImg {
   cursor: pointer;
   width: 30px;
@@ -481,6 +471,20 @@
   text-decoration: none;
   color: inherit;
   min-width: 110px;
+}
+
+.reckoSectionPartName {
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  max-width: 70px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  &:hover {
+    color: var(--color-orange);
+  }
 }
 
 .reckoMonthCells {
