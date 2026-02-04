@@ -339,50 +339,6 @@
   margin-bottom: 30px;
 }
 
-.reckoSectionElementContainer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  p {
-    margin: 0;
-  }
-}
-
-.heroImg {
-  cursor: pointer;
-  width: 30px;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-}
-
-.noRecordsTitle {
-  font-size: 14px;
-}
-
-/* .summaryHoursWrapper {
-  display: flex;
-  gap: 15px;
-  padding-left: 10px;
-
-  transform: translateY(-10px);
-}
-
-.monthContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  p:first-child {
-    font-weight: 600;
-    font-size: 14px;
-  }
-} */
-
 .reckoTableWrapper {
   display: flex;
   flex-direction: column;
@@ -395,22 +351,14 @@
   overflow-y: scroll;
 }
 
-.reckoTable {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  overflow-x: scroll;
-}
-
-.reckoTableRow {
+.reckoSectionElementContainer {
   display: flex;
   align-items: center;
-  background-color: var(--color-shadow);
-  border-radius: 15px;
-  padding-left: 10px;
+  gap: 10px;
 
-  /* overflow-x: scroll; */
+  p {
+    margin: 0;
+  }
 }
 
 .taskHoursSumContainer {
@@ -435,88 +383,6 @@
     margin-left: 5px;
     margin-right: 10px;
   }
-}
-
-.tileSummWrapper {
-  background-color: var(--color-green);
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* justify-content: center; */
-  padding: 0 5px;
-  width: 30px;
-  opacity: 0.7;
-
-  p {
-    font-weight: 600;
-    font-size: 14px;
-    margin: 0;
-  }
-}
-
-.summTileIcon {
-  margin-top: 5px;
-}
-
-.tileSummValue {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.reckoUserCell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: inherit;
-  min-width: 110px;
-}
-
-.reckoSectionPartName {
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  max-width: 70px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-
-  &:hover {
-    color: var(--color-orange);
-  }
-}
-
-.reckoMonthCells {
-  display: flex;
-  gap: 20px;
-  flex-wrap: nowrap;
-  overflow-x: scroll;
-  padding: 0px 15px;
-}
-
-.reckoMonthCell {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 20px;
-  text-align: center;
-
-  p {
-    margin: 0;
-  }
-}
-
-.reckoMonthCell p:first-child {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.checkboxLoaderContainer {
-  min-height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .userPar {

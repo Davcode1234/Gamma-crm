@@ -4,7 +4,6 @@ import { DayPicker, DateRange } from 'react-day-picker';
 import 'react-day-picker/style.css';
 import { useEffect, useMemo, useState } from 'react';
 import { pl } from 'date-fns/locale';
-import { Link } from 'react-router-dom';
 import DateFormatter from '../../../utils/dateFormatter';
 import CheckboxLoader from '../../Atoms/CheckboxLoader/CheckboxLoader';
 import ModalSectionTitle from '../../Atoms/ModalSectionTitle/ModalSectionTitle';
@@ -17,14 +16,14 @@ import useAuth from '../../../hooks/useAuth';
 import checkIfUserAssigned from '../../../utils/checkIfUserAssigned';
 import CompanyBatch from '../../Atoms/CompanyBatch/CompanyBatch';
 import { getReckoningTask } from '../../../services/reckoning-view-service';
-import summarizeHours from '../../../utils/SummarizeHours';
-import { months } from '../../../hooks/useCurrentDate';
+
 import {
   getStudioTask,
   UpdateStudioTask,
 } from '../../../services/studio-tasks-service';
 import useStudioTasksContext from '../../../hooks/Context/useStudioTasksContext';
 import handleCopy from '../../../utils/handleCopy';
+import StudioTaskReckoTable from '../StudioTaskReckoTable/StudioTaskReckoTable';
 
 function UpdateTaskModalContent({
   task,
@@ -163,81 +162,6 @@ function UpdateTaskModalContent({
       );
     }, 0);
   }, [assignedReckoTask]);
-
-  const renderReckoSection = () => {
-    if (isReckoTaskLoading) {
-      return (
-        <div className={styles.checkboxLoaderContainer}>
-          <CheckboxLoader />
-        </div>
-      );
-    }
-
-    if (assignedReckoTask.length === 0) {
-      return (
-        <p className={styles.noRecordsTitle}>Brak pozycji w rozliczeniu</p>
-      );
-    }
-
-    return (
-      <div className={styles.reckoTable}>
-        {assignedReckoTask[0].participants.map((art) =>
-          art.isVisible ? (
-            <div className={styles.reckoTableRow} key={art._id}>
-              <Link
-                className={styles.reckoUserCell}
-                to={`/użytkownicy/${art._id}`}
-              >
-                <img className={styles.heroImg} src={`${art.img}`} alt="" />
-                <p className={styles.reckoSectionPartName}>{art.name}:</p>
-              </Link>
-              <div className={styles.tileSummWrapper}>
-                <Icon
-                  icon="line-md:calendar"
-                  width="17"
-                  height="17"
-                  className={styles.summTileIcon}
-                />
-                <p className={styles.tileSummValue}>
-                  {art.months.reduce((summ, month) => {
-                    return (
-                      summ +
-                      month.hours.reduce((daysSumm, day) => {
-                        return Number(daysSumm) + Number(day.hourNum);
-                      }, 0)
-                    );
-                  }, 0)}
-                  h
-                </p>
-              </div>
-
-              <div className={styles.reckoMonthCells}>
-                {art.months
-                  .sort(
-                    (a, b) =>
-                      new Date(a.createdAt).getTime() -
-                      new Date(b.createdAt).getTime()
-                  )
-                  .map((m) => {
-                    const monthIndex = new Date(m.createdAt).getUTCMonth();
-                    // const yearIndex = new Date(m.createdAt).getUTCFullYear();
-                    return (
-                      <div key={m._id} className={styles.reckoMonthCell}>
-                        <p>
-                          {/* {yearIndex.toString().slice(2, 4)} */}
-                          {months[monthIndex].slice(0, 3)}
-                        </p>
-                        <p>{summarizeHours(m.hours)}h</p>
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
-          ) : null
-        )}
-      </div>
-    );
-  };
 
   return (
     <>
@@ -470,7 +394,10 @@ function UpdateTaskModalContent({
           </ModalSectionTitle>
 
           <div className={`${styles.reckoTableWrapper} `}>
-            {renderReckoSection()}
+            <StudioTaskReckoTable
+              assignedReckoTask={assignedReckoTask}
+              isReckoTaskLoading={isReckoTaskLoading}
+            />
           </div>
 
           <ModalSectionTitle iconName="fluent:text-description-ltr-24-filled">
