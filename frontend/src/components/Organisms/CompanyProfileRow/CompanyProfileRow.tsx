@@ -5,6 +5,7 @@ import UsersDisplay from '../UsersDisplay/UsersDisplay';
 import styles from './CompanyProfileRow.module.css';
 import useModal from '../../../hooks/useModal';
 import ModalTemplate from '../../Templates/ModalTemplate/ModalTemplate';
+import StudioTaskReckoTable from '../StudioTaskReckoTable/StudioTaskReckoTable';
 
 const tileClass = (tileIndex) => {
   return tileIndex % 2 === 0
@@ -64,6 +65,10 @@ function CompanyProfileRow({
         exitAnim={taskExitAnim}
       >
         <p>{task.title}</p>
+        <StudioTaskReckoTable
+          assignedReckoTask={task}
+          isReckoTaskLoading={false}
+        />
         {/* {deleteCaptcha ? (
           <Captcha
             handleDelete={handleDeleteTask}

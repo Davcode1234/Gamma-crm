@@ -6,6 +6,7 @@ import { months } from '../../../hooks/useCurrentDate';
 import summarizeHours from '../../../utils/SummarizeHours';
 
 function StudioTaskReckoTable({ assignedReckoTask, isReckoTaskLoading }) {
+  console.log(assignedReckoTask);
   if (isReckoTaskLoading) {
     return (
       <div className={styles.checkboxLoaderContainer}>
@@ -20,7 +21,7 @@ function StudioTaskReckoTable({ assignedReckoTask, isReckoTaskLoading }) {
 
   return (
     <div className={styles.reckoTable}>
-      {assignedReckoTask[0].participants.map((art) =>
+      {assignedReckoTask.participants.map((art) =>
         art.isVisible ? (
           <div className={styles.reckoTableRow} key={art._id}>
             <Link

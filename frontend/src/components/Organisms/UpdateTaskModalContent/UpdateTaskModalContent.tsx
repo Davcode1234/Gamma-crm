@@ -15,7 +15,10 @@ import useSubtask from '../../../hooks/useSubtasks';
 import useAuth from '../../../hooks/useAuth';
 import checkIfUserAssigned from '../../../utils/checkIfUserAssigned';
 import CompanyBatch from '../../Atoms/CompanyBatch/CompanyBatch';
-import { getReckoningTask } from '../../../services/reckoning-view-service';
+import {
+  getReckoningTask,
+  ReckoningTaskTypes,
+} from '../../../services/reckoning-view-service';
 
 import {
   getStudioTask,
@@ -32,7 +35,9 @@ function UpdateTaskModalContent({
   companyClass,
   isPlacker,
 }) {
-  const [assignedReckoTask, setAssignedReckoTask] = useState([]);
+  const [assignedReckoTask, setAssignedReckoTask] = useState<
+    ReckoningTaskTypes | {}
+  >();
   const [isReckoTaskLoading, setIsReckoTaskLoading] = useState(false);
   const [selectFilterValue, setSelectFilterValue] = useState({
     user: '',
@@ -88,9 +93,9 @@ function UpdateTaskModalContent({
       if (task.reckoTaskID) {
         const reckoTask = await getReckoningTask(task.reckoTaskID);
         if (reckoTask !== null) {
-          setAssignedReckoTask([reckoTask]);
+          setAssignedReckoTask(reckoTask);
         } else {
-          setAssignedReckoTask([]);
+          setAssignedReckoTask({});
         }
       }
     } catch (error) {
@@ -146,8 +151,8 @@ function UpdateTaskModalContent({
   };
 
   const totalHours = useMemo(() => {
-    if (assignedReckoTask.length === 0) return 0;
-    return assignedReckoTask[0].participants.reduce((summ, part) => {
+    if (assignedReckoTask === undefined) return 0;
+    return assignedReckoTask.participants.reduce((summ, part) => {
       return (
         summ +
         part.months.reduce((monthSumm, month) => {
@@ -162,6 +167,8 @@ function UpdateTaskModalContent({
       );
     }, 0);
   }, [assignedReckoTask]);
+
+  console.log(assignedReckoTask);
 
   return (
     <>
