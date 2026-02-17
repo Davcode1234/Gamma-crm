@@ -12,7 +12,7 @@ import InfoBar from '../../components/Atoms/InfoBar/InfoBar';
 import AddTaskModalContent from '../../components/Organisms/AddTaskModalContent/AddTaskModalContent';
 import ListContainer from '../../components/Atoms/ListContainer/ListContainer';
 import ControlBar from '../../components/Atoms/ControlBar/ControlBar';
-import useAuth from '../../hooks/useAuth';
+// import useAuth from '../../hooks/useAuth';
 import CTA from '../../components/Atoms/CTA/CTA';
 import ControlBarTitle from '../../components/Atoms/ControlBar/Title/ControlBarTitle';
 import SearchInput from '../../components/Atoms/ControlBar/SearchInput/SearchInput';
@@ -49,11 +49,11 @@ function TasksView() {
 
   // @ts-ignore
   const { tasks, dispatch } = useTasksContext();
-  const { user } = useAuth();
+  // const { user } = useAuth();
 
-  const filteredTaskByMe = tasks.filter((filteredTasks) => {
-    return filteredTasks.author === user[0]._id;
-  });
+  // const filteredTaskByMe = tasks.filter((filteredTasks) => {
+  //   return filteredTasks.author === user[0]._id;
+  // });
 
   useEffect(() => {
     getAllTasks().then((allTasks) => {

@@ -5,7 +5,6 @@ import MainTemplate from '../../components/Templates/MainTemplate/MainTemplate';
 import useAuth from '../../hooks/useAuth';
 import UsersView from '../UsersView/UsersView';
 import UserProfile from '../UserProfile/UserProfile';
-// import TasksView from '../TasksView/TasksView';
 import TaskProfile from '../TaskProfile/TaskProfile';
 import CompaniesView from '../CompaniesView/CompaniesView';
 import CompanyProfile from '../CompanyProfile/CompanyProfile';
