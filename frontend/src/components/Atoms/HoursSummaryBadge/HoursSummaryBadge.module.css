@@ -1,0 +1,23 @@
+.taskHoursSumContainer {
+  display: flex;
+  align-items: center;
+  background-color: #eef3f7;
+  border: 1px solid #d5e0ea;
+  border-radius: 10px;
+  padding: 3px 15px;
+  margin-bottom: 10px;
+  position: absolute;
+  right: 12%;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  p:nth-child(2) {
+    font-size: 15px;
+    font-weight: 600;
+    margin-left: 5px;
+    margin-right: 10px;
+  }
+}

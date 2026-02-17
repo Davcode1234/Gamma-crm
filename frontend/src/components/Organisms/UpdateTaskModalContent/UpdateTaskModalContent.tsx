@@ -1,10 +1,6 @@
-import ReactDOM from 'react-dom';
 import { Icon } from '@iconify/react';
-import { DayPicker, DateRange } from 'react-day-picker';
 import 'react-day-picker/style.css';
 import { useEffect, useMemo, useState } from 'react';
-import { pl } from 'date-fns/locale';
-import DateFormatter from '../../../utils/dateFormatter';
 import CheckboxLoader from '../../Atoms/CheckboxLoader/CheckboxLoader';
 import ModalSectionTitle from '../../Atoms/ModalSectionTitle/ModalSectionTitle';
 import UsersDisplay from '../UsersDisplay/UsersDisplay';
@@ -19,14 +15,13 @@ import {
   getReckoningTask,
   ReckoningTaskTypes,
 } from '../../../services/reckoning-view-service';
-
-import {
-  getStudioTask,
-  UpdateStudioTask,
-} from '../../../services/studio-tasks-service';
-import useStudioTasksContext from '../../../hooks/Context/useStudioTasksContext';
 import handleCopy from '../../../utils/handleCopy';
 import StudioTaskReckoTable from '../StudioTaskReckoTable/StudioTaskReckoTable';
+import HoursSummaryBadge from '../../Atoms/HoursSummaryBadge/HoursSummaryBadge';
+import SearchIdCopyBadge from '../../Molecules/SearchIdCopyBadge/SearchIdCopyBadge';
+import useCalendar from '../../../hooks/useCalendar';
+import TaskDateRangeEditor from '../../Molecules/TaskRange/TaskDateRangeEditor/TaskDateRangeEditor';
+import TaskRangeTrigger from '../../Molecules/TaskRange/TaskRangeTrigger/TaskRangeTrigger';
 
 function UpdateTaskModalContent({
   task,
@@ -42,18 +37,10 @@ function UpdateTaskModalContent({
   const [selectFilterValue, setSelectFilterValue] = useState({
     user: '',
   });
-  const [isCalendarEditOpen, setIsCalendarEditOpen] = useState({
-    isOpen: false,
-    position: null,
-  });
-  const [range, setRange] = useState<DateRange | undefined>({
-    from: task.startDate,
-    to: task.deadline,
-  });
+
   const [searchIDCopied, setSearchIDCopied] = useState(false);
-  const { dispatch } = useStudioTasksContext();
-  const [saving, setSaving] = useState(false);
-  const isRangeValid = !!(range?.from && range?.to);
+
+  const { isCalendarEditOpen, setIsCalendarEditOpen } = useCalendar(task);
 
   const {
     users,
@@ -128,28 +115,6 @@ function UpdateTaskModalContent({
       .includes(selectFilterValue.user.toLocaleLowerCase());
   });
 
-  const handleCalendarSave = async () => {
-    if (!isRangeValid || saving) return;
-    setSaving(true);
-    try {
-      const updated = await UpdateStudioTask({
-        id: task._id,
-        studioTaskData: {
-          startDate: range.from,
-          deadline: range.to,
-        },
-      });
-
-      const res = await getStudioTask(updated._id);
-      dispatch({ type: 'UPDATE_STUDIOTASK', payload: res });
-      setIsCalendarEditOpen({ isOpen: false, position: null });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSaving(false);
-    }
-  };
-
   const totalHours = useMemo(() => {
     if (assignedReckoTask === undefined) return 0;
     return assignedReckoTask.participants.reduce((summ, part) => {
@@ -173,8 +138,6 @@ function UpdateTaskModalContent({
       <h3 className={styles.editModalTitle}>Edytuj</h3>
       <div className={styles.modalContainer}>
         <div className={styles.infoColumn}>
-          {/* <p>{task.title}</p> */}
-
           <ModalSectionTitle iconName="line-md:monitor-screenshot-twotone">
             <input
               type="text"
@@ -224,178 +187,27 @@ function UpdateTaskModalContent({
           </div>
 
           <div className={styles.thirdSection}>
-            {isCalendarEditOpen.isOpen &&
-              ReactDOM.createPortal(
-                <>
-                  <div
-                    className={styles.overlay}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === 'Escape') {
-                        setIsCalendarEditOpen(() => {
-                          return {
-                            isOpen: false,
-                            position: null,
-                          };
-                        });
-                      }
-                    }}
-                    onClick={() => {
-                      setIsCalendarEditOpen(() => {
-                        return {
-                          isOpen: false,
-                          position: null,
-                        };
-                      });
-                    }}
-                  />
-
-                  <div
-                    className={styles.editDateContainer}
-                    style={{
-                      position: 'absolute',
-                      top: isCalendarEditOpen.position?.top ?? 0,
-                      left: isCalendarEditOpen.position?.left ?? 0,
-                      zIndex: 1000,
-                    }}
-                  >
-                    <DayPicker
-                      mode="range"
-                      selected={range}
-                      onSelect={setRange}
-                      numberOfMonths={1}
-                      // disabled={{ before: task.startDate }}
-                      min={1}
-                      max={180}
-                      locale={pl}
-                    />
-
-                    <div className={styles.buttonsWrapper}>
-                      <button
-                        type="button"
-                        className={`${styles.calendarBtn} ${styles.saveBtn}`}
-                        onClick={handleCalendarSave}
-                        disabled={!isRangeValid || saving}
-                      >
-                        {saving ? 'Zapisywanie…' : 'Zapisz'}
-                      </button>
-                      <button
-                        type="button"
-                        className={`${styles.calendarBtn} ${styles.abortBtn}`}
-                        onClick={() => {
-                          setIsCalendarEditOpen(() => {
-                            return {
-                              isOpen: false,
-                              position: null,
-                            };
-                          });
-
-                          setRange(() => {
-                            return {
-                              from: task.startDate,
-                              to: task.deadline,
-                            };
-                          });
-                        }}
-                      >
-                        Anuluj
-                      </button>
-                    </div>
-                  </div>
-                </>,
-
-                document.getElementById('calendar-root')
-              )}
-            <div
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === 'Escape') {
-                  const rect = (
-                    e.currentTarget as HTMLElement
-                  ).getBoundingClientRect();
-
-                  setIsCalendarEditOpen((prev) => {
-                    return {
-                      position: {
-                        top: rect.bottom + 5 + window.scrollY,
-                        left: rect.left + window.scrollX,
-                      },
-                      isOpen: !prev.isOpen,
-                    };
-                  });
-                }
-              }}
-              className={styles.cardNumberWrapper}
-              onClick={(e) => {
-                const rect = (
-                  e.target as HTMLButtonElement
-                ).getBoundingClientRect();
-
-                setIsCalendarEditOpen((prev) => {
-                  return {
-                    position: {
-                      top: rect.bottom + 5 + window.scrollY,
-                      left: rect.left + window.scrollX,
-                    },
-                    isOpen: !prev.isOpen,
-                  };
-                });
-              }}
-            >
-              <p className={styles.sectionTitle}>Data</p>
-              <div
-                className={`${styles.modalDatesWrapper} ${
-                  new Date(task.deadline) <= new Date()
-                    ? styles.datePast
-                    : styles.dateCurrent
-                }`}
-              >
-                {task.deadline && task.startDate ? (
-                  <>
-                    <DateFormatter dateString={task.startDate} />
-                    <span>&nbsp;-&nbsp;</span>
-                    <DateFormatter dateString={task.deadline} />
-                  </>
-                ) : (
-                  <p className={styles.noDates}>Brak dat</p>
-                )}
-              </div>
-            </div>
-            <div className={styles.searchIDContainer}>
-              <p className={styles.sectionTitle}>Numer</p>
-              {searchIDCopied ? (
-                <div className={styles.copiedInfo}>
-                  <span>Skopiowano</span>
-                  <Icon icon="line-md:folder-check" width="20" height="20" />
-                </div>
-              ) : (
-                <p
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === 'Escape') {
-                      handleCopy(task.searchID, setSearchIDCopied);
-                    }
-                  }}
-                  onClick={() => handleCopy(task.searchID, setSearchIDCopied)}
-                  className={styles.cardNumber}
-                >
-                  #{task.searchID}
-                </p>
-              )}
-            </div>
+            <TaskDateRangeEditor
+              task={task}
+              isCalendarEditOpen={isCalendarEditOpen}
+              setIsCalendarEditOpen={setIsCalendarEditOpen}
+            />
+            <TaskRangeTrigger
+              task={task}
+              setIsCalendarEditOpen={setIsCalendarEditOpen}
+            />
+            <SearchIdCopyBadge
+              searchIDCopied={searchIDCopied}
+              setSearchIDCopied={setSearchIDCopied}
+              handleCopy={handleCopy}
+              id={task.searchID}
+            />
           </div>
 
           <ModalSectionTitle iconName="mdi:account-clock-outline">
             <p className={styles.descriptionTitle}>Rozliczenie</p>
 
-            <div className={styles.taskHoursSumContainer}>
-              <Icon icon="ic:baseline-access-time" width="16" height="16" />
-              <p>{totalHours}h</p>
-              <p>łącznie</p>
-            </div>
+            <HoursSummaryBadge totalHours={totalHours} />
           </ModalSectionTitle>
 
           <div className={`${styles.reckoTableWrapper} `}>

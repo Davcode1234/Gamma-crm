@@ -1,0 +1,53 @@
+.searchIDContainer {
+  position: relative;
+}
+
+.copiedInfo {
+  display: flex;
+  gap: 5px;
+  position: absolute;
+  font-size: 12px;
+  font-weight: 600;
+  animation: appear 0.3s ease forwards;
+
+  svg {
+    color: var(--color-green);
+  }
+}
+
+.sectionTitle {
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cardNumber {
+  cursor: pointer;
+  width: fit-content;
+  margin: 0;
+  padding: 2px 8px;
+  border-radius: 15px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-lighter);
+  background-color: var(--color-navButton);
+  animation: appear 0.3s ease forwards;
+  transition: all 0.3s ease;
+  border: 1px solid var(--color-navButton);
+
+  &:hover {
+    transform: scale(1.05);
+    background-color: transparent;
+    color: var(--color-navButton);
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
