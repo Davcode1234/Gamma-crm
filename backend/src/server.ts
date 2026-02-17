@@ -21,6 +21,7 @@ import { createServer } from 'node:http';
 import { ReckoningTaskRouter } from './Reckoning/Reckoning.router';
 import { ChartsRouter } from './Charts/Charts.router';
 import { ClientRouter } from './Client/Client.router';
+import { AIRouter } from './AI/AI.router';
 
 var corsOptions = {
   origin: [
@@ -87,6 +88,7 @@ app.use('/api/move-studiotask', MoveStudioTaskRouter);
 app.use('/api/unarchive-sudiotask', unArchiveStudioTaskRouter);
 app.use('/api/dashboard', ChartsRouter);
 app.use('/api/clients', ClientRouter);
+app.use('/api/ai', AIRouter);
 app.get('/api/status', (req, res) => res.status(200).json({ ok: true }));
 
 ////Socket

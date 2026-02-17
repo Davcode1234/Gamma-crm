@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-// import { round } from 'lodash';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import ControlBar from '../../components/Atoms/ControlBar/ControlBar';
 import ControlBarTitle from '../../components/Atoms/ControlBar/Title/ControlBarTitle';
@@ -28,6 +27,7 @@ import UsersPerMonthChart from '../../components/Organisms/Charts/UsersPerMonthC
 import CheckboxLoader from '../../components/Atoms/CheckboxLoader/CheckboxLoader';
 import hasRole from '../../utils/hasRole';
 import useAuth from '../../hooks/useAuth';
+// import { getAImonthSummary } from '../../services/AI-service';
 
 function Dashboard() {
   const [viewVariable, setViewVariable] = useState('Miesięczne');
@@ -255,6 +255,21 @@ function Dashboard() {
     '#E0C8B9',
   ];
 
+  // const generateRaport = async () => {
+  //   const res = await getAImonthSummary(monthDaysSummary);
+  //   console.log(res);
+  //   return res;
+  // };
+
+  // console.log(
+  //   'podsumownaie dni w miesiącu',
+  //   monthDaysSummary,
+  //   'podsumownaie godzin klientów',
+  //   clientsMonthSummary,
+  //   'nie wien',
+  //   usersMonthSummary
+  // );
+
   return (
     <>
       <ControlBar>
@@ -278,6 +293,10 @@ function Dashboard() {
           handleValueChange={handleViewVariableChange}
           optionData={viewVariableSelectValue}
         />
+
+        {/* <button type="button" onClick={generateRaport}>
+          Generuj raport
+        </button> */}
       </ControlBar>
       {viewVariable === 'Graficy' ? (
         <div className={styles.pieChartsContainer}>
