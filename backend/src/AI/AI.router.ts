@@ -9,7 +9,6 @@ AIRouter.post('/month-summary', async (req, res) => {
     const snapshot = req.body;
 
     const response = await AIController.ChatSummary(snapshot);
-    console.log(response);
 
     res.status(StatusCodes.ACCEPTED).json(response);
   } catch (error) {

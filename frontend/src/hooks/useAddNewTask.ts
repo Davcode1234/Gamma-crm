@@ -94,7 +94,7 @@ const useAddNewTask = () => {
         setFinalMessage('Coś poszło nie tak :(');
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setIsLoading(false);
     } finally {
       setIsLoading(false);

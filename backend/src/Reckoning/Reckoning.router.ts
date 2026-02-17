@@ -40,7 +40,6 @@ ReckoningTaskRouter.get(
   '/:year/:month/:userId',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
-    console.log(req.params.month);
     try {
       const filteredReckoningTasks =
         await ReckoningTaskController.getFilteredReckoningTasks(

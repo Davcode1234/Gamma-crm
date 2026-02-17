@@ -36,7 +36,7 @@ function UpdateTaskModalContent({
   isPlacker,
 }) {
   const [assignedReckoTask, setAssignedReckoTask] = useState<
-    ReckoningTaskTypes | {}
+    ReckoningTaskTypes | undefined
   >();
   const [isReckoTaskLoading, setIsReckoTaskLoading] = useState(false);
   const [selectFilterValue, setSelectFilterValue] = useState({
@@ -95,7 +95,7 @@ function UpdateTaskModalContent({
         if (reckoTask !== null) {
           setAssignedReckoTask(reckoTask);
         } else {
-          setAssignedReckoTask({});
+          setAssignedReckoTask(undefined);
         }
       }
     } catch (error) {
@@ -167,8 +167,6 @@ function UpdateTaskModalContent({
       );
     }, 0);
   }, [assignedReckoTask]);
-
-  console.log(assignedReckoTask);
 
   return (
     <>

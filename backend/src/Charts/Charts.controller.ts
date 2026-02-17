@@ -519,7 +519,6 @@ export const ChartsController = {
   },
 
   async getUserHoursYearly(year, userId) {
-    console.log('test');
     const userYearSummary = await ReckoningTaskModel.aggregate([
       { $unwind: '$participants' },
       { $unwind: '$participants.months' },

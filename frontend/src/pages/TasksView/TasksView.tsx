@@ -55,8 +55,6 @@ function TasksView() {
     return filteredTasks.author === user[0]._id;
   });
 
-  console.log(filteredTaskByMe);
-
   useEffect(() => {
     getAllTasks().then((allTasks) => {
       dispatch({ type: 'SET_TASKS', payload: allTasks });

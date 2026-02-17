@@ -6,7 +6,6 @@ import { months } from '../../../hooks/useCurrentDate';
 import summarizeHours from '../../../utils/SummarizeHours';
 
 function StudioTaskReckoTable({ assignedReckoTask, isReckoTaskLoading }) {
-  console.log(assignedReckoTask);
   if (isReckoTaskLoading) {
     return (
       <div className={styles.checkboxLoaderContainer}>
@@ -15,7 +14,7 @@ function StudioTaskReckoTable({ assignedReckoTask, isReckoTaskLoading }) {
     );
   }
 
-  if (assignedReckoTask.length === 0) {
+  if (assignedReckoTask === undefined) {
     return <p className={styles.noRecordsTitle}>Brak pozycji w rozliczeniu</p>;
   }
 

@@ -107,7 +107,6 @@ function PlackerView({ plackerDataVariable }) {
           plackerTasks[0].pairs.sort((a, b) => b.tasks.length - a.tasks.length);
         }
 
-        console.log(plackerTasks);
         plackerTasksDispatch({
           type: 'SET_PLACKERTASKS',
           payload: plackerTasks,

@@ -65,8 +65,6 @@ function AddClientForm({ companyName }) {
             newClient,
           ];
 
-          console.log(updatedClientPersons);
-
           await UpdateCompany({
             id: filteredCompany._id,
             companyData: { clientPerson: updatedClientPersons },

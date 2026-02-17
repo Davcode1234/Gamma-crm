@@ -38,17 +38,6 @@ export const StudioTaskController = {
     const lastItem = tasks[tasks.length - 1];
     const archivedLastItem = archivedTasks[archivedTasks.length - 1];
 
-    // console.log(
-    //   'active',
-    //   lastItem.searchID,
-    //   'archived',
-    //   archivedLastItem.searchID,
-    //   'większe',
-    //   archivedLastItem.searchID > lastItem.searchID,
-    //   'równe',
-    //   archivedLastItem.searchID === lastItem.searchID,
-    // );
-
     if (
       archivedLastItem.searchID > lastItem.searchID ||
       archivedLastItem.searchID === lastItem.searchID

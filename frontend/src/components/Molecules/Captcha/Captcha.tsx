@@ -1,7 +1,6 @@
 import styles from './Captcha.module.css';
 
 function Captcha({ handleDelete, closeFunction, id, isUserProfile }) {
-  console.log(id);
   return (
     <div className={styles.captchaContainer}>
       <h2>Jesteś pewien?</h2>
