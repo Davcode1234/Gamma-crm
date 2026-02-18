@@ -45,6 +45,8 @@ function CompanyProfileRow({
     closeModal: taskCloseModal,
   } = useModal();
 
+  const companyClass = task.client.split(' ').join('');
+
   const handleCheckboxChange = async (e, taskId) => {
     try {
       const res = await updateReckoningTask({
@@ -75,7 +77,10 @@ function CompanyProfileRow({
         }}
         exitAnim={taskExitAnim}
       >
-        <CompanyProfileModalTaskDetails task={task} />
+        <CompanyProfileModalTaskDetails
+          task={task}
+          companyClass={companyClass}
+        />
       </ModalTemplate>
       <div
         key={task._id}

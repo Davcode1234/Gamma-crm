@@ -165,7 +165,9 @@ function UpdateTaskModalContent({
             />
           </ModalSectionTitle>
 
-          <ModalMetaInfoSection task={task} companyClass={companyClass} />
+          <div className={styles.metaInfoWrapper}>
+            <ModalMetaInfoSection task={task} companyClass={companyClass} />
+          </div>
 
           <div className={styles.thirdSection}>
             <TaskDateRangeEditor

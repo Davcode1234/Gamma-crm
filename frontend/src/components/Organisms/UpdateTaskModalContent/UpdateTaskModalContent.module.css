@@ -49,6 +49,10 @@
   background-color: var(--color-lighter);
 }
 
+.metaInfoWrapper {
+  width: 80%;
+}
+
 .subtasksContainer {
   display: flex;
   flex-direction: column;
@@ -134,8 +138,7 @@
 }
 
 .thirdSection {
-  width: 100%;
-  padding-left: 25%;
+  width: 80%;
   display: flex;
   gap: 10%;
   margin-bottom: 20px;
@@ -151,7 +154,7 @@
   max-width: 90%;
   min-width: 75%;
   min-height: 250px;
-  margin-left: 5%;
+  /* margin-left: 5%; */
   border: none;
   border-radius: 10px;
   padding: 5px 10px;
