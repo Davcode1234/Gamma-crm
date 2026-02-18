@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
-import BackButton from '../../Atoms/BackButton/BackButton';
+import BackButton from '../../../Atoms/BackButton/BackButton';
 import styles from './CompanyProfileControlBar.module.css';
-import CTA from '../../Atoms/CTA/CTA';
-import Select from '../../Atoms/Select/Select';
-import summarizeCompanyProfHours from '../../../utils/summarizeCompanyProfHours';
-import FilterDropdownContainer from '../../Atoms/FilterDropdownContainer/FilterDropdownContainer';
-import Overlay from '../../Atoms/Overlay/Overlay';
-import DropdownHeader from '../../Atoms/DropdownHeader/DropdownHeader';
-import MultiselectDropdown from '../../Molecules/MultiselectDropdown/MultiselectDropdown';
-import FilterCheckbox from '../../Molecules/FilterCheckbox/FilterCheckbox';
-import FiltersClearButton from '../../Atoms/FiltersClearButton/FiltersClearButton';
+import CTA from '../../../Atoms/CTA/CTA';
+import Select from '../../../Atoms/Select/Select';
+import summarizeCompanyProfHours from '../../../../utils/summarizeCompanyProfHours';
+import FilterDropdownContainer from '../../../Atoms/FilterDropdownContainer/FilterDropdownContainer';
+import Overlay from '../../../Atoms/Overlay/Overlay';
+import DropdownHeader from '../../../Atoms/DropdownHeader/DropdownHeader';
+import MultiselectDropdown from '../../../Molecules/MultiselectDropdown/MultiselectDropdown';
+import FilterCheckbox from '../../../Molecules/FilterCheckbox/FilterCheckbox';
+import FiltersClearButton from '../../../Atoms/FiltersClearButton/FiltersClearButton';
 
 function CompanyProfileControlBar({
   company,

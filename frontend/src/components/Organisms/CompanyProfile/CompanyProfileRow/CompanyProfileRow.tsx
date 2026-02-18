@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { updateReckoningTask } from '../../../services/reckoning-view-service';
-import summarizeCompanyProfHours from '../../../utils/summarizeCompanyProfHours';
-import UsersDisplay from '../UsersDisplay/UsersDisplay';
+import { updateReckoningTask } from '../../../../services/reckoning-view-service';
+import summarizeCompanyProfHours from '../../../../utils/summarizeCompanyProfHours';
+import UsersDisplay from '../../UsersDisplay/UsersDisplay';
 import styles from './CompanyProfileRow.module.css';
-import useModal from '../../../hooks/useModal';
-import ModalTemplate from '../../Templates/ModalTemplate/ModalTemplate';
-import StudioTaskReckoTable from '../StudioTaskReckoTable/StudioTaskReckoTable';
+import useModal from '../../../../hooks/useModal';
+import ModalTemplate from '../../../Templates/ModalTemplate/ModalTemplate';
+import StudioTaskReckoTable from '../../StudioTaskReckoTable/StudioTaskReckoTable';
+import ModalSectionTitle from '../../../Atoms/ModalSectionTitle/ModalSectionTitle';
 
 const tileClass = (tileIndex) => {
   return tileIndex % 2 === 0
@@ -65,26 +66,13 @@ function CompanyProfileRow({
         exitAnim={taskExitAnim}
       >
         <p>{task.title}</p>
+        <ModalSectionTitle iconName="pajamas:task-done">
+          <p className={styles.descriptionTitle}>Rozliczenie</p>
+        </ModalSectionTitle>
         <StudioTaskReckoTable
           assignedReckoTask={task}
           isReckoTaskLoading={false}
         />
-        {/* {deleteCaptcha ? (
-          <Captcha
-            handleDelete={handleDeleteTask}
-            closeFunction={setDeleteCaptcha}
-            isUserProfile={false}
-            id={task._id}
-          />
-        ) : (
-          <UpdateTaskModalContent
-            task={task}
-            closeModal={taskCloseModal}
-            setDeleteCaptcha={setDeleteCaptcha}
-            companyClass={companyClass}
-            isPlacker
-          />
-        )} */}
       </ModalTemplate>
       <div
         key={task._id}
@@ -120,9 +108,7 @@ function CompanyProfileRow({
         <div className={styles.reckoningTaskListElementTile}>
           <p>{task.clientPerson}</p>
         </div>
-        {/* <div className={styles.reckoningTaskListElementTile}>
-        <p>{task.startDate.slice(0, 10)}</p>
-      </div> */}
+
         <div className={styles.reckoningTaskListElementTile}>
           <UsersDisplay
             data={task}

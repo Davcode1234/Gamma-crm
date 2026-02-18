@@ -19,11 +19,11 @@ import usePagination from '../../hooks/usePagination';
 import useSort from '../../hooks/useSort';
 import UpdateCompanyModalContent from '../../components/Organisms/UpdateCompanyModalContent/UpdateCompanyModalContent';
 import Captcha from '../../components/Molecules/Captcha/Captcha';
-import CompanyProfileControlBar from '../../components/Organisms/CompanyProfileControlBar/CompanyProfileControlBar';
+import CompanyProfileControlBar from '../../components/Organisms/CompanyProfile/CompanyProfileControlBar/CompanyProfileControlBar';
 import useCompaniesContext from '../../hooks/Context/useCompaniesContext';
 import useCurrentDate from '../../hooks/useCurrentDate';
 import useViewportHeight from '../../hooks/useViewportHeight';
-import CompanyProfileViewComponent from '../../components/Organisms/CompanyProfileViewComponent/CompanyProfileViewComponent';
+import CompanyProfileViewComponent from '../../components/Organisms/CompanyProfile/CompanyProfileViewComponent/CompanyProfileViewComponent';
 import CompanyInfoBar from '../../components/Molecules/CompanyInfoBar/CompanyInfoBar';
 
 function CompanyProfile() {
