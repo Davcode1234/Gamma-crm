@@ -1,0 +1,29 @@
+.secondSection {
+  width: 100%;
+  padding-left: 25%;
+  padding-top: 5px;
+  display: flex;
+  margin-bottom: 15px;
+  gap: 10%;
+}
+
+.usersContainer {
+  width: 150px;
+}
+
+.sectionTitle {
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.noParticipantsPar {
+  font-size: 14px;
+}
+
+.clientContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

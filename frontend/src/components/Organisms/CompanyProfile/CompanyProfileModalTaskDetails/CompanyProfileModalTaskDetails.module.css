@@ -1,0 +1,10 @@
+.modalContainer {
+  width: 40vw;
+  height: fit-content;
+  max-width: 600px;
+}
+
+.title {
+  font-weight: 600;
+  margin: 5px 10px;
+}

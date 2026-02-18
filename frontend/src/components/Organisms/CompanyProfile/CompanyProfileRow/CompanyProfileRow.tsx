@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { updateReckoningTask } from '../../../../services/reckoning-view-service';
+import {
+  ReckoningTaskTypes,
+  updateReckoningTask,
+} from '../../../../services/reckoning-view-service';
 import summarizeCompanyProfHours from '../../../../utils/summarizeCompanyProfHours';
 import UsersDisplay from '../../UsersDisplay/UsersDisplay';
 import styles from './CompanyProfileRow.module.css';
 import useModal from '../../../../hooks/useModal';
 import ModalTemplate from '../../../Templates/ModalTemplate/ModalTemplate';
-import StudioTaskReckoTable from '../../StudioTaskReckoTable/StudioTaskReckoTable';
-import ModalSectionTitle from '../../../Atoms/ModalSectionTitle/ModalSectionTitle';
+import CompanyProfileModalTaskDetails from '../CompanyProfileModalTaskDetails/CompanyProfileModalTaskDetails';
 
 const tileClass = (tileIndex) => {
   return tileIndex % 2 === 0
@@ -18,16 +20,24 @@ const tileHeight = (participantsLength) => {
   return participantsLength >= 5 ? styles.bigTile : styles.smallTile;
 };
 
+type CompanyProfileRowProps = {
+  task: ReckoningTaskTypes;
+  index: number;
+  currentMonthIndex: number;
+  companyHourRate: string;
+};
+
 function CompanyProfileRow({
   task,
   index,
   currentMonthIndex,
   companyHourRate,
-}) {
+}: CompanyProfileRowProps) {
   const [isChecked, setIsChecked] = useState({
     checkedID: task._id,
     checkedValue: task.isSettled,
   });
+
   const {
     showModal: taskShowModal,
     exitAnim: taskExitAnim,
@@ -65,14 +75,7 @@ function CompanyProfileRow({
         }}
         exitAnim={taskExitAnim}
       >
-        <p>{task.title}</p>
-        <ModalSectionTitle iconName="pajamas:task-done">
-          <p className={styles.descriptionTitle}>Rozliczenie</p>
-        </ModalSectionTitle>
-        <StudioTaskReckoTable
-          assignedReckoTask={task}
-          isReckoTaskLoading={false}
-        />
+        <CompanyProfileModalTaskDetails task={task} />
       </ModalTemplate>
       <div
         key={task._id}

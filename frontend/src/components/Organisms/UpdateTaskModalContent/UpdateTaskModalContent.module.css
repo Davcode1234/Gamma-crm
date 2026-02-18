@@ -49,19 +49,6 @@
   background-color: var(--color-lighter);
 }
 
-.secondSection {
-  width: 100%;
-  padding-left: 25%;
-  padding-top: 5px;
-  display: flex;
-  margin-bottom: 15px;
-  gap: 10%;
-}
-
-.usersContainer {
-  width: 150px;
-}
-
 .subtasksContainer {
   display: flex;
   flex-direction: column;
@@ -172,12 +159,6 @@
   font-family: Montserrat;
   font-size: 14px;
   margin-bottom: 30px;
-}
-
-.clientContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
 }
 
 .modalCompanyBatch,
@@ -308,10 +289,6 @@
   &:hover {
     color: var(--color-orange);
   }
-}
-
-.noParticipantsPar {
-  font-size: 14px;
 }
 
 @keyframes appear {

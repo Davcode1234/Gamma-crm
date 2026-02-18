@@ -3,14 +3,12 @@ import 'react-day-picker/style.css';
 import { useEffect, useMemo, useState } from 'react';
 import CheckboxLoader from '../../Atoms/CheckboxLoader/CheckboxLoader';
 import ModalSectionTitle from '../../Atoms/ModalSectionTitle/ModalSectionTitle';
-import UsersDisplay from '../UsersDisplay/UsersDisplay';
 import styles from './UpdateTaskModalContent.module.css';
 import MultiselectDropdown from '../../Molecules/MultiselectDropdown/MultiselectDropdown';
 import useStudioTaskUpdate from '../../../hooks/useStudioTaskUpdate';
 import useSubtask from '../../../hooks/useSubtasks';
 import useAuth from '../../../hooks/useAuth';
 import checkIfUserAssigned from '../../../utils/checkIfUserAssigned';
-import CompanyBatch from '../../Atoms/CompanyBatch/CompanyBatch';
 import {
   getReckoningTask,
   ReckoningTaskTypes,
@@ -22,6 +20,16 @@ import SearchIdCopyBadge from '../../Molecules/SearchIdCopyBadge/SearchIdCopyBad
 import useCalendar from '../../../hooks/useCalendar';
 import TaskDateRangeEditor from '../../Molecules/TaskRange/TaskDateRangeEditor/TaskDateRangeEditor';
 import TaskRangeTrigger from '../../Molecules/TaskRange/TaskRangeTrigger/TaskRangeTrigger';
+import ModalMetaInfoSection from '../../Molecules/ModalMetaInfoSection/ModalMetaInfoSection';
+import { StudioTaskTypes } from '../../../services/studio-tasks-service';
+
+type UpdateTaskModalContentProps = {
+  task: StudioTaskTypes;
+  closeModal: () => void;
+  setDeleteCaptcha: React.Dispatch<React.SetStateAction<boolean>>;
+  companyClass: string;
+  isPlacker: boolean;
+};
 
 function UpdateTaskModalContent({
   task,
@@ -29,7 +37,7 @@ function UpdateTaskModalContent({
   setDeleteCaptcha,
   companyClass,
   isPlacker,
-}) {
+}: UpdateTaskModalContentProps) {
   const [assignedReckoTask, setAssignedReckoTask] = useState<
     ReckoningTaskTypes | undefined
   >();
@@ -37,6 +45,8 @@ function UpdateTaskModalContent({
   const [selectFilterValue, setSelectFilterValue] = useState({
     user: '',
   });
+
+  console.log(task, closeModal, setDeleteCaptcha, companyClass, isPlacker);
 
   const [searchIDCopied, setSearchIDCopied] = useState(false);
 
@@ -155,36 +165,7 @@ function UpdateTaskModalContent({
             />
           </ModalSectionTitle>
 
-          <div className={styles.secondSection}>
-            <div className={styles.usersContainer}>
-              <p className={styles.sectionTitle}>Członkowie</p>
-              {task.participants.length > 0 ? (
-                <UsersDisplay
-                  data={task}
-                  usersArray={task.participants}
-                  isSmall={false}
-                />
-              ) : (
-                <p className={styles.noParticipantsPar}>Brak członków</p>
-              )}
-            </div>
-            <div>
-              <p className={styles.sectionTitle}>Klient</p>
-              <div className={styles.clientContainer}>
-                <CompanyBatch
-                  companyClass={companyClass}
-                  isClientPerson={false}
-                  isBigger
-                >
-                  {task.client}
-                </CompanyBatch>
-
-                <CompanyBatch companyClass={null} isClientPerson isBigger>
-                  {task.clientPerson}
-                </CompanyBatch>
-              </div>
-            </div>
-          </div>
+          <ModalMetaInfoSection task={task} companyClass={companyClass} />
 
           <div className={styles.thirdSection}>
             <TaskDateRangeEditor
