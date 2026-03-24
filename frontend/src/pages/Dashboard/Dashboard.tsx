@@ -8,7 +8,7 @@ import {
   ClientsMonthSummaryTypes,
   getClientsMonthSummary,
   getMonthDaysSummary,
-  getTasksTypeSummary,
+  // getTasksTypeSummary,
   getUsersMonthSummary,
   getUsersPerCompany,
   MonthPerDaySummary,
@@ -21,7 +21,7 @@ import ChartContainer from '../../components/Atoms/ChartContainer/ChartContainer
 import useCompaniesContext from '../../hooks/Context/useCompaniesContext';
 import { getAllCompanies } from '../../services/companies-service';
 import MonthPerDaySummaryChart from '../../components/Organisms/Charts/MonthPerDaySummaryChart/MonthPerDaySummaryChart';
-import TypesRadarChart from '../../components/Organisms/Charts/TypesRadarChart/TypesRadarChart';
+// import TypesRadarChart from '../../components/Organisms/Charts/TypesRadarChart/TypesRadarChart';
 import SummaryTile from '../../components/Organisms/Charts/SummaryTile/SummaryTile';
 import UsersPerMonthChart from '../../components/Organisms/Charts/UsersPerMonthChart/UsersPerMonthChart';
 import CheckboxLoader from '../../components/Atoms/CheckboxLoader/CheckboxLoader';
@@ -38,7 +38,7 @@ function Dashboard() {
     UsersMonthSummaryTypes[]
   >([]);
 
-  const [tasksTypeSummary, setTasksTypeSummary] = useState([]);
+  // const [tasksTypeSummary, setTasksTypeSummary] = useState([]);
   const [monthDaysSummary, setMonthDaysSummary] = useState<
     MonthPerDaySummary[]
   >([]);
@@ -152,8 +152,8 @@ function Dashboard() {
 
         setUsersMonthSummary(filteredAndSortedUsers);
 
-        const tasks = await getTasksTypeSummary(viewVariable === 'Roczne');
-        setTasksTypeSummary(tasks);
+        // const tasks = await getTasksTypeSummary(viewVariable === 'Roczne');
+        // setTasksTypeSummary(tasks);
 
         const monthDays = await getMonthDaysSummary(
           currentMonthIndex + 1,
@@ -390,41 +390,20 @@ function Dashboard() {
                     isUserProfile={false}
                   >{`${summedRevenue} zł`}</SummaryTile>
                 </div>
-                {/* <div className={styles.compareTitle}>
-                <p>W porównaniu do</p>
-                <Select
-                  value={compareSelectedMonth}
-                  handleValueChange={compareHandleMonthChange}
-                  optionData={compareMonths}
-                />
               </div>
 
-              <div className={styles.firstRowTiles}>
-                <SummaryTile
-                  title="Suma godzin"
-                  iconValue="material-symbols:chart-data-rounded"
-                >{`${
-                  selectedMonth === compareSelectedMonth
-                    ? '100%'
-                    : round(
-                        (compareData.reduce((summ, cms) => {
-                          return Number(summ) + Number(cms.Suma_godzin);
-                        }, 0) *
-                          100) /
-                          summedHours
-                      )
-                } `}</SummaryTile>
-                <SummaryTile
-                  title="Suma przychodów"
-                  iconValue="ic:outline-monetization-on"
-                >{`${summedRevenue} zł`}</SummaryTile>
-              </div> */}
-              </div>
-
-              <TypesRadarChart
+              {/* <TypesRadarChart
                 tasksTypeSummary={tasksTypeSummary}
                 dataReady={dataReady}
                 isYearly={viewVariable === 'Roczne'}
+              /> */}
+              <MonthPerDaySummaryChart
+                selectedMonth={selectedMonth}
+                monthDaysSummary={monthDaysSummary}
+                dataReady={dataReady}
+                isYearly={viewVariable === 'Roczne'}
+                year={selectedYear}
+                isLoading={isLoading}
               />
             </div>
           </div>
@@ -462,15 +441,6 @@ function Dashboard() {
                 />
               </div>
             </ChartContainer>
-
-            <MonthPerDaySummaryChart
-              selectedMonth={selectedMonth}
-              monthDaysSummary={monthDaysSummary}
-              dataReady={dataReady}
-              isYearly={viewVariable === 'Roczne'}
-              year={selectedYear}
-              isLoading={isLoading}
-            />
           </div>
         </div>
       )}

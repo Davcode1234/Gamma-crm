@@ -110,11 +110,12 @@
 
 .summaryTilesWrapper {
   /* display: flex; */
-  width: 50%;
+  width: 30%;
 }
 
 .firstRowTiles {
   display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
