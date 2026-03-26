@@ -15,7 +15,7 @@ ChartsRouter.get(
     const year = req.params.year;
     try {
       const result = await ChartsController.getClientsPerHour(month, year);
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(500).send('Server error');
@@ -37,7 +37,7 @@ ChartsRouter.get(
         year,
         userId,
       );
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(500).send('Server error');
@@ -54,7 +54,7 @@ ChartsRouter.get(
     const userId = req.params.userId;
     try {
       const result = await ChartsController.getUserClientsYearly(year, userId);
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(500).send('Server error');
@@ -69,7 +69,7 @@ ChartsRouter.get(
     const year = req.params.year;
     try {
       const result = await ChartsController.getClientsPerHourYearly(year);
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(500).send('Server error');
@@ -88,7 +88,7 @@ ChartsRouter.get(
 
     try {
       const result = await ChartsController.getUsersMonthSummary(month, year);
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(500).send('Server error');
@@ -104,7 +104,7 @@ ChartsRouter.get(
 
     try {
       const result = await ChartsController.getUsersMonthSummaryYearly(year);
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(500).send('Server error');
@@ -120,7 +120,7 @@ ChartsRouter.get(
   async (req, res) => {
     try {
       const result = await ChartsController.getStudioTasksTypesSummary();
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');
@@ -135,7 +135,7 @@ ChartsRouter.get(
     try {
       const result =
         await ChartsController.getArchivedStudioTasksTypesSummary();
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');
@@ -154,7 +154,7 @@ ChartsRouter.get(
 
     try {
       const result = await ChartsController.getHoursPerDay(month, year);
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');
@@ -176,7 +176,7 @@ ChartsRouter.get(
         year,
         userID,
       );
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');
@@ -193,7 +193,7 @@ ChartsRouter.get(
 
     try {
       const result = await ChartsController.getUserHoursYearly(year, userId);
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');
@@ -209,7 +209,7 @@ ChartsRouter.get(
 
     try {
       const result = await ChartsController.getHoursPerMonthYearly(year);
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');
@@ -228,7 +228,7 @@ ChartsRouter.get(
 
     try {
       const result = await ChartsController.getUsersPerCompany(month, year);
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');
@@ -244,7 +244,7 @@ ChartsRouter.get(
 
     try {
       const result = await ChartsController.getUsersPerCompanyYearly(year);
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');
@@ -268,7 +268,7 @@ ChartsRouter.get(
         year,
         clientName,
       );
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');
@@ -285,7 +285,7 @@ ChartsRouter.get(
 
     try {
       const result = await ChartsController.getNumberOfTasks(month, year);
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');
@@ -302,7 +302,7 @@ ChartsRouter.get(
 
     try {
       const result = await ChartsController.getNumberOfReckoTasks(month, year);
-      res.status(StatusCodes.ACCEPTED).json(result);
+      res.status(StatusCodes.OK).json(result);
     } catch (err) {
       console.error(err);
       res.status(StatusCodes.BAD_REQUEST).send('Server error, check API');

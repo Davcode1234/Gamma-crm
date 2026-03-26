@@ -30,8 +30,8 @@ export const ChartsController = {
       },
       {
         $match: {
-          ...(month ? { month: parseInt(month) } : {}),
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(month ? { month: parseInt(month, 10) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
         },
       },
       {
@@ -75,8 +75,8 @@ export const ChartsController = {
       },
       {
         $match: {
-          ...(month ? { month: parseInt(month) } : {}),
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(month ? { month: parseInt(month, 10) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
           ...(userId ? { userIdStr: userId } : {}),
         },
       },
@@ -120,7 +120,7 @@ export const ChartsController = {
       },
       {
         $match: {
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
           ...(userId ? { userIdStr: userId } : {}),
         },
       },
@@ -167,8 +167,8 @@ export const ChartsController = {
       // // Filtrowanie po miesiącu i roku
       {
         $match: {
-          ...(month ? { month: parseInt(month) } : {}),
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(month ? { month: parseInt(month, 10) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
         },
       },
       // // Grupowanie godzin po clientPerson + uczestniku
@@ -231,7 +231,7 @@ export const ChartsController = {
       },
       {
         $match: {
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
         },
       },
       {
@@ -276,8 +276,8 @@ export const ChartsController = {
 
       {
         $match: {
-          ...(month ? { month: parseInt(month) } : {}),
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(month ? { month: parseInt(month, 10) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
         },
       },
 
@@ -349,7 +349,7 @@ export const ChartsController = {
 
       {
         $match: {
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
         },
       },
 
@@ -429,8 +429,8 @@ export const ChartsController = {
 
       {
         $match: {
-          ...(month ? { month: parseInt(month) } : {}),
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(month ? { month: parseInt(month, 10) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
         },
       },
 
@@ -487,8 +487,8 @@ export const ChartsController = {
 
       {
         $match: {
-          ...(month ? { month: parseInt(month) } : {}),
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(month ? { month: parseInt(month, 10) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
           ...(userId ? { userIdStr: userId } : {}),
         },
       },
@@ -545,7 +545,7 @@ export const ChartsController = {
 
       {
         $match: {
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
           ...(userId ? { userIdStr: userId } : {}),
         },
       },
@@ -600,7 +600,7 @@ export const ChartsController = {
 
       {
         $match: {
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
         },
       },
 
@@ -696,8 +696,8 @@ export const ChartsController = {
 
       {
         $match: {
-          ...(month ? { month: parseInt(month) } : {}),
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(month ? { month: parseInt(month, 10) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
         },
       },
 
@@ -755,7 +755,7 @@ export const ChartsController = {
 
       {
         $match: {
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
         },
       },
 
@@ -801,8 +801,8 @@ export const ChartsController = {
       },
       {
         $match: {
-          ...(month ? { month: parseInt(month) } : {}),
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(month ? { month: parseInt(month, 10) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
         },
       },
       {
@@ -823,8 +823,8 @@ export const ChartsController = {
       },
       {
         $match: {
-          ...(month ? { month: parseInt(month) } : {}),
-          ...(year ? { year: parseInt(year) } : {}),
+          ...(month ? { month: parseInt(month, 10) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
         },
       },
       {
