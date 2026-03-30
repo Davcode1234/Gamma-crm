@@ -42,6 +42,11 @@
   }
 }
 
+.monthPerDayContainer {
+  width: 100%;
+  height: 50%;
+}
+
 .chartWrapper {
   height: 100%;
   display: flex;

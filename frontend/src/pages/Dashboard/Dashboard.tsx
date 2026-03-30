@@ -397,6 +397,7 @@ function Dashboard() {
                 dataReady={dataReady}
                 isYearly={viewVariable === 'Roczne'}
               /> */}
+
               <MonthPerDaySummaryChart
                 selectedMonth={selectedMonth}
                 monthDaysSummary={monthDaysSummary}

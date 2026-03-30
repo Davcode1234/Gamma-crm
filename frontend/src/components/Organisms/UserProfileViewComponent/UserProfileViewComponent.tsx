@@ -260,14 +260,17 @@ function UserProfileViewComponent({
           </div>
         </div>
         <div className={styles.rightColumn}>
-          <MonthPerDaySummaryChart
-            selectedMonth={selectedMonth}
-            monthDaysSummary={monthDaysSummary}
-            dataReady={dataReady}
-            isYearly={chartViewVariable === 'Roczne'}
-            year={selectedYear}
-            isLoading={isChartLoading}
-          />
+          <div className={styles.monthPerDayContainer}>
+            <MonthPerDaySummaryChart
+              selectedMonth={selectedMonth}
+              monthDaysSummary={monthDaysSummary}
+              dataReady={dataReady}
+              isYearly={chartViewVariable === 'Roczne'}
+              year={selectedYear}
+              isLoading={isChartLoading}
+            />
+          </div>
+
           <ClientsPerMonthsChart
             dataReady={dataReady}
             clientsMonthSummary={clientsMonthSummary}
