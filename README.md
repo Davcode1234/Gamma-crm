@@ -33,7 +33,7 @@ npm install
 Create a `.env` file in both the **frontend** and **backend** directories if required.  
 For example environment variables or credentials, please contact the author directly.
 
-📩 **Contact:** [davcode1234@gmail.com](mailto:davcode1234@gmail.com)
+📩 **Contact:** [dpietruszewski12@gmail.com](mailto:dpietruszewski12@gmail.com)
 
 ### 4. Run the project
 
