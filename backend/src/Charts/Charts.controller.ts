@@ -48,6 +48,77 @@ export const ChartsController = {
     return await companiesMonthSummary;
   },
 
+  async getUsersExternalHours(month, year) {
+    const designersMonthSummary = await ReckoningTaskModel.aggregate([
+      {
+        $unwind: '$participants',
+      },
+      {
+        $unwind: '$participants.months',
+      },
+      {
+        $unwind: '$participants.months.hours',
+      },
+      {
+        $addFields: {
+          monthDate: {
+            $toDate: '$participants.months.createdAt',
+          },
+        },
+      },
+      {
+        $addFields: {
+          month: { $month: '$monthDate' },
+          year: { $year: '$monthDate' },
+        },
+      },
+      {
+        $match: {
+          ...(month ? { month: parseInt(month, 10) } : {}),
+          ...(year ? { year: parseInt(year, 10) } : {}),
+        },
+      },
+      {
+        $group: {
+          _id: '$participants.name', // albo np. '$participants.user.name'
+          internal: {
+            $sum: {
+              $cond: [
+                { $in: ['$client', ['COTE', 'GAMMA']] },
+                '$participants.months.hours.hourNum',
+                0,
+              ],
+            },
+          },
+          external: {
+            $sum: {
+              $cond: [
+                { $in: ['$client', ['COTE', 'GAMMA']] },
+                0,
+                '$participants.months.hours.hourNum',
+              ],
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          name: '$_id',
+          external: 1,
+          internal: 1,
+        },
+      },
+      {
+        $sort: {
+          name: 1,
+        },
+      },
+    ]);
+
+    return await designersMonthSummary;
+  },
+
   async getUserClientsMonthly(month, year, userId) {
     const userClientsSummary = ReckoningTaskModel.aggregate([
       {

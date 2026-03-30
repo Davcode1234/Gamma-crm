@@ -24,6 +24,23 @@ ChartsRouter.get(
 );
 
 ChartsRouter.get(
+  '/reckoning/user-external-hour/:month/:year',
+  passport.authenticate('jwt', { session: false }),
+  permit('admin'),
+  async (req, res) => {
+    const month = req.params.month;
+    const year = req.params.year;
+    try {
+      const result = await ChartsController.getUsersExternalHours(month, year);
+      res.status(StatusCodes.OK).json(result);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server error');
+    }
+  },
+);
+
+ChartsRouter.get(
   '/reckoning/user-clients-per-hour/:month/:year/:userId',
   passport.authenticate('jwt', { session: false }),
   permit('admin', 'grafik'),
