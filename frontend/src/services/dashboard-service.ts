@@ -44,6 +44,12 @@ export type UsersPerCompanyTypes = {
   companies: CompanyType[];
 };
 
+export type UsersExternalHoursTypes = {
+  internal: number;
+  external: number;
+  name: string;
+};
+
 export async function getClientsMonthSummary(
   month: number,
   year: number,
@@ -68,6 +74,36 @@ export async function getClientsMonthSummary(
   } catch (error) {
     if (Config.isDev) {
       throw new Error('Get clients month summary', error.message);
+    }
+    console.error(error.message);
+    return null;
+  }
+}
+
+export async function getUsersExternalHours(
+  month: number,
+  year: number,
+  yearlySummary: boolean
+) {
+  const fetchUrl = yearlySummary
+    ? `/api/dashboard/reckoning/user-external-hour-yearly/${year}`
+    : `/api/dashboard/reckoning/user-external-hour/${month}/${year}`;
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}${fetchUrl}`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      return await response.json();
+    }
+    throw new Error(`${response.status} ${response.statusText}`);
+  } catch (error) {
+    if (Config.isDev) {
+      throw new Error('Get users external/internal hours', error.message);
     }
     console.error(error.message);
     return null;

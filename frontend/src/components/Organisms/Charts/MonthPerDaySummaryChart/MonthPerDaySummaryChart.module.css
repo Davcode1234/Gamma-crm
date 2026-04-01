@@ -10,6 +10,10 @@
   /* padding-right: 20px; */
 }
 
+.iconWrapper {
+  height: 100%;
+}
+
 .lineChartContainer,
 .iconWrapper {
   background-color: var(--color-lighter);

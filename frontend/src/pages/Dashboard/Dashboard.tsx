@@ -8,10 +8,12 @@ import {
   ClientsMonthSummaryTypes,
   getClientsMonthSummary,
   getMonthDaysSummary,
+  getUsersExternalHours,
   // getTasksTypeSummary,
   getUsersMonthSummary,
   getUsersPerCompany,
   MonthPerDaySummary,
+  UsersExternalHoursTypes,
   UsersMonthSummaryTypes,
   UsersPerCompanyTypes,
 } from '../../services/dashboard-service';
@@ -27,12 +29,16 @@ import UsersPerMonthChart from '../../components/Organisms/Charts/UsersPerMonthC
 import CheckboxLoader from '../../components/Atoms/CheckboxLoader/CheckboxLoader';
 import hasRole from '../../utils/hasRole';
 import useAuth from '../../hooks/useAuth';
+import UsersExternalHours from '../../components/Organisms/Charts/UsersExternalHours/UsersExternalHours';
 // import { getAImonthSummary } from '../../services/AI-service';
 
 function Dashboard() {
   const [viewVariable, setViewVariable] = useState('Miesięczne');
   const [clientsMonthSummary, setClientsMonthSummary] = useState<
     ClientsMonthSummaryTypes[]
+  >([]);
+  const [usersExternalHours, setUsersExternalHours] = useState<
+    UsersExternalHoursTypes[]
   >([]);
   const [usersMonthSummary, setUsersMonthSummary] = useState<
     UsersMonthSummaryTypes[]
@@ -130,6 +136,14 @@ function Dashboard() {
           viewVariable === 'Roczne'
         );
         setClientsMonthSummary(clients);
+
+        const externalHours = await getUsersExternalHours(
+          currentMonthIndex + 1,
+          selectedYear,
+          viewVariable === 'Roczne'
+        );
+
+        setUsersExternalHours(externalHours);
 
         const users = await getUsersMonthSummary(
           currentMonthIndex + 1,
@@ -441,6 +455,12 @@ function Dashboard() {
                   isYearly={viewVariable === 'Roczne'}
                 />
               </div>
+
+              <UsersExternalHours
+                data={usersExternalHours}
+                isLoading={isLoading}
+                dataReady={dataReady}
+              />
             </ChartContainer>
           </div>
         </div>
