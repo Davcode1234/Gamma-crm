@@ -449,3 +449,13 @@ select {
 .PBS {
   background-color: #dc3545 !important;
 }
+
+.Totalizator,
+.TotalizatorSportowy {
+  background-color: #1179c7;
+}
+
+.BabcockPower,
+.Babcock {
+  background-color: #08214d;
+}
