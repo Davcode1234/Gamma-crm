@@ -452,10 +452,10 @@ select {
 
 .Totalizator,
 .TotalizatorSportowy {
-  background-color: #1179c7;
+  background-color: #1179c7 !important;
 }
 
 .BabcockPower,
 .Babcock {
-  background-color: #08214d;
+  background-color: #08214d !important;
 }
