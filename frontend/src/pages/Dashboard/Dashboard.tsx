@@ -455,13 +455,18 @@ function Dashboard() {
                   isYearly={viewVariable === 'Roczne'}
                 />
               </div>
+            </ChartContainer>
 
+            <div className={styles.externalHoursContainer}>
               <UsersExternalHours
                 data={usersExternalHours}
                 isLoading={isLoading}
                 dataReady={dataReady}
+                isYearly={viewVariable === 'Roczne'}
+                year={selectedYear}
+                selectedMonth={selectedMonth}
               />
-            </ChartContainer>
+            </div>
           </div>
         </div>
       )}

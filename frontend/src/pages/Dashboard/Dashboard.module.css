@@ -88,8 +88,6 @@
   display: flex;
   height: 100%;
   align-items: center;
-  /* justify-content: center; */
-  /* margin-left: 5px; */
   gap: 5px;
 }
 
@@ -162,6 +160,15 @@
     margin: 10px 0;
     font-weight: 600;
   }
+}
+
+.externalHoursContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  width: 100%;
+  height: 50%;
+  gap: 10px;
 }
 
 @keyframes appear {

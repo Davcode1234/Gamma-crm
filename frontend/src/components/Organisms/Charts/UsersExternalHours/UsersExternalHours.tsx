@@ -11,7 +11,17 @@ import {
 import { Icon } from '@iconify/react';
 import styles from './UsersExternalHours.module.css';
 
-function UsersExternalHours({ data, dataReady, isLoading }) {
+function UsersExternalHours({
+  data,
+  dataReady,
+  isLoading,
+  isYearly,
+  year,
+  selectedMonth,
+}) {
+  const chartTitle = isYearly
+    ? `[h] Podsumowanie grafików - ${year}`
+    : `[h] Podsumowanie grafików - ${selectedMonth}`;
   if (isLoading) {
     return (
       <div className={styles.iconWrapper}>
@@ -27,31 +37,24 @@ function UsersExternalHours({ data, dataReady, isLoading }) {
 
   return (
     <div className={styles.container}>
+      <div className={styles.chartInfoContainer}>
+        <p>{` ${chartTitle}`}</p>
+      </div>
       {dataReady ? (
-        <ResponsiveContainer>
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart
-            style={{
-              width: '100%',
-              maxWidth: '700px',
-              maxHeight: '70vh',
-              aspectRatio: 1.618,
-            }}
+            width={500}
+            height={300}
             data={data}
-            margin={{
-              top: 20,
-              right: 0,
-              left: 0,
-              bottom: 5,
-            }}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="external" stackId="a" fill="#f68c1e" background />
-            <Bar dataKey="internal" stackId="a" fill="#8884d8" background />
-            {/* <RechartsDevtools /> */}
+            <Bar dataKey="external" stackId="a" fill="#8884d8" />
+            <Bar dataKey="internal" stackId="a" fill="#82ca9d" />
           </BarChart>
         </ResponsiveContainer>
       ) : (

@@ -1,0 +1,56 @@
+.container,
+.iconWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  background-color: var(--color-lighter);
+  border-radius: 10px;
+  box-shadow: 0 0px 3px var(--color-shadow);
+  height: 100%;
+  overflow: hidden;
+  /* padding: 10px 0; */
+}
+
+.noTasksContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.test {
+  margin: 0;
+}
+
+.chartInfoContainer,
+.iconWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 15px 0px 10px 0;
+
+  select {
+    transform: translateX(70%);
+  }
+
+  p {
+    margin: 0;
+    flex-grow: 2;
+    text-align: center;
+    font-weight: 600;
+  }
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingIcon {
+  color: var(--color-orange);
+}
