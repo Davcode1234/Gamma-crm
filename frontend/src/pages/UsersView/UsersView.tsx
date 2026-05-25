@@ -319,17 +319,17 @@ function UsersView() {
         <TilesColumnContainer>
           <InfoBar>
             <div className={styles.taskAuthorCreatorWrapperLabel}>
-              <p className={styles.InfoBarElement}>Autor</p>
+              <p className={styles.InfoBarElement}>Pracownik</p>
             </div>
             <div className={styles.tileContentWrapper}>
-              <p className={styles.InfoBarElement}>Utworzono</p>
+              <p className={styles.InfoBarElement}>Stanowisko</p>
             </div>
 
             <div className={styles.tileContentWrapper}>
-              <p className={styles.InfoBarElement}>Klient</p>
+              <p className={styles.InfoBarElement}>Mail</p>
             </div>
             <div className={styles.tileContentWrapper}>
-              <p className={styles.InfoBarElement}>Tytuł</p>
+              <p className={styles.InfoBarElement}>Numer</p>
             </div>
           </InfoBar>
 
