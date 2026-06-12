@@ -35,6 +35,8 @@ function UsersExternalHours({
     );
   }
 
+  console.log(data);
+
   return (
     <div className={styles.container}>
       <div className={styles.chartInfoContainer}>
@@ -53,8 +55,8 @@ function UsersExternalHours({
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="external" stackId="a" fill="#8884d8" />
-            <Bar dataKey="internal" stackId="a" fill="#82ca9d" />
+            <Bar dataKey="zewnętrzne" stackId="a" fill="#8884d8" />
+            <Bar dataKey="wewnętrzne" stackId="a" fill="#82ca9d" />
           </BarChart>
         </ResponsiveContainer>
       ) : (

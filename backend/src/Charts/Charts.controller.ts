@@ -81,7 +81,7 @@ export const ChartsController = {
       {
         $group: {
           _id: '$participants.name', // albo np. '$participants.user.name'
-          wewnętnętrzne: {
+          wewnętrzne: {
             $sum: {
               $cond: [
                 { $in: ['$client', ['COTE', 'GAMMA']] },
@@ -105,8 +105,8 @@ export const ChartsController = {
         $project: {
           _id: 0,
           name: '$_id',
-          external: 1,
-          internal: 1,
+          zewnętrzne: 1,
+          wewnętrzne: 1,
         },
       },
       {

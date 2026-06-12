@@ -45,8 +45,8 @@ export type UsersPerCompanyTypes = {
 };
 
 export type UsersExternalHoursTypes = {
-  internal: number;
-  external: number;
+  wewnętrzne: number;
+  zewnętrzne: number;
   name: string;
 };
 
