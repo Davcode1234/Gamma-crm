@@ -90,6 +90,15 @@ const useStudioTaskUpdate = (task, closeModal, isPlacker) => {
     }));
   };
 
+  const handleDescriptionChange = (html: string) => {
+    setIsEditing(true);
+
+    setFormValue((prev) => ({
+      ...prev,
+      description: html,
+    }));
+  };
+
   const handleBlur = async () => {
     setIsEditing(false);
     try {
@@ -307,6 +316,7 @@ const useStudioTaskUpdate = (task, closeModal, isPlacker) => {
     isMemberChangeLoading,
     formValue,
     handleFormChange,
+    handleDescriptionChange,
     handleDeleteTask,
     handleArchiveTask,
     handleBlur,

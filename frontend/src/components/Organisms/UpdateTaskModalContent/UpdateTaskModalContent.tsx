@@ -22,6 +22,7 @@ import TaskDateRangeEditor from '../../Molecules/TaskRange/TaskDateRangeEditor/T
 import TaskRangeTrigger from '../../Molecules/TaskRange/TaskRangeTrigger/TaskRangeTrigger';
 import ModalMetaInfoSection from '../../Molecules/ModalMetaInfoSection/ModalMetaInfoSection';
 import { StudioTaskTypes } from '../../../services/studio-tasks-service';
+import RichTextEditor from '../RichTextEditor/RichTextEditor';
 
 type UpdateTaskModalContentProps = {
   task: StudioTaskTypes;
@@ -62,6 +63,7 @@ function UpdateTaskModalContent({
     isMemberChangeLoading,
     formValue,
     handleFormChange,
+    handleDescriptionChange,
     handleArchiveTask,
     handleBlur,
     handleAddMember,
@@ -204,7 +206,7 @@ function UpdateTaskModalContent({
             <p className={styles.descriptionTitle}>Opis</p>
           </ModalSectionTitle>
 
-          <textarea
+          {/* <textarea
             name="taskTitle"
             id="taskTitle"
             onChange={(e) => {
@@ -215,7 +217,17 @@ function UpdateTaskModalContent({
             value={formValue.description}
             className={styles.descriptionInput}
             placeholder="Dodaj opis zlecenia..."
-          />
+          /> */}
+
+          <div className={styles.richTextContainer}>
+            <RichTextEditor
+              value={formValue.description}
+              placeholder="Opis"
+              hasError={false}
+              onChange={handleDescriptionChange}
+              onBlur={handleBlur}
+            />
+          </div>
 
           <ModalSectionTitle iconName="pajamas:task-done">
             <p className={styles.descriptionTitle}>Lista zadań</p>
