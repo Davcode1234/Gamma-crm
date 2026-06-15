@@ -20,6 +20,7 @@ import socket from '../../../socket';
 import CheckboxLoader from '../../Atoms/CheckboxLoader/CheckboxLoader';
 import MultiselectDropdown from '../../Molecules/MultiselectDropdown/MultiselectDropdown';
 import FilterCheckbox from '../../Molecules/FilterCheckbox/FilterCheckbox';
+import RichTextEditor from '../RichTextEditor/RichTextEditor';
 
 type StatusType =
   | 'do_wzięcia'
@@ -349,19 +350,18 @@ function AddStudioTaskModalContent({
               </select>
             </div>
 
-            <Input
-              id="description"
-              type="description"
-              name="description"
-              className={
-                formik.touched.description && formik.errors.description
-                  ? `${styles.errorDescriptionInput}`
-                  : `${styles.descriptionInput}`
-              }
-              placeholder="Opis"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+            <RichTextEditor
               value={formik.values.description}
+              placeholder="Opis"
+              hasError={Boolean(
+                formik.touched.description && formik.errors.description
+              )}
+              onChange={async (html) => {
+                await formik.setFieldValue('description', html, false);
+              }}
+              onBlur={async () => {
+                await formik.setFieldTouched('description', true, true);
+              }}
             />
 
             <select
