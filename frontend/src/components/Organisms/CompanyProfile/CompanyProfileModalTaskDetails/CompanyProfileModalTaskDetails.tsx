@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify';
 import { ReckoningTaskTypes } from '../../../../services/reckoning-view-service';
 import ModalSectionTitle from '../../../Atoms/ModalSectionTitle/ModalSectionTitle';
 import ModalMetaInfoSection from '../../../Molecules/ModalMetaInfoSection/ModalMetaInfoSection';
@@ -13,6 +14,9 @@ function CompanyProfileModalTaskDetails({
   task,
   companyClass,
 }: CompanyProfileModalTaskDetailsProp) {
+  const sanitizedDescription = task.description
+    ? DOMPurify.sanitize(task.description)
+    : '';
   return (
     <>
       <h3 className={styles.editModalTitle}>Szczegóły zlecenia</h3>
@@ -37,7 +41,17 @@ function CompanyProfileModalTaskDetails({
           <p className={styles.title}>Opis</p>
         </ModalSectionTitle>
         <div className={styles.sectionContainer}>
-          {task.description ? <p>{task.description}</p> : <p>Brak opisu</p>}
+          {sanitizedDescription ? (
+            <div
+              className={styles.description}
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{
+                __html: sanitizedDescription,
+              }}
+            />
+          ) : (
+            <p className={styles.emptyDescription}>Brak opisu</p>
+          )}
         </div>
       </div>
     </>
