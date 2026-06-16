@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   DragDropContext,
   OnDragEndResponder,
@@ -29,6 +29,10 @@ function KanbanView({ filterArray, companiesFilterArray }) {
   const [tasksByStatus, setTasksByStatus] = useState(getTasksByStatus([]));
   const [isDragAllowed, setIsDragAllowed] = useState(true);
   const [isStudioTasksLoading, setIsStudioTasksLoading] = useState(true);
+  const unfilteredStudioTasksByStatus = useMemo(
+    () => getTasksByStatus(studioTasks),
+    [studioTasks]
+  );
 
   useEffect(() => {
     socket.on('refreshTasks', (updatedTasks) => {
@@ -208,6 +212,9 @@ function KanbanView({ filterArray, companiesFilterArray }) {
                 key={status}
                 status={status}
                 tasks={tasksByStatus[status]}
+                unfilteredStudioTasks={
+                  unfilteredStudioTasksByStatus[status]?.length ?? 0
+                }
                 isDragAllowed={isDragAllowed}
                 isLoading={isStudioTasksLoading}
               />

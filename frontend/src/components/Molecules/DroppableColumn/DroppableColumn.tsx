@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react';
 import { Droppable } from '@hello-pangea/dnd';
 import styles from './DroppableColumn.module.css';
 import DraggableCard from '../DraggableCard/DraggableCard';
@@ -10,12 +11,37 @@ const test = {
   w_trakcie: styles.wtr,
   wysłane: styles.wys,
 };
-function DroppableColumn({ status, tasks, isDragAllowed, isLoading }) {
+function DroppableColumn({
+  status,
+  tasks,
+  unfilteredStudioTasks,
+  isDragAllowed,
+  isLoading,
+}) {
+  const isAlert = unfilteredStudioTasks > 25 && status !== 'wysłane';
   return (
     <div className={`${styles.columnWrapper} `}>
       <div className={styles.columnTitleWrapper}>
         <div className={`${styles.bullet} ${test[status]}`} />
         <p className={styles.statusName}>{statusNames[status]}</p>
+        <div
+          className={`${styles.tasksNumeberPill} ${
+            isAlert && styles.alertColor
+          }`}
+        >
+          <p>
+            <span>{unfilteredStudioTasks}</span>
+            {status !== 'wysłane' && <span>/25</span>}
+          </p>
+        </div>
+        {isAlert ? (
+          <Icon
+            icon="line-md:alert-circle-loop"
+            width="22"
+            height="22"
+            className={styles.alertIcon}
+          />
+        ) : null}
       </div>
       <Droppable droppableId={status}>
         {(droppableProvided, snapshot) => {
@@ -31,7 +57,9 @@ function DroppableColumn({ status, tasks, isDragAllowed, isLoading }) {
                 tasks.some((task) => task.status === status)
                   ? styles.noBorder
                   : null
-              }`}
+              }
+              ${isAlert && styles.alertColor}
+              `}
             >
               {!isLoading ? (
                 tasks.length > 0 &&

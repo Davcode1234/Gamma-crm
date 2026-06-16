@@ -89,6 +89,26 @@
   animation: load 1s infinite forwards;
 }
 
+.tasksNumeberPill {
+  background-color: var(--color-border);
+  padding: 2px 10px;
+  border-radius: 50px;
+  p {
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    font-weight: 600;
+  }
+}
+
+.alertIcon {
+  color: red;
+}
+
+.alertColor {
+  background-color: rgba(239, 68, 68, 0.12);
+}
+
 @keyframes load {
   0% {
     opacity: 1;
