@@ -18,7 +18,8 @@ function DroppableColumn({
   isDragAllowed,
   isLoading,
 }) {
-  const isAlert = unfilteredStudioTasks > 25 && status !== 'wysłane';
+  const alertValue = 25;
+  const isAlert = unfilteredStudioTasks > alertValue && status !== 'wysłane';
   return (
     <div className={`${styles.columnWrapper} `}>
       <div className={styles.columnTitleWrapper}>
@@ -31,7 +32,7 @@ function DroppableColumn({
         >
           <p>
             <span>{unfilteredStudioTasks}</span>
-            {status !== 'wysłane' && <span>/25</span>}
+            {status !== 'wysłane' && <span>/{alertValue}</span>}
           </p>
         </div>
         {isAlert ? (
