@@ -56,17 +56,35 @@ const useStudioTaskUpdate = (task, closeModal, isPlacker) => {
   };
 
   useEffect(() => {
-    socket.on('deleteTask', (taskToDel) => {
-      dispatch({ type: 'DELETE_STUDIOTASK', payload: taskToDel });
-    });
+    const handleDeleteSocket = (taskToDel) => {
+      dispatch({
+        type: 'DELETE_STUDIOTASK',
+        payload: taskToDel,
+      });
+    };
 
-    socket.on('archiveTask', (taskToArch) => {
-      dispatch({ type: 'DELETE_STUDIOTASK', payload: taskToArch });
-    });
+    const handleArchiveSocket = (taskToArch) => {
+      dispatch({
+        type: 'DELETE_STUDIOTASK',
+        payload: taskToArch,
+      });
+    };
 
-    socket.on('updateTasks', (tasks) => {
-      dispatch({ type: 'UPDATE_STUDIOTASK', payload: tasks });
-    });
+    const handleUpdateSocket = (updatedTask) => {
+      dispatch({
+        type: 'UPDATE_STUDIOTASK',
+        payload: updatedTask,
+      });
+    };
+    socket.on('deleteTask', handleDeleteSocket);
+    socket.on('archiveTask', handleArchiveSocket);
+    socket.on('updateTasks', handleUpdateSocket);
+
+    return () => {
+      socket.off('deleteTask', handleDeleteSocket);
+      socket.off('archiveTask', handleArchiveSocket);
+      socket.off('updateTasks', handleUpdateSocket);
+    };
   }, []);
 
   const handleDeleteTask = async (id) => {
