@@ -143,6 +143,15 @@ const useStudioTaskUpdate = (task, closeModal, isPlacker) => {
     }
   };
 
+  // const handleDescriptionBlur = async () => {
+  //   setIsEditing(false);
+
+  //   try {
+  //   } catch (error) {
+  //     console.error('Error saving value:', error);
+  //   }
+  // };
+
   const handleMemberLoadChange = (name, loadState, loadPlace) => {
     setIsMemberChangeLoading(() => {
       return {

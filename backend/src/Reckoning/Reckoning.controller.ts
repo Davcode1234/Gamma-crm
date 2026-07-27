@@ -50,11 +50,13 @@ export const ReckoningTaskController = {
       return ReckoningTaskModel.create(taskData);
     }
 
-    const participant = existingTask.participants.find((p) => p._id === userId);
+    const participant = existingTask.participants.find(
+      (p) => String(p._id) === String(userId),
+    );
     if (!participant) return;
 
     const requestParticipant = taskData.participants.find(
-      (p) => p._id === userId,
+      (p) => String(p._id) === String(userId),
     );
     const requestMonth = requestParticipant?.months[0];
 
