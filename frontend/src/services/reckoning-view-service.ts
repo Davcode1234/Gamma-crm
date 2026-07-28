@@ -58,10 +58,10 @@ export async function getAllReckoningTasks() {
     }
     throw new Error(`${response.status} ${response.statusText}`);
   } catch (error) {
+    console.error('getAllReckoningTasks failed:', error);
     if (Config.isDev) {
-      throw new Error('Get users', error.message);
+      throw error;
     }
-    console.error(error.message);
     return null;
   }
 }
@@ -84,10 +84,10 @@ export async function getReckoningTask(id: string) {
     }
     throw new Error(`${response.status} ${response.statusText}`);
   } catch (error) {
+    console.error('getReckoningTask failed:', error);
     if (Config.isDev) {
-      throw new Error('Get users', error.message);
+      throw error;
     }
-    console.error(error.message);
     return null;
   }
 }
@@ -112,10 +112,10 @@ export async function getMyReckoningTasks(userId, year, month) {
     }
     throw new Error(`${response.status} ${response.statusText}`);
   } catch (error) {
+    console.error('getMyReckoningTasks failed:', error);
     if (Config.isDev) {
-      throw new Error('Get users', error.message);
+      throw error;
     }
-    console.error(error.message);
     return null;
   }
 }
@@ -166,10 +166,10 @@ export async function addReckoningTask({
     }
     throw new Error(`${response.status} ${response.statusText}`);
   } catch (error) {
+    console.error('addReckoningTask failed:', error);
     if (Config.isDev) {
-      throw new Error('Get users', error.message);
+      throw error;
     }
-    console.error(error.message);
     return null;
   }
 }
@@ -223,10 +223,10 @@ export async function addReckoningTaskFromKanban({
     }
     throw new Error(`${response.status} ${response.statusText}`);
   } catch (error) {
+    console.error('addReckoningTaskFromKanban failed:', error);
     if (Config.isDev) {
-      throw new Error('Get users', error.message);
+      throw error;
     }
-    console.error(error.message);
     return null;
   }
 }
@@ -254,8 +254,9 @@ export async function updateReckoningTask({ taskId, value }) {
     }
     throw new Error(`${response.status} ${response.statusText}`);
   } catch (error) {
+    console.error('updateReckoningTask failed:', error);
     if (Config.isDev) {
-      throw new Error('Update subtask', error.message);
+      throw error;
     }
     return null;
   }
@@ -284,8 +285,9 @@ export async function updateDay({ taskId, userId, dayId, value, monthId }) {
     }
     return null;
   } catch (error) {
+    console.error('updateDay failed:', error);
     if (Config.isDev) {
-      throw new Error('Update subtask', error.message);
+      throw error;
     }
     return null;
   }
@@ -308,8 +310,9 @@ export async function deleteReckoningTask(id, monthId) {
     }
     return null;
   } catch (error) {
+    console.error('deleteReckoningTask failed:', error);
     if (Config.isDev) {
-      throw new Error('Update subtask', error.message);
+      throw error;
     }
     return null;
   }

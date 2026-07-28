@@ -50,16 +50,28 @@ export const ReckoningTaskController = {
       return ReckoningTaskModel.create(taskData);
     }
 
-    const participant = existingTask.participants.find(
-      (p) => String(p._id) === String(userId),
-    );
-    if (!participant) return;
-
     const requestParticipant = taskData.participants.find(
       (p) => String(p._id) === String(userId),
     );
-    const requestMonth = requestParticipant?.months[0];
+    if (!requestParticipant) {
+      throw new Error(`User ${userId} nie występuje w danych żądania`);
+    }
 
+    let participant = existingTask.participants.find(
+      (p) => String(p._id) === String(userId),
+    );
+
+    if (!participant) {
+      existingTask.participants.push(requestParticipant);
+
+      const updatedTask = await ReckoningTaskController.updateReckoningTask(
+        existingTask._id,
+        existingTask,
+      );
+      return updatedTask;
+    }
+
+    const requestMonth = requestParticipant.months[0];
     const monthNumber = Number(monthCreated);
     const yearNumber = new Date(requestMonth.createdAt).getUTCFullYear();
 
@@ -72,22 +84,18 @@ export const ReckoningTaskController = {
     });
 
     if (monthExists && participant.isVisible) {
-      // Month exists and participant is visible; nothing to do
       return { alreadyExist: true };
     }
 
     if (monthExists && !participant.isVisible) {
-      // Month exists but participant is not visible; make participant visible
       participant.isVisible = true;
     }
 
     if (!monthExists && participant.isVisible) {
-      // Month doesn't exist but participant is visible; add new month
       participant.months.push(requestMonth);
     }
 
     if (!monthExists && !participant.isVisible) {
-      // Month doesn't exist and participant is not visible; replace months array and set visible
       participant.months = [requestMonth];
       participant.isVisible = true;
     }
