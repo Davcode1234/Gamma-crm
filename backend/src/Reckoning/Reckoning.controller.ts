@@ -123,7 +123,7 @@ export const ReckoningTaskController = {
     ).length;
 
     const paticipantOfTask = taskToDelete.participants.find((part) => {
-      return part._id === userId;
+      return String(part._id) === String(userId);
     });
 
     const filterMonth = () => {
@@ -152,7 +152,7 @@ export const ReckoningTaskController = {
     } else {
       if (paticipantOfTask.months.length <= 1) {
         taskToDelete.participants = taskToDelete.participants.map((part) => {
-          return part._id === userId && part.isVisible
+          return String(part._id) === String(userId) && part.isVisible
             ? {
                 ...part,
                 months: part.months.map((m) => {
