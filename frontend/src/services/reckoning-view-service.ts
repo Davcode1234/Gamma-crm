@@ -40,6 +40,15 @@ export type ReckoningTaskTypes = {
   month: number;
 };
 
+async function parseErrorMessage(response) {
+  try {
+    const data = await response.json();
+    return data?.message || `${response.status} ${response.statusText}`;
+  } catch {
+    return `${response.status} ${response.statusText}`;
+  }
+}
+
 export async function getAllReckoningTasks() {
   try {
     const response = await fetch(
@@ -56,7 +65,7 @@ export async function getAllReckoningTasks() {
     if (response.ok) {
       return await response.json();
     }
-    throw new Error(`${response.status} ${response.statusText}`);
+    throw new Error(await parseErrorMessage(response));
   } catch (error) {
     console.error('getAllReckoningTasks failed:', error);
     if (Config.isDev) {
@@ -82,7 +91,7 @@ export async function getReckoningTask(id: string) {
     if (response.ok) {
       return await response.json();
     }
-    throw new Error(`${response.status} ${response.statusText}`);
+    throw new Error(await parseErrorMessage(response));
   } catch (error) {
     console.error('getReckoningTask failed:', error);
     if (Config.isDev) {
@@ -110,7 +119,7 @@ export async function getMyReckoningTasks(userId, year, month) {
     if (response.ok) {
       return await response.json();
     }
-    throw new Error(`${response.status} ${response.statusText}`);
+    throw new Error(await parseErrorMessage(response));
   } catch (error) {
     console.error('getMyReckoningTasks failed:', error);
     if (Config.isDev) {
@@ -164,7 +173,7 @@ export async function addReckoningTask({
     if (response.ok) {
       return await response.json();
     }
-    throw new Error(`${response.status} ${response.statusText}`);
+    throw new Error(await parseErrorMessage(response));
   } catch (error) {
     console.error('addReckoningTask failed:', error);
     if (Config.isDev) {
@@ -221,7 +230,7 @@ export async function addReckoningTaskFromKanban({
     if (response.ok) {
       return await response.json();
     }
-    throw new Error(`${response.status} ${response.statusText}`);
+    throw new Error(await parseErrorMessage(response));
   } catch (error) {
     console.error('addReckoningTaskFromKanban failed:', error);
     if (Config.isDev) {
@@ -252,7 +261,7 @@ export async function updateReckoningTask({ taskId, value }) {
     if (response.ok) {
       return await response.json();
     }
-    throw new Error(`${response.status} ${response.statusText}`);
+    throw new Error(await parseErrorMessage(response));
   } catch (error) {
     console.error('updateReckoningTask failed:', error);
     if (Config.isDev) {
@@ -283,7 +292,7 @@ export async function updateDay({ taskId, userId, dayId, value, monthId }) {
     if (response.ok) {
       return await response.json();
     }
-    return null;
+    throw new Error(await parseErrorMessage(response));
   } catch (error) {
     console.error('updateDay failed:', error);
     if (Config.isDev) {
@@ -308,7 +317,7 @@ export async function deleteReckoningTask(id, monthId) {
     if (response.ok) {
       return await response.json();
     }
-    return null;
+    throw new Error(await parseErrorMessage(response));
   } catch (error) {
     console.error('deleteReckoningTask failed:', error);
     if (Config.isDev) {

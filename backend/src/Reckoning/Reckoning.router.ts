@@ -15,7 +15,7 @@ ReckoningTaskRouter.get(
       res.status(StatusCodes.ACCEPTED).json(reckoningTasks);
     } catch (error) {
       console.error(error);
-      res.status(StatusCodes.BAD_REQUEST).json({ message: error });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
     }
   },
 );
@@ -31,7 +31,7 @@ ReckoningTaskRouter.get(
       res.status(StatusCodes.ACCEPTED).json(reckoningTask);
     } catch (error) {
       console.error(error);
-      res.status(StatusCodes.BAD_REQUEST).json({ message: error });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
     }
   },
 );
@@ -51,7 +51,7 @@ ReckoningTaskRouter.get(
       res.status(StatusCodes.ACCEPTED).json(filteredReckoningTasks);
     } catch (error) {
       console.error(error);
-      res.status(StatusCodes.BAD_REQUEST).json({ message: error });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
     }
   },
 );
@@ -80,7 +80,7 @@ ReckoningTaskRouter.post(
       res.status(StatusCodes.CREATED).json(newStudioTask);
     } catch (error) {
       console.error(error);
-      res.status(StatusCodes.BAD_REQUEST).json({ message: error });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
     }
   },
 );
@@ -115,7 +115,7 @@ ReckoningTaskRouter.post(
       res.status(StatusCodes.CREATED).json(newStudioTask);
     } catch (error) {
       console.error(error);
-      res.status(StatusCodes.BAD_REQUEST).json({ message: error });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
     }
   },
 );
@@ -132,7 +132,7 @@ ReckoningTaskRouter.patch(
       res.status(StatusCodes.ACCEPTED).json(updatedReckoningTask);
     } catch (error) {
       console.error(error);
-      res.status(StatusCodes.BAD_REQUEST).json({ message: error });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
     }
   },
 );
@@ -151,7 +151,7 @@ ReckoningTaskRouter.delete(
       res.status(StatusCodes.ACCEPTED).json(deletedReckoTask);
     } catch (error) {
       console.error(error);
-      res.status(StatusCodes.BAD_REQUEST).json({ message: error });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
     }
   },
 );
@@ -176,7 +176,7 @@ ReckoningTaskRouter.patch(
       res.status(StatusCodes.ACCEPTED).json(updatedDay);
     } catch (error) {
       console.error(error);
-      res.status(StatusCodes.BAD_REQUEST).json({ message: error });
+      res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
     }
   },
 );
