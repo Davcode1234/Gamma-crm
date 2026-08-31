@@ -100,11 +100,8 @@ export const ReckoningTaskController = {
       participant.isVisible = true;
     }
 
-    const updatedTask = await ReckoningTaskController.updateReckoningTask(
-      existingTask._id,
-      existingTask,
-    );
-    return updatedTask;
+    await existingTask.save();
+    return existingTask;
   },
 
   async updateReckoningTask(id, taskData) {

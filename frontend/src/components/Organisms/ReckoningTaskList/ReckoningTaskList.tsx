@@ -68,6 +68,7 @@ function ReckoningTaskList({
             reckTask={reckTask}
             index={index}
             selectedMonthIndex={selectedMonthIndex}
+            selectedYear={selectedYear}
             companies={companies}
             isAssignedToKanban={reckTask.idOfAssignedStudioTask !== undefined}
             currentUserId={currentUserId}

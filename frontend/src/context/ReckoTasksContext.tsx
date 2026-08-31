@@ -32,8 +32,14 @@ export const reckoTasksReducer = (state: ReckoTasksStateType, action: any) => {
         }),
       };
     case 'UPDATE_HOUR_NUM': {
-      const { taskId, userId, dayId, newValue, selectedMonthIndex } =
-        action.payload;
+      const {
+        taskId,
+        userId,
+        dayId,
+        newValue,
+        selectedMonthIndex,
+        selectedYear,
+      } = action.payload;
 
       return {
         reckoTasks: state.reckoTasks.map((task) => {
@@ -43,8 +49,12 @@ export const reckoTasksReducer = (state: ReckoTasksStateType, action: any) => {
             if (participant._id !== userId) return participant;
 
             const monthToUpdate = participant.months?.find((m) => {
-              const monthIndex = new Date(m.createdAt).getUTCMonth() + 1;
-              return monthIndex === selectedMonthIndex;
+              const date = new Date(m.createdAt);
+
+              return (
+                date.getUTCMonth() + 1 === selectedMonthIndex &&
+                date.getUTCFullYear() === Number(selectedYear)
+              );
             });
 
             if (!monthToUpdate || !Array.isArray(monthToUpdate.hours)) {
@@ -56,10 +66,13 @@ export const reckoTasksReducer = (state: ReckoTasksStateType, action: any) => {
             );
 
             const updatedMonths = participant.months.map((month) => {
-              const monthIndex = new Date(month.createdAt).getUTCMonth() + 1;
-              return monthIndex === selectedMonthIndex
-                ? { ...month, hours: updatedHours }
-                : month;
+              const date = new Date(month.createdAt);
+
+              const isMatch =
+                date.getUTCMonth() + 1 === selectedMonthIndex &&
+                date.getUTCFullYear() === Number(selectedYear);
+
+              return isMatch ? { ...month, hours: updatedHours } : month;
             });
 
             return { ...participant, months: updatedMonths };
@@ -70,7 +83,8 @@ export const reckoTasksReducer = (state: ReckoTasksStateType, action: any) => {
       };
     }
     case 'CLEAR_HOURS': {
-      const { taskId, userId, selectedMonthIndex } = action.payload;
+      const { taskId, userId, selectedMonthIndex, selectedYear } =
+        action.payload;
 
       return {
         reckoTasks: state.reckoTasks.map((task) => {
@@ -81,9 +95,13 @@ export const reckoTasksReducer = (state: ReckoTasksStateType, action: any) => {
 
             const updatedMonths =
               participant.months?.map((m) => {
-                const idx = new Date(m.createdAt).getUTCMonth() + 1;
+                const date = new Date(m.createdAt);
 
-                if (idx !== selectedMonthIndex) return m;
+                const isMatch =
+                  date.getUTCMonth() + 1 === selectedMonthIndex &&
+                  date.getUTCFullYear() === Number(selectedYear);
+
+                if (!isMatch) return m;
 
                 if (!Array.isArray(m.hours)) return m;
 

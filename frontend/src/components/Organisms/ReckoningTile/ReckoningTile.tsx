@@ -17,6 +17,7 @@ function ReckoningTile({
   reckTask,
   index,
   selectedMonthIndex,
+  selectedYear,
   companies,
   isAssignedToKanban,
   currentUserId,
@@ -46,8 +47,12 @@ function ReckoningTile({
   const filteredHours =
     filteredParticipants.length > 0 && filteredParticipants[0].months
       ? filteredParticipants[0].months.filter((obj) => {
-          const monthIndex = new Date(obj.createdAt).getUTCMonth() + 1;
-          return monthIndex === selectedMonthIndex;
+          const date = new Date(obj.createdAt);
+          const monthIndex = date.getUTCMonth() + 1;
+          const year = date.getUTCFullYear();
+          return (
+            monthIndex === selectedMonthIndex && year === Number(selectedYear)
+          );
         })
       : [];
 
@@ -66,12 +71,15 @@ function ReckoningTile({
     }
 
     const updatedFilteredHours = userPart.months.filter((obj) => {
-      const monthIndex = new Date(obj.createdAt).getUTCMonth() + 1;
-      return monthIndex === selectedMonthIndex;
+      const date = new Date(obj.createdAt);
+      const monthIndex = date.getUTCMonth() + 1;
+      const year = date.getUTCFullYear();
+
+      return monthIndex === selectedMonthIndex && year === Number(selectedYear);
     });
 
     setDays(updatedFilteredHours);
-  }, [reckTask.participants, selectedMonthIndex, currentUserId]);
+  }, [reckTask.participants, selectedMonthIndex, selectedYear, currentUserId]);
 
   const handleFormValueChange = (e, key) => {
     setFormValue((prev) => {
@@ -134,6 +142,7 @@ function ReckoningTile({
           dayId,
           newValue: Number(value.hourNum),
           selectedMonthIndex,
+          selectedYear,
         },
       });
     } catch (error) {
@@ -151,9 +160,11 @@ function ReckoningTile({
     if (!findUser || !findUser.months) return;
 
     const clearedMonthHours = findUser.months.map((m) => {
-      const monthIndex = new Date(m.createdAt).getUTCMonth() + 1;
+      const date = new Date(m.createdAt);
+      const monthIndex = date.getUTCMonth() + 1;
+      const year = date.getUTCFullYear();
 
-      return monthIndex === selectedMonthIndex
+      return monthIndex === selectedMonthIndex && year === Number(selectedYear)
         ? {
             ...m,
             hours: m.hours.map((h) => {
@@ -175,6 +186,7 @@ function ReckoningTile({
         taskId: reckTask._id,
         userId: currentUserId,
         selectedMonthIndex,
+        selectedYear,
       },
     });
 
@@ -202,10 +214,12 @@ function ReckoningTile({
 
       const currentMonth = currentParticipant.months.find((m) => {
         const date = new Date(m.createdAt);
-
-        return date.getUTCMonth() + 1 === selectedMonthIndex;
+        const monthIndex = date.getUTCMonth() + 1;
+        const year = date.getUTCFullYear();
+        return (
+          monthIndex === selectedMonthIndex && year === Number(selectedYear)
+        );
       });
-
       if (!currentMonth) return;
 
       const response = await deleteReckoningTask(id, currentMonth._id);
