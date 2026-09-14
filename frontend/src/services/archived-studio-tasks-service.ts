@@ -1,9 +1,11 @@
 import { Config } from '../config';
 
-export async function getAllArchivedStudioTasks() {
+export async function getAllArchivedStudioTasks(page = 1, limit = 20) {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/archivedstudiotasks`,
+      `${
+        import.meta.env.VITE_API_URL
+      }/api/archivedstudiotasks?page=${page}&limit=${limit}`,
       {
         method: 'GET',
         credentials: 'include',
