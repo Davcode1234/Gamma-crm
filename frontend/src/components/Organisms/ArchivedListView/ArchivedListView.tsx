@@ -21,6 +21,8 @@ function ArchivedListView({
 }) {
   const [archivedStudioTasks, setArchivedStudioTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const { dispatch } = useStudioTasksContext();
 
   useEffect(() => {
@@ -29,11 +31,16 @@ function ArchivedListView({
     });
   }, []);
 
-  const fetchArchivedStudioTasks = async () => {
+  const fetchArchivedStudioTasks = async (currentPage = 1) => {
     try {
       setIsLoading(true);
-      const response = await getAllArchivedStudioTasks();
-      setArchivedStudioTasks(response);
+      const response = await getAllArchivedStudioTasks(currentPage, 20);
+      if (response) {
+        setArchivedStudioTasks((prev) =>
+          currentPage === 1 ? response.data : [...prev, ...response.data]
+        );
+        setHasMore(response.hasMore);
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -44,6 +51,14 @@ function ArchivedListView({
   useEffect(() => {
     fetchArchivedStudioTasks();
   }, []);
+
+  const loadMoreTasks = () => {
+    if (!isLoading && hasMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchArchivedStudioTasks(nextPage);
+    }
+  };
 
   const handleUnarchiveStudioTask = async (task) => {
     const taskColumn = activeGroupedTasks[task.status];
@@ -94,61 +109,77 @@ function ArchivedListView({
             </div>
           </div>
         </InfoBar>
-        {isLoading ? (
-          <SkeletonUsersLoading />
-        ) : (
-          tasksArray.length > 0 && (
-            <>
-              {tasksArray.map((studioTask, index) => {
-                return (
-                  <TileWrapper key={studioTask._id} index={index}>
-                    <div className={styles.tileContainer}>
-                      <div className={styles.taskID}>
-                        <p>{studioTask.searchID}</p>
-                      </div>
-                      <div className={styles.createdAt}>
-                        <DateFormatter dateString={studioTask.startDate} />
-                      </div>
-                      <div className={styles.authorImgContainer}>
-                        <img
-                          className={styles.authorImg}
-                          src={studioTask.author.img}
-                          alt=""
-                        />
-                      </div>
-                      <div className={styles.title}>
-                        <p>{studioTask.title}</p>
-                      </div>
-                      <div className={styles.client}>
-                        <p>{studioTask.client}</p>
-                      </div>
-                      <div className={styles.clientPerson}>
-                        <p>{studioTask.clientPerson}</p>
-                      </div>
-                      <div className={styles.participants}>
-                        <UsersDisplay
-                          data={studioTask}
-                          usersArray={studioTask.participants}
-                          isSmall={false}
-                        />
-                      </div>
-                      <div className={styles.restoreButtonContainer}>
-                        <button
-                          onClick={() => {
-                            handleUnarchiveStudioTask(studioTask);
-                          }}
-                          className={styles.restoreButton}
-                          type="button"
-                        >
-                          Przywróć
-                        </button>
-                      </div>
+        {tasksArray.length > 0 && (
+          <>
+            {tasksArray.map((studioTask, index) => {
+              return (
+                <TileWrapper key={studioTask._id} index={index}>
+                  <div className={styles.tileContainer}>
+                    <div className={styles.taskID}>
+                      <p>{studioTask.searchID}</p>
                     </div>
-                  </TileWrapper>
-                );
-              })}
-            </>
-          )
+                    <div className={styles.createdAt}>
+                      <DateFormatter dateString={studioTask.startDate} />
+                    </div>
+                    <div className={styles.authorImgContainer}>
+                      <img
+                        className={styles.authorImg}
+                        src={studioTask.author.img}
+                        alt=""
+                      />
+                    </div>
+                    <div className={styles.title}>
+                      <p>{studioTask.title}</p>
+                    </div>
+                    <div className={styles.client}>
+                      <p>{studioTask.client}</p>
+                    </div>
+                    <div className={styles.clientPerson}>
+                      <p>{studioTask.clientPerson}</p>
+                    </div>
+                    <div className={styles.participants}>
+                      <UsersDisplay
+                        data={studioTask}
+                        usersArray={studioTask.participants}
+                        isSmall={false}
+                      />
+                    </div>
+                    <div className={styles.restoreButtonContainer}>
+                      <button
+                        onClick={() => {
+                          handleUnarchiveStudioTask(studioTask);
+                        }}
+                        className={styles.restoreButton}
+                        type="button"
+                      >
+                        Przywróć
+                      </button>
+                    </div>
+                  </div>
+                </TileWrapper>
+              );
+            })}
+          </>
+        )}
+        {isLoading && <SkeletonUsersLoading />}
+
+        {!isLoading && hasMore && matchingTasks.length === 0 && (
+          <div
+            className={styles.loadMoreContainer}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              margin: '20px 0',
+            }}
+          >
+            <button
+              onClick={loadMoreTasks}
+              type="button"
+              className={styles.loadMoreButton}
+            >
+              Pokaż więcej
+            </button>
+          </div>
         )}
       </ListContainer>
     </ViewContainer>
