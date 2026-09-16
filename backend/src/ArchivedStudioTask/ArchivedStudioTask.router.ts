@@ -11,9 +11,12 @@ ArchivedStudioTaskRouter.get(
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 20;
+
       const archivedStudioTask =
-        await ArchivedStudioTaskController.getArchivedStudioTasks();
-      res.status(StatusCodes.ACCEPTED).json(archivedStudioTask);
+        await ArchivedStudioTaskController.getArchivedStudioTasks(page, limit);
+      res.status(StatusCodes.OK).json(archivedStudioTask);
     } catch (error) {
       console.error(error);
       res.status(StatusCodes.BAD_REQUEST).json({ message: error });
