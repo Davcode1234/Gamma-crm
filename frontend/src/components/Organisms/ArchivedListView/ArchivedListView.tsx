@@ -13,6 +13,7 @@ import SkeletonUsersLoading from '../SkeletonUsersLoading/SkeletonUsersLoading';
 import InfoBar from '../../Atoms/InfoBar/InfoBar';
 import useStudioTasksContext from '../../../hooks/Context/useStudioTasksContext';
 import socket from '../../../socket';
+import CheckboxLoader from '../../Atoms/CheckboxLoader/CheckboxLoader';
 
 function ArchivedListView({
   activeGroupedTasks,
@@ -169,9 +170,12 @@ function ArchivedListView({
             style={{
               display: 'flex',
               justifyContent: 'center',
+              gap: '10px',
               margin: '10px 0',
             }}
           >
+            {isLoading && <CheckboxLoader />}
+
             <button
               onClick={loadMoreTasks}
               type="button"

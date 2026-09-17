@@ -70,7 +70,7 @@ export const ArchivedStudioTaskController = {
 
     const filteredArchivedStudioTasks = await ArchivedStudioTaskModel.find({
       $or: searchConditions,
-    });
+    }).sort({ createdAt: -1 });
 
     return filteredArchivedStudioTasks;
   },

@@ -53,6 +53,7 @@
 
 .loadMoreButton {
   font-family: Montserrat;
+  font-weight: 600;
   cursor: pointer;
   padding: 7px 15px;
   border-radius: 5px;
