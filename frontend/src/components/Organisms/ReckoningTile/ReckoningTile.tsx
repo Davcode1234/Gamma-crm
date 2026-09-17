@@ -394,6 +394,7 @@ function ReckoningTile({
                 key={dayIndex}
                 value={dayTile.hourNum === 0 ? '' : dayTile.hourNum}
                 disabled={isLoading}
+                onWheel={(e) => e.currentTarget.blur()}
                 onChange={(e) => {
                   if (e.target.value.length > 2 || Number(e.target.value) >= 25)
                     return;
