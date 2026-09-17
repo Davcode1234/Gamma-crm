@@ -1,10 +1,10 @@
-# 🌟 Gamma CRM
+#  Gamma CRM
 
 A bespoke ERP/CRM system developed internally for Gamma Advertising Agency. Designed to replace legacy manual workflows, this tool currently manages active client projects and streamlines communication between the creative and production departments
 
 ---
 
-## 🚀 Features
+##  Features
 
 - Manage clients, companies, and projects  
 - Create and assign tasks  
@@ -14,7 +14,7 @@ A bespoke ERP/CRM system developed internally for Gamma Advertising Agency. Desi
 
 ---
 
-## 🛠️ Installation & Setup
+##  Installation & Setup
 
 ### 1. Clone the repository
 ```bash
@@ -44,7 +44,7 @@ npm run dev
 
 ---
 
-## 🧩 Tech Stack
+##  Tech Stack
 
 - **Frontend:** React, Vite, TypeScript, CSS modules  
 - **Backend:** Node.js, Express, MongoDB, Mongoose  
@@ -73,7 +73,7 @@ Gamma-crm/
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 Developed and maintained by **Dawid [Davcode1234](https://github.com/Davcode1234)**  
 💬 Feel free to reach out via email for setup help or collaboration.
