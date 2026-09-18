@@ -33,6 +33,7 @@ import DropdownHeader from '../../components/Atoms/DropdownHeader/DropdownHeader
 import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterCheckbox';
 import FiltersClearButton from '../../components/Atoms/FiltersClearButton/FiltersClearButton';
 import PlackerView from '../../components/Organisms/PlackerView/PlackerView';
+import CheckboxLoader from '../../components/Atoms/CheckboxLoader/CheckboxLoader';
 
 const initialTaskObject: StudioTaskTypes = {
   searchID: 0,
@@ -92,11 +93,11 @@ function StudioTaskView() {
   });
   const [plackerDataVariable, setPlackerDataVariable] = useState('Graficy');
 
-  // const [loadingState, setLoadingState] = useState({
-  //   isLoading: false,
-  //   isFinalMessage: false,
-  //   finalMessage: '',
-  // });
+  const [loadingState, setLoadingState] = useState({
+    isLoading: false,
+    isFinalMessage: false,
+    finalMessage: '',
+  });
   const [filterDropdown, setFilterDropdown] = useState<boolean>(false);
   const [participantsToFilter, setParticipantsToFilter] = useState<string[]>(
     () => {
@@ -192,12 +193,19 @@ function StudioTaskView() {
     if (inputValue !== latestInputValue.current) return;
 
     try {
+      setLoadingState((prev) => {
+        return { ...prev, isLoading: true };
+      });
       const matchedArchivedTasks = await SearchArchivedTask(inputValue);
       if (inputValue === latestInputValue.current) {
         setMatchingTasks(matchedArchivedTasks);
       }
     } catch (error) {
       console.error('Error fetching matching companies:', error.message);
+    } finally {
+      setLoadingState((prev) => {
+        return { ...prev, isLoading: false };
+      });
     }
     if (!inputValue) setMatchingTasks([]);
   }, 200);
@@ -328,7 +336,11 @@ function StudioTaskView() {
         )}
 
         <div className={styles.searchContainer}>
-          <SearchInput {...getInputProps()} />
+          <div className={styles.searchInputWrapper}>
+            <div>{loadingState.isLoading && <CheckboxLoader />}</div>
+            <SearchInput {...getInputProps()} />
+          </div>
+
           <div
             {...getMenuProps()}
             className={

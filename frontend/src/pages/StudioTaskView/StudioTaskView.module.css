@@ -159,6 +159,17 @@
   margin: 15px 0 0 5px;
 }
 
+.searchInputWrapper {
+  position: relative;
+
+  div:first-child {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-11px, 3px);
+  }
+}
+
 .dropdownFilterInput {
   width: 100%;
   border: none;
