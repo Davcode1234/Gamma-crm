@@ -247,9 +247,10 @@ function StudioTaskView() {
     getInputProps,
     highlightedIndex,
     getItemProps,
+    inputValue,
   } = useCombobox({
     items: matchingTasks,
-    onInputValueChange: ({ inputValue }) => {
+    onInputValueChange: () => {
       latestInputValue.current = inputValue;
       getMatchingTasks({ inputValue });
     },
@@ -339,6 +340,11 @@ function StudioTaskView() {
           <div className={styles.searchInputWrapper}>
             <div>{loadingState.isLoading && <CheckboxLoader />}</div>
             <SearchInput {...getInputProps()} />
+            {!loadingState.isLoading &&
+            matchingTasks.length === 0 &&
+            inputValue ? (
+              <p className={styles.noMatchBatch}>brak dopasowań</p>
+            ) : null}
           </div>
 
           <div
