@@ -335,82 +335,83 @@ function StudioTaskView() {
             optionData={plackerViewOptions}
           />
         )}
+        {viewVariable !== 'Placker' && (
+          <div className={styles.searchContainer}>
+            <div className={styles.searchInputWrapper}>
+              <div>{loadingState.isLoading && <CheckboxLoader />}</div>
+              <SearchInput {...getInputProps()} />
+              {!loadingState.isLoading &&
+              matchingTasks.length === 0 &&
+              inputValue ? (
+                <p className={styles.noMatchBatch}>brak dopasowań</p>
+              ) : null}
+            </div>
 
-        <div className={styles.searchContainer}>
-          <div className={styles.searchInputWrapper}>
-            <div>{loadingState.isLoading && <CheckboxLoader />}</div>
-            <SearchInput {...getInputProps()} />
-            {!loadingState.isLoading &&
-            matchingTasks.length === 0 &&
-            inputValue ? (
-              <p className={styles.noMatchBatch}>brak dopasowań</p>
-            ) : null}
-          </div>
-
-          <div
-            {...getMenuProps()}
-            className={
-              isOpen && matchingTasks.length > 0
-                ? styles.searchResultContainer
-                : styles.hidden
-            }
-            aria-label="results"
-          >
-            {isOpen && viewVariable === 'Aktywne' && (
-              <>
-                <p className={styles.dropdownTitle}>Zarchwizowane:</p>
-                {matchingTasks.map((item, index) => (
-                  <div key={item._id} className={styles.searchedCompanyItem}>
-                    {highlightedIndex === index ? (
-                      <div
-                        {...getItemProps({ item, index })}
-                        className={styles.highlightedCompanyItem}
-                      >
-                        <div className={styles.clientInfoWrapper}>
-                          <p
-                            className={`${styles.clientBatch} ${[
-                              `${item.client}`,
-                            ]}`}
-                          >
-                            {item.client}
-                          </p>
-                          <p
-                            className={`${styles.clientBatch} ${styles.clientPersonBatch}`}
-                          >
-                            {item.clientPerson}
-                          </p>
+            <div
+              {...getMenuProps()}
+              className={
+                isOpen && matchingTasks.length > 0 && viewVariable === 'Aktywne'
+                  ? styles.searchResultContainer
+                  : styles.hidden
+              }
+              aria-label="results"
+            >
+              {isOpen && viewVariable === 'Aktywne' && (
+                <>
+                  <p className={styles.dropdownTitle}>Zarchwizowane:</p>
+                  {matchingTasks.map((item, index) => (
+                    <div key={item._id} className={styles.searchedCompanyItem}>
+                      {highlightedIndex === index ? (
+                        <div
+                          {...getItemProps({ item, index })}
+                          className={styles.highlightedCompanyItem}
+                        >
+                          <div className={styles.clientInfoWrapper}>
+                            <div className={styles.restoreButtonContainer}>
+                              <button
+                                onClick={() => {
+                                  handleUnarchiveStudioTask(studioTask);
+                                }}
+                                className={styles.restoreButton}
+                                type="button"
+                              >
+                                Przywróć
+                              </button>
+                            </div>
+                          </div>
                         </div>
-
-                        <span className={styles.searchTitle}>{item.title}</span>
-                      </div>
-                    ) : (
-                      <div
-                        {...getItemProps({ item, index })}
-                        className={styles.companyItem}
-                      >
-                        <div className={styles.clientInfoWrapper}>
-                          <p
-                            className={`${styles.clientBatch} ${[
-                              `${item.client}`,
-                            ]}`}
-                          >
-                            {item.client}
-                          </p>
-                          <p
-                            className={`${styles.clientBatch} ${styles.clientPersonBatch}`}
-                          >
-                            {item.clientPerson}
-                          </p>
+                      ) : (
+                        <div
+                          {...getItemProps({ item, index })}
+                          className={styles.companyItem}
+                        >
+                          <div className={styles.clientInfoWrapper}>
+                            <p
+                              className={`${styles.clientBatch} ${[
+                                `${item.client}`,
+                              ]}`}
+                            >
+                              {item.client}
+                            </p>
+                            <p
+                              className={`${styles.clientBatch} ${styles.clientPersonBatch}`}
+                            >
+                              {item.clientPerson}
+                            </p>
+                          </div>
+                          <span className={styles.searchTitle}>
+                            {item.title}
+                          </span>
                         </div>
-                        <span className={styles.searchTitle}>{item.title}</span>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </>
-            )}
+                      )}
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        )}
+
         {viewVariable !== 'Placker' && viewVariable !== 'Archiwum' ? (
           <div className={styles.buttonsWrapper}>
             <CTA
