@@ -254,6 +254,8 @@ function StudioTaskView() {
     highlightedIndex,
     getItemProps,
     inputValue,
+    setInputValue,
+    closeMenu,
   } = useCombobox({
     items: matchingTasks,
     onInputValueChange: () => {
@@ -261,7 +263,11 @@ function StudioTaskView() {
       getMatchingTasks({ inputValue });
     },
     onSelectedItemChange: (item) => {
-      item ? handleUnarchiveStudioTask(item.selectedItem) : null;
+      if (item.selectedItem) {
+        handleUnarchiveStudioTask(item.selectedItem);
+        setInputValue('');
+        closeMenu();
+      }
     },
     itemToString: (item) => (item ? item.name : ''),
   });
@@ -375,8 +381,11 @@ function StudioTaskView() {
                           <div className={styles.clientInfoWrapper}>
                             <div className={styles.restoreButtonContainer}>
                               <button
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   handleUnarchiveStudioTask(item);
+                                  setInputValue('');
+                                  closeMenu();
                                 }}
                                 className={styles.restoreButton}
                                 type="button"
