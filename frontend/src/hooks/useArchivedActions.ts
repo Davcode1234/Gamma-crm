@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import socket from '../socket';
-
 import {
   getAllArchivedStudioTasks,
   unarchiveStudioTask,
@@ -9,7 +8,6 @@ import useStudioTasksContext from './Context/useStudioTasksContext';
 
 const useArchivedActions = (activeGroupedTasks, setViewVariable) => {
   const [archivedStudioTasks, setArchivedStudioTasks] = useState([]);
-
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 

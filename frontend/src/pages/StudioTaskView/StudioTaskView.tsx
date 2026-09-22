@@ -34,6 +34,7 @@ import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterChec
 import FiltersClearButton from '../../components/Atoms/FiltersClearButton/FiltersClearButton';
 import PlackerView from '../../components/Organisms/PlackerView/PlackerView';
 import CheckboxLoader from '../../components/Atoms/CheckboxLoader/CheckboxLoader';
+import useArchivedActions from '../../hooks/useArchivedActions';
 
 const initialTaskObject: StudioTaskTypes = {
   searchID: 0,
@@ -111,6 +112,11 @@ function StudioTaskView() {
   });
 
   const { user } = useAuth();
+
+  const { handleUnarchiveStudioTask } = useArchivedActions(
+    tasksByStatus,
+    setViewVariable
+  );
 
   useEffect(() => {
     socket.on('addTask', (updatedTasks) => {
@@ -254,8 +260,8 @@ function StudioTaskView() {
       latestInputValue.current = inputValue;
       getMatchingTasks({ inputValue });
     },
-    onSelectedItemChange: () => {
-      setViewVariable('Archiwum');
+    onSelectedItemChange: (item) => {
+      item ? handleUnarchiveStudioTask(item.selectedItem) : null;
     },
     itemToString: (item) => (item ? item.name : ''),
   });
@@ -370,7 +376,7 @@ function StudioTaskView() {
                             <div className={styles.restoreButtonContainer}>
                               <button
                                 onClick={() => {
-                                  handleUnarchiveStudioTask(studioTask);
+                                  handleUnarchiveStudioTask(item);
                                 }}
                                 className={styles.restoreButton}
                                 type="button"
