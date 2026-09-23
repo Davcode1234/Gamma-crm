@@ -195,26 +195,34 @@ function StudioTaskView() {
 
   const latestInputValue = useRef('');
 
-  const getMatchingTasks = debounce(async ({ inputValue }) => {
-    if (inputValue !== latestInputValue.current) return;
+  const getMatchingTasks = debounce(async () => {
+    const currentQuery = latestInputValue.current; // <-- Always grab the freshest text
+
+    if (!currentQuery) {
+      setMatchingTasks([]);
+      setLoadingState((prev) => ({ ...prev, isLoading: false }));
+      return;
+    }
 
     try {
-      setLoadingState((prev) => {
-        return { ...prev, isLoading: true };
-      });
-      const matchedArchivedTasks = await SearchArchivedTask(inputValue);
-      if (inputValue === latestInputValue.current) {
+      setLoadingState((prev) => ({ ...prev, isLoading: true }));
+
+      // Fetch using the current query
+      const matchedArchivedTasks = await SearchArchivedTask(currentQuery);
+
+      // Double check that the user hasn't typed more while we were waiting for the API
+      if (currentQuery === latestInputValue.current) {
         setMatchingTasks(matchedArchivedTasks);
       }
     } catch (error) {
-      console.error('Error fetching matching companies:', error.message);
+      console.error('Error fetching matching tasks:', error.message);
     } finally {
-      setLoadingState((prev) => {
-        return { ...prev, isLoading: false };
-      });
+      // Again, only turn off loading if this request is still the relevant one
+      if (currentQuery === latestInputValue.current) {
+        setLoadingState((prev) => ({ ...prev, isLoading: false }));
+      }
     }
-    if (!inputValue) setMatchingTasks([]);
-  }, 200);
+  }, 300);
 
   const handleUserAssign = (userOnDrop) => {
     if (participantsToFilter.includes(userOnDrop._id)) {
@@ -258,9 +266,9 @@ function StudioTaskView() {
     closeMenu,
   } = useCombobox({
     items: matchingTasks,
-    onInputValueChange: () => {
-      latestInputValue.current = inputValue;
-      getMatchingTasks({ inputValue });
+    onInputValueChange: ({ inputValue: newInputValue }) => {
+      latestInputValue.current = newInputValue || '';
+      getMatchingTasks();
     },
     onSelectedItemChange: (item) => {
       if (item.selectedItem) {
