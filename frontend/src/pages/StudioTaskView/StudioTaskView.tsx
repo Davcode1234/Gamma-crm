@@ -26,15 +26,14 @@ import ArchivedListView from '../../components/Organisms/ArchivedListView/Archiv
 import MultiselectDropdown from '../../components/Molecules/MultiselectDropdown/MultiselectDropdown';
 import socket from '../../socket';
 import { SearchArchivedTask } from '../../services/archived-studio-tasks-service';
-import SearchInput from '../../components/Atoms/ControlBar/SearchInput/SearchInput';
 import Overlay from '../../components/Atoms/Overlay/Overlay';
 import FilterDropdownContainer from '../../components/Atoms/FilterDropdownContainer/FilterDropdownContainer';
 import DropdownHeader from '../../components/Atoms/DropdownHeader/DropdownHeader';
 import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterCheckbox';
 import FiltersClearButton from '../../components/Atoms/FiltersClearButton/FiltersClearButton';
 import PlackerView from '../../components/Organisms/PlackerView/PlackerView';
-import CheckboxLoader from '../../components/Atoms/CheckboxLoader/CheckboxLoader';
 import useArchivedActions from '../../hooks/useArchivedActions';
+import ComboboxDropdownItem from '../../components/Organisms/ComboboxDropdownItem/ComboboxDropdownItem';
 
 const initialTaskObject: StudioTaskTypes = {
   searchID: 0,
@@ -196,7 +195,7 @@ function StudioTaskView() {
   const latestInputValue = useRef('');
 
   const getMatchingTasks = debounce(async () => {
-    const currentQuery = latestInputValue.current; // <-- Always grab the freshest text
+    const currentQuery = latestInputValue.current;
 
     if (!currentQuery) {
       setMatchingTasks([]);
@@ -207,17 +206,14 @@ function StudioTaskView() {
     try {
       setLoadingState((prev) => ({ ...prev, isLoading: true }));
 
-      // Fetch using the current query
       const matchedArchivedTasks = await SearchArchivedTask(currentQuery);
 
-      // Double check that the user hasn't typed more while we were waiting for the API
       if (currentQuery === latestInputValue.current) {
         setMatchingTasks(matchedArchivedTasks);
       }
     } catch (error) {
       console.error('Error fetching matching tasks:', error.message);
     } finally {
-      // Again, only turn off loading if this request is still the relevant one
       if (currentQuery === latestInputValue.current) {
         setLoadingState((prev) => ({ ...prev, isLoading: false }));
       }
@@ -255,16 +251,7 @@ function StudioTaskView() {
     setIsCompaniesSelectOpen(true);
   };
 
-  const {
-    isOpen,
-    getMenuProps,
-    getInputProps,
-    highlightedIndex,
-    getItemProps,
-    inputValue,
-    setInputValue,
-    closeMenu,
-  } = useCombobox({
+  const { setInputValue, closeMenu } = useCombobox({
     items: matchingTasks,
     onInputValueChange: ({ inputValue: newInputValue }) => {
       latestInputValue.current = newInputValue || '';
@@ -277,7 +264,7 @@ function StudioTaskView() {
         closeMenu();
       }
     },
-    itemToString: (item) => (item ? item.name : ''),
+    itemToString: (item) => (item ? item.title : ''),
   });
 
   const handleFilterDropdownInputValue = (e, key) => {
@@ -301,6 +288,11 @@ function StudioTaskView() {
       .toLocaleLowerCase()
       .includes(selectFilterValue.company.toLocaleLowerCase());
   });
+
+  const handleSearchInputChange = (newInputValue) => {
+    latestInputValue.current = newInputValue || '';
+    getMatchingTasks();
+  };
 
   const viewRender = {
     [VIEWS.ACTIVE]: (
@@ -356,85 +348,13 @@ function StudioTaskView() {
           />
         )}
         {viewVariable !== 'Placker' && (
-          <div className={styles.searchContainer}>
-            <div className={styles.searchInputWrapper}>
-              <div>{loadingState.isLoading && <CheckboxLoader />}</div>
-              <SearchInput {...getInputProps()} />
-              {!loadingState.isLoading &&
-              matchingTasks.length === 0 &&
-              inputValue ? (
-                <p className={styles.noMatchBatch}>
-                  Brak wyników dla <span>{`${inputValue}`}</span>
-                </p>
-              ) : null}
-            </div>
-
-            <div
-              {...getMenuProps()}
-              className={
-                isOpen && matchingTasks.length > 0 && viewVariable === 'Aktywne'
-                  ? styles.searchResultContainer
-                  : styles.hidden
-              }
-              aria-label="results"
-            >
-              {isOpen && viewVariable === 'Aktywne' && (
-                <>
-                  <p className={styles.dropdownTitle}>Zarchwizowane:</p>
-                  {matchingTasks.map((item, index) => (
-                    <div key={item._id} className={styles.searchedCompanyItem}>
-                      {highlightedIndex === index ? (
-                        <div
-                          {...getItemProps({ item, index })}
-                          className={styles.highlightedCompanyItem}
-                        >
-                          <div className={styles.clientInfoWrapper}>
-                            <div className={styles.restoreButtonContainer}>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleUnarchiveStudioTask(item);
-                                  setInputValue('');
-                                  closeMenu();
-                                }}
-                                className={styles.restoreButton}
-                                type="button"
-                              >
-                                Przywróć
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <div
-                          {...getItemProps({ item, index })}
-                          className={styles.companyItem}
-                        >
-                          <div className={styles.clientInfoWrapper}>
-                            <p
-                              className={`${styles.clientBatch} ${[
-                                `${item.client}`,
-                              ]}`}
-                            >
-                              {item.client}
-                            </p>
-                            <p
-                              className={`${styles.clientBatch} ${styles.clientPersonBatch}`}
-                            >
-                              {item.clientPerson}
-                            </p>
-                          </div>
-                          <span className={styles.searchTitle}>
-                            {item.title}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </>
-              )}
-            </div>
-          </div>
+          <ComboboxDropdownItem
+            matchingTasks={matchingTasks}
+            viewVariable={viewVariable}
+            loadingState={loadingState}
+            handleUnarchiveStudioTask={handleUnarchiveStudioTask}
+            onSearchInputChange={handleSearchInputChange}
+          />
         )}
 
         {viewVariable !== 'Placker' && viewVariable !== 'Archiwum' ? (

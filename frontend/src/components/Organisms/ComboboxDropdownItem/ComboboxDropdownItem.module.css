@@ -1,0 +1,176 @@
+.searchContainer {
+  position: relative;
+  max-width: 300px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.searchInputWrapper {
+  position: relative;
+
+  div:first-child {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-11px, 3px);
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.noMatchBatch {
+  font-size: 12px;
+  font-weight: 400;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translate(140%, -45%);
+
+  span {
+    font-weight: 600;
+  }
+}
+
+.searchResultContainer {
+  position: absolute;
+  top: 35px;
+  right: 50%;
+  transform: translateX(52.5%);
+  width: 500px;
+  max-height: 350px;
+  overflow-y: scroll;
+  background-color: var(--color-lighter);
+  z-index: 1000;
+  border-radius: 10px;
+  padding: 15px 20px;
+  animation: appear 0.3s ease forwards;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.searchResultContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.searchResultContainer::-webkit-scrollbar-track {
+  background-color: var(--color-lighter);
+  border-radius: 10px;
+}
+
+.searchResultContainer::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+  border: 2px solid var(--color-lighter);
+}
+
+.searchResultContainer::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-navButton);
+}
+
+.dropdownTitle {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+}
+
+.companyItem,
+.highlightedCompanyItem {
+  position: relative;
+  color: black;
+  font-size: 14px;
+  font-weight: 600;
+  background-color: var(--color-bg);
+  padding: 10px 20px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.highlightedCompanyItem {
+  color: var(--color-orange);
+  cursor: pointer;
+  background-color: var(--color-border);
+}
+
+.clientInfoWrapper {
+  display: flex;
+  gap: 5px;
+}
+
+.clientSearchID {
+  font-size: 9px;
+  position: absolute;
+  top: 0px;
+  right: 15px;
+}
+
+.clientBatch {
+  width: fit-content;
+  font-size: 10px;
+  font-weight: 600;
+  height: 15px;
+  color: var(--color-lighter);
+  padding: 1px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  margin: 0 0 5px 0;
+}
+
+.clientPersonBatch {
+  background-color: var(--color-navButton);
+}
+
+.searchTitle {
+  font-size: 13px;
+  margin: 15px 0 0 5px;
+}
+
+.bottomContainer {
+  border-top: 1px solid rgb(226 232 240 / 0.8);
+  padding: 15px 5px 0px 5px;
+  margin-top: 5px;
+}
+
+/* Zostawiłem klasy przycisku na wypadek, gdybyś go później odkomentował */
+.restoreButtonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 44px;
+}
+
+.restoreButton {
+  cursor: pointer;
+  height: 30px;
+  padding: 0px 15px;
+  border: 1px solid var(--color-orange);
+  background-color: var(--color-orange);
+  border-radius: 20px;
+  color: var(--color-lighter);
+  font-family: Montserrat;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  animation: appear 0.5s ease forwards;
+
+  &:hover {
+    background-color: var(--color-bg);
+    color: var(--color-orange);
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
