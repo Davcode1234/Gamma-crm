@@ -355,7 +355,9 @@ function StudioTaskView() {
               {!loadingState.isLoading &&
               matchingTasks.length === 0 &&
               inputValue ? (
-                <p className={styles.noMatchBatch}>brak dopasowań</p>
+                <p className={styles.noMatchBatch}>
+                  Brak wyników dla <span>{`${inputValue}`}</span>
+                </p>
               ) : null}
             </div>
 

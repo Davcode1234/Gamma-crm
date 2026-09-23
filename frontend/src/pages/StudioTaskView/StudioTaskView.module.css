@@ -200,10 +200,15 @@
 
 .noMatchBatch {
   font-size: 12px;
+  font-weight: 400;
   position: absolute;
   right: 0;
   top: 0;
-  transform: translate(140%, -50%);
+  transform: translate(140%, -45%);
+
+  span {
+    font-weight: 600;
+  }
 }
 
 .dropdownFilterInput {
