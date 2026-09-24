@@ -133,12 +133,12 @@
 }
 
 .bottomContainer {
+  display: flex;
   border-top: 1px solid rgb(226 232 240 / 0.8);
-  padding: 15px 5px 0px 5px;
+  padding: 10px 5px 0 5px;
   margin-top: 5px;
 }
 
-/* Zostawiłem klasy przycisku na wypadek, gdybyś go później odkomentował */
 .restoreButtonContainer {
   width: 100%;
   display: flex;
@@ -164,6 +164,10 @@
     background-color: var(--color-bg);
     color: var(--color-orange);
   }
+}
+
+.hoursSummaryWrapper {
+  position: relative;
 }
 
 @keyframes appear {

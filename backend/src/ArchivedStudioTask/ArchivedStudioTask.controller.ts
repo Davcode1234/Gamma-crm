@@ -50,7 +50,6 @@ export const ArchivedStudioTaskController = {
     }
 
     const regex = new RegExp(query, 'i');
-
     const numericQuery = Number(query);
     const isNumber = !isNaN(numericQuery);
 
@@ -67,10 +66,32 @@ export const ArchivedStudioTaskController = {
     if (isNumber) {
       searchConditions.push({ searchID: numericQuery });
     }
+    const filteredArchivedStudioTasks = await ArchivedStudioTaskModel.aggregate(
+      [
+        { $match: { $or: searchConditions } },
 
-    const filteredArchivedStudioTasks = await ArchivedStudioTaskModel.find({
-      $or: searchConditions,
-    }).sort({ createdAt: -1 });
+        { $sort: { createdAt: -1 } },
+
+        { $limit: 30 },
+
+        {
+          $lookup: {
+            from: 'reckoningtasks',
+            let: { reckoIdStr: '$reckoTaskID' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', { $toObjectId: '$$reckoIdStr' }],
+                  },
+                },
+              },
+            ],
+            as: 'reckoData',
+          },
+        },
+      ],
+    ).exec();
 
     return filteredArchivedStudioTasks;
   },
