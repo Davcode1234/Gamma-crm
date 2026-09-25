@@ -77,12 +77,23 @@ export const ArchivedStudioTaskController = {
         {
           $lookup: {
             from: 'reckoningtasks',
-            let: { reckoIdStr: '$reckoTaskID' },
+            let: { reckoIdStr: { $ifNull: ['$reckoTaskID', null] } },
             pipeline: [
               {
                 $match: {
                   $expr: {
-                    $eq: ['$_id', { $toObjectId: '$$reckoIdStr' }],
+                    $eq: [
+                      '$_id',
+
+                      {
+                        $convert: {
+                          input: '$$reckoIdStr',
+                          to: 'objectId',
+                          onError: null,
+                          onNull: null,
+                        },
+                      },
+                    ],
                   },
                 },
               },

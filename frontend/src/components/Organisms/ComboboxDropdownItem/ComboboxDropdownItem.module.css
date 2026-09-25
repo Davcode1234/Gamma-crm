@@ -139,17 +139,17 @@
   margin-top: 5px;
 }
 
-.restoreButtonContainer {
-  width: 100%;
+.infoWrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 44px;
 }
 
-.restoreButton {
+.restoreButton,
+.visibleRestoreButton {
   cursor: pointer;
-  height: 30px;
+  height: 25px;
   padding: 0px 15px;
   border: 1px solid var(--color-orange);
   background-color: var(--color-orange);
@@ -157,8 +157,10 @@
   color: var(--color-lighter);
   font-family: Montserrat;
   font-weight: 600;
+  font-size: 12px;
   transition: all 0.3s ease;
-  animation: appear 0.5s ease forwards;
+  pointer-events: none;
+  opacity: 0;
 
   &:hover {
     background-color: var(--color-bg);
@@ -166,6 +168,11 @@
   }
 }
 
+.visibleRestoreButton {
+  opacity: 1;
+  animation: appear 0.5s ease forwards;
+  pointer-events: auto;
+}
 .hoursSummaryWrapper {
   position: relative;
 }

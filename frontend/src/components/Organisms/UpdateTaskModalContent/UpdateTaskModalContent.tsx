@@ -192,7 +192,7 @@ function UpdateTaskModalContent({
           <ModalSectionTitle iconName="mdi:account-clock-outline">
             <p className={styles.descriptionTitle}>Rozliczenie</p>
 
-            <HoursSummaryBadge totalHours={totalHours} />
+            <HoursSummaryBadge totalHours={totalHours} isArchive={false} />
           </ModalSectionTitle>
 
           <div className={`${styles.reckoTableWrapper} `}>

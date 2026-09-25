@@ -119,20 +119,6 @@ function ComboboxDropdownItem({
                       </p>
 
                       <p className={styles.clientSearchID}>#{item.searchID}</p>
-                      {/* <div className={styles.restoreButtonContainer}>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleUnarchiveStudioTask(item);
-                                  setInputValue('');
-                                  closeMenu();
-                                }}
-                                className={styles.restoreButton}
-                                type="button"
-                              >
-                                Przywróć
-                              </button>
-                            </div> */}
                     </div>
                     <span className={styles.searchTitle}>{item.title}</span>
                     <div className={styles.bottomContainer}>
@@ -141,8 +127,9 @@ function ComboboxDropdownItem({
                         usersArray={item.participants}
                         isSmall
                       />
-                      {renderHoursBatch(item)}
-                      <div className={styles.restoreButtonContainer}>
+                      <div className={styles.infoWrapper}>
+                        {renderHoursBatch(item)}
+
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -150,7 +137,7 @@ function ComboboxDropdownItem({
                             setInputValue('');
                             closeMenu();
                           }}
-                          className={styles.restoreButton}
+                          className={styles.visibleRestoreButton}
                           type="button"
                         >
                           Przywróć
@@ -186,8 +173,10 @@ function ComboboxDropdownItem({
                         usersArray={item.participants}
                         isSmall
                       />
-                      {renderHoursBatch(item)}
-                      <div className={styles.restoreButtonContainer}>
+
+                      <div className={styles.infoWrapper}>
+                        {renderHoursBatch(item)}
+
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
