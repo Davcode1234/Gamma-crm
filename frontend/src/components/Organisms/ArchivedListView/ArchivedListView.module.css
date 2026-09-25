@@ -7,14 +7,22 @@
 
 .infoBarContainer,
 .tileContainer {
-  padding-left: 3%;
-  width: 90%;
-  display: grid;
   grid-template-columns: 0.3fr 0.6fr 0.7fr 0.9fr 0.6fr 0.5fr 0.9fr 1fr;
+  width: 100%;
+  display: grid;
   grid-template-rows: 1fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
   align-items: center;
+}
+
+.tileElementInfoBar,
+.usersImgContainer {
+  font-weight: 600;
+  color: var(--color-title);
+  p {
+    margin: 5px 0;
+  }
 }
 
 .usersImgContainer {
@@ -49,4 +57,21 @@
 
 .title {
   font-weight: 600;
+}
+
+.loadMoreButton {
+  font-family: Montserrat;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 7px 15px;
+  border-radius: 5px;
+  background-color: transparent;
+  border: 1px solid var(--color-orange);
+  transition: all 0.3s ease;
+  margin: 0;
+
+  &:hover {
+    background-color: var(--color-orange);
+    color: var(--color-lighter);
+  }
 }

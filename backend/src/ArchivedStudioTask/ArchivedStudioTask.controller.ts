@@ -1,11 +1,25 @@
 import { ArchivedStudioTaskModel } from './ArchivedStudioTask.model';
 
 export const ArchivedStudioTaskController = {
-  async getArchivedStudioTasks() {
-    const ArchivedStudioTasks = await ArchivedStudioTaskModel.find()
-      .sort({ index: 1 })
-      .exec();
-    return ArchivedStudioTasks;
+  async getArchivedStudioTasks(page: number = 1, limit: number = 20) {
+    const skip = (page - 1) * limit;
+
+    const [archivedStudioTasks, totalCount] = await Promise.all([
+      ArchivedStudioTaskModel.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean()
+        .exec(),
+      ArchivedStudioTaskModel.countDocuments(),
+    ]);
+
+    const hasMore = skip + archivedStudioTasks.length < totalCount;
+
+    return {
+      data: archivedStudioTasks,
+      hasMore,
+    };
   },
   async getArchivedStudioTask(id) {
     const ArchivedStudioTask =
@@ -30,45 +44,65 @@ export const ArchivedStudioTaskController = {
     return await ArchivedStudioTaskModel.findByIdAndDelete(id);
   },
 
-  async archivedStudioTaskSearch(query) {
-    const archivedStudioTasks =
-      await ArchivedStudioTaskController.getArchivedStudioTasks();
-
-    if (!query || query.trim() === '') {
-      return archivedStudioTasks;
+  async archivedStudioTaskSearch(query: string) {
+    if (!query || query.trim() === '' || query === 'all') {
+      return [];
     }
 
-    if (query === 'all') {
-      return archivedStudioTasks;
-    }
+    const regex = new RegExp(query, 'i');
+    const numericQuery = Number(query);
+    const isNumber = !isNaN(numericQuery);
 
-    const filteredArchivedStudioTasks = archivedStudioTasks.filter(
-      (archivedStudioTask) => {
-        return (
-          archivedStudioTask.title
-            .toLowerCase()
-            .includes(query.toLowerCase()) ||
-          archivedStudioTask.searchID.toString().includes(query) ||
-          archivedStudioTask.client
-            .toLowerCase()
-            .includes(query.toLowerCase()) ||
-          archivedStudioTask.clientPerson
-            .toLowerCase()
-            .includes(query.toLowerCase()) ||
-          archivedStudioTask.status
-            .toLowerCase()
-            .includes(query.toLowerCase()) ||
-          archivedStudioTask.participants.some(
-            (member) =>
-              member.name.toLowerCase().includes(query.toLowerCase()) ||
-              member.lastname.toLowerCase().includes(query.toLowerCase()),
-          ) ||
-          archivedStudioTask.description
-            .toLowerCase()
-            .includes(query.toLowerCase())
-        );
-      },
-    );
+    const searchConditions: any[] = [
+      { title: regex },
+      { client: regex },
+      { clientPerson: regex },
+      { status: regex },
+      { description: regex },
+      { 'participants.name': regex },
+      { 'participants.lastname': regex },
+    ];
+
+    if (isNumber) {
+      searchConditions.push({ searchID: numericQuery });
+    }
+    const filteredArchivedStudioTasks = await ArchivedStudioTaskModel.aggregate(
+      [
+        { $match: { $or: searchConditions } },
+
+        { $sort: { createdAt: -1 } },
+
+        { $limit: 30 },
+
+        {
+          $lookup: {
+            from: 'reckoningtasks',
+            let: { reckoIdStr: { $ifNull: ['$reckoTaskID', null] } },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: [
+                      '$_id',
+
+                      {
+                        $convert: {
+                          input: '$$reckoIdStr',
+                          to: 'objectId',
+                          onError: null,
+                          onNull: null,
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: 'reckoData',
+          },
+        },
+      ],
+    ).exec();
 
     return filteredArchivedStudioTasks;
   },

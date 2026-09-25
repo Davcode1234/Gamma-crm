@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
 import ListContainer from '../../Atoms/ListContainer/ListContainer';
 import ViewContainer from '../../Atoms/ViewContainer/ViewContainer';
-import {
-  getAllArchivedStudioTasks,
-  unarchiveStudioTask,
-} from '../../../services/archived-studio-tasks-service';
 import DateFormatter from '../../../utils/dateFormatter';
 import UsersDisplay from '../UsersDisplay/UsersDisplay';
 import styles from './ArchivedListView.module.css';
@@ -13,15 +9,24 @@ import SkeletonUsersLoading from '../SkeletonUsersLoading/SkeletonUsersLoading';
 import InfoBar from '../../Atoms/InfoBar/InfoBar';
 import useStudioTasksContext from '../../../hooks/Context/useStudioTasksContext';
 import socket from '../../../socket';
+import CheckboxLoader from '../../Atoms/CheckboxLoader/CheckboxLoader';
+import useArchivedActions from '../../../hooks/useArchivedActions';
 
 function ArchivedListView({
   activeGroupedTasks,
   setViewVariable,
   matchingTasks,
 }) {
-  const [archivedStudioTasks, setArchivedStudioTasks] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
   const { dispatch } = useStudioTasksContext();
+
+  const {
+    fetchArchivedStudioTasks,
+    handleUnarchiveStudioTask,
+    isLoading,
+    hasMore,
+    archivedStudioTasks,
+  } = useArchivedActions(activeGroupedTasks, setViewVariable);
 
   useEffect(() => {
     socket.on('unArchiveTask', (task) => {
@@ -29,38 +34,16 @@ function ArchivedListView({
     });
   }, []);
 
-  const fetchArchivedStudioTasks = async () => {
-    try {
-      setIsLoading(true);
-      const response = await getAllArchivedStudioTasks();
-      setArchivedStudioTasks(response);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
     fetchArchivedStudioTasks();
   }, []);
 
-  const handleUnarchiveStudioTask = async (task) => {
-    const taskColumn = activeGroupedTasks[task.status];
-    const taskColumnLength = taskColumn.length;
-    const lastItemOfColumnIndex =
-      taskColumnLength > 0 ? taskColumn[taskColumnLength - 1].index + 1 : 1;
-    socket.emit('taskUnarchived', task);
-
-    const response = await unarchiveStudioTask({
-      id: task._id,
-      index: lastItemOfColumnIndex,
-    });
-    dispatch({ type: 'CREATE_STUDIOTASK', payload: response });
-
-    fetchArchivedStudioTasks();
-
-    setViewVariable('Aktywne');
+  const loadMoreTasks = () => {
+    if (!isLoading && hasMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchArchivedStudioTasks(nextPage);
+    }
   };
 
   const tasksArray =
@@ -94,61 +77,80 @@ function ArchivedListView({
             </div>
           </div>
         </InfoBar>
-        {isLoading ? (
-          <SkeletonUsersLoading />
-        ) : (
-          tasksArray.length > 0 && (
-            <>
-              {tasksArray.map((studioTask, index) => {
-                return (
-                  <TileWrapper key={studioTask._id} index={index}>
-                    <div className={styles.tileContainer}>
-                      <div className={styles.taskID}>
-                        <p>{studioTask.searchID}</p>
-                      </div>
-                      <div className={styles.createdAt}>
-                        <DateFormatter dateString={studioTask.startDate} />
-                      </div>
-                      <div className={styles.authorImgContainer}>
-                        <img
-                          className={styles.authorImg}
-                          src={studioTask.author.img}
-                          alt=""
-                        />
-                      </div>
-                      <div className={styles.title}>
-                        <p>{studioTask.title}</p>
-                      </div>
-                      <div className={styles.client}>
-                        <p>{studioTask.client}</p>
-                      </div>
-                      <div className={styles.clientPerson}>
-                        <p>{studioTask.clientPerson}</p>
-                      </div>
-                      <div className={styles.participants}>
-                        <UsersDisplay
-                          data={studioTask}
-                          usersArray={studioTask.participants}
-                          isSmall={false}
-                        />
-                      </div>
-                      <div className={styles.restoreButtonContainer}>
-                        <button
-                          onClick={() => {
-                            handleUnarchiveStudioTask(studioTask);
-                          }}
-                          className={styles.restoreButton}
-                          type="button"
-                        >
-                          Przywróć
-                        </button>
-                      </div>
+        {tasksArray.length > 0 && (
+          <>
+            {tasksArray.map((studioTask, index) => {
+              return (
+                <TileWrapper key={studioTask._id} index={index}>
+                  <div className={styles.tileContainer}>
+                    <div className={styles.taskID}>
+                      <p>{studioTask.searchID}</p>
                     </div>
-                  </TileWrapper>
-                );
-              })}
-            </>
-          )
+                    <div className={styles.createdAt}>
+                      <DateFormatter dateString={studioTask.startDate} />
+                    </div>
+                    <div className={styles.authorImgContainer}>
+                      <img
+                        className={styles.authorImg}
+                        src={studioTask.author.img}
+                        alt=""
+                      />
+                    </div>
+                    <div className={styles.title}>
+                      <p>{studioTask.title}</p>
+                    </div>
+                    <div className={styles.client}>
+                      <p>{studioTask.client}</p>
+                    </div>
+                    <div className={styles.clientPerson}>
+                      <p>{studioTask.clientPerson}</p>
+                    </div>
+                    <div className={styles.participants}>
+                      <UsersDisplay
+                        data={studioTask}
+                        usersArray={studioTask.participants}
+                        isSmall={false}
+                      />
+                    </div>
+                    <div className={styles.restoreButtonContainer}>
+                      <button
+                        onClick={() => {
+                          handleUnarchiveStudioTask(studioTask);
+                        }}
+                        className={styles.restoreButton}
+                        type="button"
+                      >
+                        Przywróć
+                      </button>
+                    </div>
+                  </div>
+                </TileWrapper>
+              );
+            })}
+          </>
+        )}
+        {isLoading && <SkeletonUsersLoading />}
+
+        {!isLoading && hasMore && matchingTasks.length === 0 && (
+          <div
+            className={styles.loadMoreContainer}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '10px',
+              margin: '10px 0',
+            }}
+          >
+            {isLoading && <CheckboxLoader />}
+
+            <button
+              onClick={loadMoreTasks}
+              type="button"
+              className={styles.loadMoreButton}
+            >
+              Pokaż więcej
+            </button>
+          </div>
         )}
       </ListContainer>
     </ViewContainer>
