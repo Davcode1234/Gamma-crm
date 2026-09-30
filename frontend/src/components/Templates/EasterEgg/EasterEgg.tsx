@@ -26,7 +26,7 @@ export default function EasterEgg() {
   const [visible, setVisible] = useState(false);
 
   useSecretShortcut(() => {
-    const audio = new Audio('Kaz/.mp3');
+    const audio = new Audio('/Potwor.mp3');
     audio.play();
     setVisible(true);
 
