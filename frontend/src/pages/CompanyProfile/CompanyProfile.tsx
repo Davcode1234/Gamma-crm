@@ -366,6 +366,7 @@ function CompanyProfile() {
             currentTasks={currentTasks}
             currentMonthIndex={currentMonthIndex}
             companyHourRate={company && company.hourRate}
+            selectedYear={selectedYear}
           />
 
           <div className={styles.paginationControls}>

@@ -168,11 +168,13 @@ function ReckoningView() {
           (p) =>
             (p._id === currentUserId &&
               p.months?.flatMap((m) => {
-                const monthIndexToSumm =
-                  new Date(m.createdAt).getUTCMonth() + 1;
-                return monthIndexToSumm === selectedMonthIndex
-                  ? m.hours || []
-                  : [];
+                const date = new Date(m.createdAt);
+                const isSameMonth =
+                  date.getUTCMonth() + 1 === selectedMonthIndex;
+                const isSameYear =
+                  date.getUTCFullYear() === Number(selectedYear);
+
+                return isSameMonth && isSameYear ? m.hours || [] : [];
               })) ||
             []
         ) || []

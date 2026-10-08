@@ -25,6 +25,7 @@ type CompanyProfileRowProps = {
   index: number;
   currentMonthIndex: number;
   companyHourRate: string;
+  selectedYear: number;
 };
 
 function CompanyProfileRow({
@@ -32,6 +33,7 @@ function CompanyProfileRow({
   index,
   currentMonthIndex,
   companyHourRate,
+  selectedYear,
 }: CompanyProfileRowProps) {
   const [isChecked, setIsChecked] = useState({
     checkedID: task._id,
@@ -132,12 +134,14 @@ function CompanyProfileRow({
           <p>{task.comment}</p>
         </div>
         <div className={styles.reckoningTaskListElementTile}>
-          <p>{summarizeCompanyProfHours(task, currentMonthIndex)}</p>
+          <p>
+            {summarizeCompanyProfHours(task, currentMonthIndex, selectedYear)}
+          </p>
         </div>
 
         <div className={styles.reckoningTaskListElementTile}>
           <p>
-            {summarizeCompanyProfHours(task, currentMonthIndex) *
+            {summarizeCompanyProfHours(task, currentMonthIndex, selectedYear) *
               Number(companyHourRate)}{' '}
             zł
           </p>
