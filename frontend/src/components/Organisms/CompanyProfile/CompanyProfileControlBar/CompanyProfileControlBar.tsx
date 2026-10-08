@@ -44,7 +44,8 @@ function CompanyProfileControlBar({
     tasks.length > 0
       ? tasks.reduce((tasksTotalHours, task) => {
           return (
-            tasksTotalHours + summarizeCompanyProfHours(task, currentMonthIndex)
+            tasksTotalHours +
+            summarizeCompanyProfHours(task, currentMonthIndex, selectedYear)
           );
         }, 0)
       : 0;
@@ -179,7 +180,11 @@ function CompanyProfileControlBar({
         Numer_karty: task.searchID,
         Autor: task.author.name,
         Firma: task.client,
-        Godziny: summarizeCompanyProfHours(task, currentMonthIndex),
+        Godziny: summarizeCompanyProfHours(
+          task,
+          currentMonthIndex,
+          selectedYear
+        ),
         Opis: task.description,
         Komentarz: task.comment,
         Rozliczone: task.isSettled,
