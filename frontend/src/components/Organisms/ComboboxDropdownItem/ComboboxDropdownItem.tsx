@@ -125,7 +125,6 @@ function ComboboxDropdownItem({
                       <UsersDisplay
                         data={item}
                         usersArray={item.participants}
-                        isSmall
                       />
                       <div className={styles.infoWrapper}>
                         {renderHoursBatch(item)}
@@ -171,7 +170,6 @@ function ComboboxDropdownItem({
                       <UsersDisplay
                         data={item}
                         usersArray={item.participants}
-                        isSmall
                       />
 
                       <div className={styles.infoWrapper}>

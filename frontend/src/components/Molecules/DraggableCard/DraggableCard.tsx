@@ -144,11 +144,7 @@ function DraggableCard({ task, index, doneSubtasks = 0, isDragAllowed }) {
               {/* <span>{`${task.reckoTaskID}`}</span> */}
               <p className={styles.taskTitle}>{task.title}</p>
               <div className={styles.userDisplayWrapper}>
-                <UsersDisplay
-                  data={task}
-                  usersArray={task.participants}
-                  isSmall={false}
-                />
+                <UsersDisplay data={task} usersArray={task.participants} />
               </div>
               <div className={styles.datesWrapper}>
                 {task.deadline && task.startDate ? (

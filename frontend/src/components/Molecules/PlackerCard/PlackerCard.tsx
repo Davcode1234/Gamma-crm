@@ -106,11 +106,7 @@ function PlackerCard({ task, index, isDragAllowed, userId }) {
               <p className={styles.title}>{task.title}</p>
               <p className={styles.statusName}>{statusNames[task.status]}</p>
               <div className={styles.userDisplayWrapper}>
-                <UsersDisplay
-                  data={task}
-                  usersArray={task.participants}
-                  isSmall
-                />
+                <UsersDisplay data={task} usersArray={task.participants} />
               </div>
               <div className={styles.datesWrapper}>
                 {task.deadline && task.startDate ? (

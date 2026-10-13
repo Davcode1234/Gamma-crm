@@ -251,7 +251,6 @@ function ReckoningView() {
                     <UsersDisplay
                       data={studioTask}
                       usersArray={studioTask.participants}
-                      isSmall={false}
                     />
                   </div>
                 </div>

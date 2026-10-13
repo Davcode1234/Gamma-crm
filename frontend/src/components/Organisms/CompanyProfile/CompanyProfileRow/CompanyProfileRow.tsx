@@ -120,11 +120,7 @@ function CompanyProfileRow({
         </div>
 
         <div className={styles.reckoningTaskListElementTile}>
-          <UsersDisplay
-            data={task}
-            usersArray={task.participants}
-            isSmall={false}
-          />
+          <UsersDisplay data={task} usersArray={task.participants} />
         </div>
         <div className={styles.reckoningTaskListElementTile}>
           <p>{task.title}</p>

@@ -18,11 +18,7 @@ function ModalMetaInfoSection({
       <div className={styles.usersContainer}>
         <p className={styles.sectionTitle}>Członkowie</p>
         {task.participants.length > 0 ? (
-          <UsersDisplay
-            data={task}
-            usersArray={task.participants}
-            isSmall={false}
-          />
+          <UsersDisplay data={task} usersArray={task.participants} />
         ) : (
           <p className={styles.noParticipantsPar}>Brak członków</p>
         )}

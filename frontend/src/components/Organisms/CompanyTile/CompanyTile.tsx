@@ -19,11 +19,7 @@ function CompanyTile({ company, index, user, hasRole }) {
           <p>{company.website}</p>
         </div>
 
-        <UsersDisplay
-          data={company}
-          usersArray={company.teamMembers}
-          isSmall={false}
-        />
+        <UsersDisplay data={company} usersArray={company.teamMembers} />
       </div>
     </TileWrapper>
   ) : (
@@ -42,11 +38,7 @@ function CompanyTile({ company, index, user, hasRole }) {
           <p>{company.website}</p>
         </div>
 
-        <UsersDisplay
-          data={company}
-          usersArray={company.teamMembers}
-          isSmall={false}
-        />
+        <UsersDisplay data={company} usersArray={company.teamMembers} />
       </div>
     </TileWrapper>
   );
