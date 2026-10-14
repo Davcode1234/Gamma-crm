@@ -43,6 +43,7 @@ const useReckoningActions = (user) => {
             _id: user[0]._id,
             isVisible: true,
             name: user[0].name,
+            lastname: user[0].lastname,
             img: user[0].img,
             months: [
               {
@@ -106,6 +107,7 @@ const useReckoningActions = (user) => {
             _id: part._id,
             isVisible: currentUserId === part._id,
             name: part.name,
+            lastname: part.lastname,
             img: part.img,
             months: [
               {

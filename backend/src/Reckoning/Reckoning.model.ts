@@ -73,11 +73,13 @@ export const ReckoningTaskModel = mongoose.model(
         _id: {
           type: String,
         },
-        // if one user adds task from kanban all assigned users gets fetched to participants but only user that added task to reckoning has isVisible to true and rest is false that other users can decide if they want to see this task from kanban in their reckoning
         isVisible: {
           type: Boolean,
         },
         name: {
+          type: String,
+        },
+        lastname: {
           type: String,
         },
         img: {

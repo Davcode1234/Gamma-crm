@@ -26,6 +26,7 @@ export type ReckoningTaskTypes = {
       _id: string;
       isVisible: boolean;
       name: string;
+      lastname: string;
       img: string;
       months: [
         {
