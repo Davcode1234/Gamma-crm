@@ -164,52 +164,63 @@ const useStudioTaskUpdate = (task, closeModal, isPlacker) => {
 
   const handleAddMember = async (userId: string, loadPlace: string) => {
     const userToAdd = users.find((user) => user._id === userId);
-    const userToAddNasme = userToAdd.name;
-    const date = new Date();
-
     if (!userToAdd) return;
 
+    const userToAddName = userToAdd.name;
+    const date = new Date();
     const participants = [...task.participants];
 
     const isAlreadyAdded = participants.some(
-      (participant) => participant._id === userId
+      (participant) => String(participant._id) === String(userId)
     );
-
     if (isAlreadyAdded) return;
 
-    const relatedReckoTask = await fetchRelatedReckoTask();
+    try {
+      handleMemberLoadChange(userToAddName, true, loadPlace);
 
-    if (relatedReckoTask !== null) {
-      const updatedReckoTask = {
-        ...relatedReckoTask,
-        participants: [
-          ...relatedReckoTask.participants,
-          {
-            _id: userToAdd._id,
-            name: userToAdd.name,
-            img: userToAdd.img,
-            isVisible: false,
-            hours: generateDaysArray(date.getMonth() + 1, date.getFullYear()),
-            createdAt: new Date(date.getFullYear(), date.getMonth() + 1, 1),
-          },
-        ],
+      const relatedReckoTask = await fetchRelatedReckoTask();
+
+      if (relatedReckoTask !== null) {
+        const isAlreadyInRecko = relatedReckoTask.participants.some(
+          (participant) => String(participant._id) === String(userId)
+        );
+
+        if (!isAlreadyInRecko) {
+          await updateReckoningTask({
+            taskId: relatedReckoTask._id,
+            value: {
+              ...relatedReckoTask,
+              participants: [
+                ...relatedReckoTask.participants,
+                {
+                  _id: userToAdd._id,
+                  name: userToAdd.name,
+                  lastname: userToAdd.lastname,
+                  img: userToAdd.img,
+                  isVisible: false,
+                  hours: generateDaysArray(
+                    date.getMonth() + 1,
+                    date.getFullYear()
+                  ),
+                  createdAt: new Date(
+                    date.getFullYear(),
+                    date.getMonth() + 1,
+                    1
+                  ),
+                },
+              ],
+            },
+          });
+        }
+      }
+
+      const newFormValue = {
+        ...task,
+        participants: [...participants, userToAdd],
       };
 
-      await updateReckoningTask({
-        taskId: updatedReckoTask._id,
-        value: updatedReckoTask,
-      });
-    }
+      setFormValue(newFormValue);
 
-    const newFormValue = {
-      ...task,
-      participants: [...participants, userToAdd],
-    };
-
-    setFormValue(newFormValue);
-
-    try {
-      handleMemberLoadChange(userToAddNasme, true, loadPlace);
       const updatedTask = await UpdateStudioTask({
         id: task._id,
         studioTaskData: newFormValue,
@@ -222,10 +233,9 @@ const useStudioTaskUpdate = (task, closeModal, isPlacker) => {
     } catch (error) {
       console.error('Error saving value:', error);
     } finally {
-      handleMemberLoadChange(userToAddNasme, false, loadPlace);
+      handleMemberLoadChange(userToAddName, false, loadPlace);
     }
   };
-
   const handleDeleteMember = async (userId: string, loadPlace: string) => {
     const userToDelete = users.find((user) => user._id === userId);
     const userToDeleteName = userToDelete.name;
