@@ -1,20 +1,24 @@
 import { Link } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
 import styles from './Navigation.module.css';
+import UserInitialBatch from '../../Atoms/UserInitialsBatch/UserInitialsBatch';
 
 function Navigation() {
   const { signOut, user } = useAuth();
-  const GammaUser = user[0];
+  const loggedUser = user[0];
+
   return (
     <div className={styles.navWrapper}>
       <Link
-        to={`/użytkownicy/${GammaUser._id}`}
+        to={`/użytkownicy/${loggedUser._id}`}
         className={styles.workerWrapper}
       >
-        <img src={GammaUser.img} alt="Worker" className={styles.workerImg} />
+        {/* <img src={loggedUser.img} alt="Worker" className={styles.workerImg} /> */}
+        <UserInitialBatch user={loggedUser} withLabel={false} />
+
         <div className={styles.dataTextWrapper}>
-          <h2 className={styles.name}>{GammaUser.name}</h2>
-          <p className={styles.job}>{GammaUser.job}</p>
+          <h2 className={styles.name}>{loggedUser.name}</h2>
+          <p className={styles.job}>{loggedUser.job}</p>
         </div>
       </Link>
 

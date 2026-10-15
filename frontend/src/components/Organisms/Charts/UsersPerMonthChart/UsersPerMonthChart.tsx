@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import styles from './UsersPerMonthChart.module.css';
+import UserInitialBatch from '../../../Atoms/UserInitialsBatch/UserInitialsBatch';
 
 function UsersPerMonthChart({ usersMonthSummary, isLoading, isYearly }) {
   if (isLoading) {
@@ -26,7 +27,8 @@ function UsersPerMonthChart({ usersMonthSummary, isLoading, isYearly }) {
                 to={`/użytkownicy/${user._id}`}
                 className={styles.userWrapper}
               >
-                <img src={user.img} className={styles.userImg} alt="" />
+                {/* <img src={user.img} className={styles.userImg} alt="" /> */}
+                <UserInitialBatch user={user} isSmaller />
                 <p className={styles.userName}>{user.name}</p>
               </Link>
 
