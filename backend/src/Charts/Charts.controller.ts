@@ -376,24 +376,26 @@ export const ChartsController = {
         $group: {
           _id: {
             userId: '$userId',
-            name: '$participants.name',
-            lastname: '$participants.lastname',
-            img: '$participants.img',
             day: '$day',
-            isWeekend: '$isWeekend',
           },
-          totalHours: { $sum: '$participants.months.hours.hourNum' },
+          name: { $first: '$participants.name' },
+          lastname: { $max: '$participants.lastname' },
+          img: { $first: '$participants.img' },
+          isWeekend: { $first: '$isWeekend' },
+          totalHours: {
+            $sum: '$participants.months.hours.hourNum',
+          },
         },
       },
       {
         $group: {
           _id: '$_id.userId',
-          name: { $first: '$_id.name' },
-          lastname: { $first: '$_id.lastname' },
-          img: { $first: '$_id.img' },
+          name: { $first: '$name' },
+          lastname: { $max: '$lastname' },
+          img: { $first: '$img' },
           days: {
             $push: {
-              isWeekend: '$_id.isWeekend',
+              isWeekend: '$isWeekend',
               day: '$_id.day',
               totalHours: '$totalHours',
             },
