@@ -357,6 +357,7 @@ export const ChartsController = {
           _id: {
             userId: '$userId',
             name: '$participants.name',
+            lastname: '$participants.lastname',
             img: '$participants.img',
             day: '$day',
             isWeekend: '$isWeekend',
@@ -368,6 +369,7 @@ export const ChartsController = {
         $group: {
           _id: '$_id.userId',
           name: { $first: '$_id.name' },
+          lastname: { $first: '$_id.lastname' },
           img: { $first: '$_id.img' },
           days: {
             $push: {
@@ -387,6 +389,7 @@ export const ChartsController = {
         $group: {
           _id: '$_id',
           name: { $first: '$name' },
+          lastname: { $first: '$lastname' },
           img: { $first: '$img' },
           days: { $push: '$days' },
         },
