@@ -22,6 +22,7 @@ import ControlBarTitle from '../../components/Atoms/ControlBar/Title/ControlBarT
 import CTA from '../../components/Atoms/CTA/CTA';
 import MultiselectDropdown from '../../components/Molecules/MultiselectDropdown/MultiselectDropdown';
 import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterCheckbox';
+import UserInitialBatch from '../../components/Atoms/UserInitialsBatch/UserInitialsBatch';
 // import useMultiSelect from '../../hooks/useMultiSelect';
 
 const createUserSchema = Yup.object({
@@ -345,11 +346,12 @@ function UsersView() {
                     index={index}
                   >
                     <div className={styles.taskAuthorCreatorWrapper}>
-                      <img
+                      {/* <img
                         src={user.img}
                         alt="user"
                         className={styles.userImg}
-                      />
+                      /> */}
+                      <UserInitialBatch user={user} />
                       <p>{user.name}</p>
                       <p>{user.lastname}</p>
                     </div>
