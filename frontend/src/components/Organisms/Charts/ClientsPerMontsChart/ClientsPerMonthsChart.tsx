@@ -14,6 +14,7 @@ import {
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
 // import ChartContainer from '../../Atoms/ChartContainer/ChartContainer';
+import { useNavigate } from 'react-router-dom';
 import styles from './ClientsPerMonthsChart.module.css';
 import Select from '../../../Atoms/Select/Select';
 
@@ -30,6 +31,7 @@ function ClientsPerMonthsChart({
   displayRevenue,
 }) {
   const [selectValue, setSelectValue] = useState('Godziny');
+  const navigate = useNavigate();
 
   const handleSelectValue = (e) => {
     e.preventDefault();
@@ -129,6 +131,13 @@ function ClientsPerMonthsChart({
     );
   }
 
+  const handleBarClick = (data) => {
+    const cID = data.payload.companyId;
+
+    if (!cID) return;
+
+    navigate(`/firmy/${cID}`);
+  };
   return (
     <div className={styles.container}>
       <div className={styles.chartInfoContainer}>
@@ -166,6 +175,8 @@ function ClientsPerMonthsChart({
               activeBar={<Rectangle fill="#f68c1e" stroke="#f68c1e" />}
               animationBegin={0}
               animationDuration={500}
+              onClick={handleBarClick}
+              cursor="pointer"
             >
               <LabelList dataKey="_id" content={renderCustomizedLabel} />
             </Bar>

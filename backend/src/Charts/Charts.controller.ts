@@ -41,7 +41,27 @@ export const ChartsController = {
         },
       },
       {
-        $sort: { Suma_godzin: -1 },
+        $lookup: {
+          from: 'companies',
+          localField: '_id',
+          foreignField: 'name',
+          as: 'company',
+        },
+      },
+      {
+        $addFields: {
+          companyId: { $arrayElemAt: ['$company._id', 0] },
+        },
+      },
+      {
+        $project: {
+          company: 0,
+        },
+      },
+      {
+        $sort: {
+          Suma_godzin: -1,
+        },
       },
     ]);
 
