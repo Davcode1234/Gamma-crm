@@ -17,6 +17,8 @@ function CompanyProfileModalTaskDetails({
   const sanitizedDescription = task.description
     ? DOMPurify.sanitize(task.description)
     : '';
+
+  console.log(task);
   return (
     <>
       <h3 className={styles.editModalTitle}>Szczegóły zlecenia</h3>
@@ -51,6 +53,39 @@ function CompanyProfileModalTaskDetails({
             />
           ) : (
             <p className={styles.emptyDescription}>Brak opisu</p>
+          )}
+        </div>
+        <ModalSectionTitle iconName="bx:comment-detail">
+          <p className={styles.title}>Komentarz</p>
+        </ModalSectionTitle>
+
+        <div className={styles.sectionContainer}>
+          {task.comment ? (
+            <p>{task.comment}</p>
+          ) : (
+            <p className={styles.emptyDescription}>Brak komentarza</p>
+          )}
+        </div>
+        <ModalSectionTitle iconName="bytesize:print">
+          <p className={styles.title}>Druk</p>
+        </ModalSectionTitle>
+        <div className={styles.sectionContainer}>
+          {task.printWhat || task.printWhere ? (
+            <div>
+              {task.printWhat && (
+                <p>
+                  <strong>CO: </strong>
+                  {task.printWhat}
+                </p>
+              )}
+              {task.printWhere && (
+                <p>
+                  <strong>GDZIE:</strong> {task.printWhere}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className={styles.emptyDescription}>Brak danych</p>
           )}
         </div>
       </div>
