@@ -4,6 +4,7 @@ import CheckboxLoader from '../../Atoms/CheckboxLoader/CheckboxLoader';
 import styles from './StudioTaskReckoTable.module.css';
 import { months } from '../../../hooks/useCurrentDate';
 import summarizeHours from '../../../utils/SummarizeHours';
+import UserInitialBatch from '../../Atoms/UserInitialsBatch/UserInitialsBatch';
 
 function StudioTaskReckoTable({ assignedReckoTask, isReckoTaskLoading }) {
   if (isReckoTaskLoading) {
@@ -27,7 +28,8 @@ function StudioTaskReckoTable({ assignedReckoTask, isReckoTaskLoading }) {
               className={styles.reckoUserCell}
               to={`/użytkownicy/${art._id}`}
             >
-              <img className={styles.heroImg} src={`${art.img}`} alt="" />
+              {/* <img className={styles.heroImg} src={`${art.img}`} alt="" /> */}
+              <UserInitialBatch user={art} />
               <p className={styles.reckoSectionPartName}>{art.name}:</p>
             </Link>
             <div className={styles.tileSummWrapper}>
