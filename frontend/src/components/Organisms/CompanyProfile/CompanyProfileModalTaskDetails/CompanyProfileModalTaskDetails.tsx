@@ -18,75 +18,76 @@ function CompanyProfileModalTaskDetails({
     ? DOMPurify.sanitize(task.description)
     : '';
 
-  console.log(task);
   return (
     <>
       <h3 className={styles.editModalTitle}>Szczegóły zlecenia</h3>
 
       <div className={styles.modalContainer}>
-        <ModalSectionTitle iconName="line-md:monitor-screenshot-twotone">
-          <p className={styles.title}>{task.title}</p>
-        </ModalSectionTitle>
-        <div className={styles.sectionContainer}>
-          <ModalMetaInfoSection task={task} companyClass={companyClass} />
-        </div>
-        <ModalSectionTitle iconName="pajamas:task-done">
-          <p className={styles.title}>Rozliczenie</p>
-        </ModalSectionTitle>
-        <div className={styles.sectionContainer}>
-          <StudioTaskReckoTable
-            assignedReckoTask={task}
-            isReckoTaskLoading={false}
-          />
-        </div>
-        <ModalSectionTitle iconName="fluent:text-description-ltr-24-filled">
-          <p className={styles.title}>Opis</p>
-        </ModalSectionTitle>
-        <div className={styles.sectionContainer}>
-          {sanitizedDescription ? (
-            <div
-              className={styles.description}
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{
-                __html: sanitizedDescription,
-              }}
+        <div className={styles.infoColumn}>
+          <ModalSectionTitle iconName="line-md:monitor-screenshot-twotone">
+            <p className={styles.title}>{task.title}</p>
+          </ModalSectionTitle>
+          <div className={styles.sectionContainer}>
+            <ModalMetaInfoSection task={task} companyClass={companyClass} />
+          </div>
+          <ModalSectionTitle iconName="pajamas:task-done">
+            <p className={styles.title}>Rozliczenie</p>
+          </ModalSectionTitle>
+          <div className={styles.sectionContainer}>
+            <StudioTaskReckoTable
+              assignedReckoTask={task}
+              isReckoTaskLoading={false}
             />
-          ) : (
-            <p className={styles.emptyDescription}>Brak opisu</p>
-          )}
-        </div>
-        <ModalSectionTitle iconName="bx:comment-detail">
-          <p className={styles.title}>Komentarz</p>
-        </ModalSectionTitle>
+          </div>
+          <ModalSectionTitle iconName="fluent:text-description-ltr-24-filled">
+            <p className={styles.title}>Opis</p>
+          </ModalSectionTitle>
+          <div className={styles.sectionContainer}>
+            {sanitizedDescription ? (
+              <div
+                className={styles.description}
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{
+                  __html: sanitizedDescription,
+                }}
+              />
+            ) : (
+              <p className={styles.emptyDescription}>Brak opisu</p>
+            )}
+          </div>
+          <ModalSectionTitle iconName="bx:comment-detail">
+            <p className={styles.title}>Komentarz</p>
+          </ModalSectionTitle>
 
-        <div className={styles.sectionContainer}>
-          {task.comment ? (
-            <p>{task.comment}</p>
-          ) : (
-            <p className={styles.emptyDescription}>Brak komentarza</p>
-          )}
-        </div>
-        <ModalSectionTitle iconName="bytesize:print">
-          <p className={styles.title}>Druk</p>
-        </ModalSectionTitle>
-        <div className={styles.sectionContainer}>
-          {task.printWhat || task.printWhere ? (
-            <div>
-              {task.printWhat && (
-                <p>
-                  <strong>CO: </strong>
-                  {task.printWhat}
-                </p>
-              )}
-              {task.printWhere && (
-                <p>
-                  <strong>GDZIE:</strong> {task.printWhere}
-                </p>
-              )}
-            </div>
-          ) : (
-            <p className={styles.emptyDescription}>Brak danych</p>
-          )}
+          <div className={styles.sectionContainer}>
+            {task.comment ? (
+              <p>{task.comment}</p>
+            ) : (
+              <p className={styles.emptyDescription}>Brak komentarza</p>
+            )}
+          </div>
+          <ModalSectionTitle iconName="bytesize:print">
+            <p className={styles.title}>Druk</p>
+          </ModalSectionTitle>
+          <div className={styles.sectionContainer}>
+            {task.printWhat || task.printWhere ? (
+              <div>
+                {task.printWhat && (
+                  <p>
+                    <strong>CO: </strong>
+                    {task.printWhat}
+                  </p>
+                )}
+                {task.printWhere && (
+                  <p>
+                    <strong>GDZIE:</strong> {task.printWhere}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <p className={styles.emptyDescription}>Brak danych</p>
+            )}
+          </div>
         </div>
       </div>
     </>
