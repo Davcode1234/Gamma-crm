@@ -388,6 +388,21 @@ function UserProfile() {
                 </div>
               )}
 
+              {viewVariable === 'Profil' &&
+                hasRole(loggedUser, ['admin', 'grafik']) && (
+                  <div className={styles.buttonsWrapper}>
+                    <div className={styles.loaderWrapper}>
+                      {isUpdateProfileLoading && <CheckboxLoader />}
+                    </div>
+                    <SaveButton
+                      callbackFunc={() => {
+                        handleUpdateUser();
+                      }}
+                    >
+                      Zapisz
+                    </SaveButton>
+                  </div>
+                )}
               <div>
                 {hasRole(loggedUser, ['admin']) && (
                   <Select

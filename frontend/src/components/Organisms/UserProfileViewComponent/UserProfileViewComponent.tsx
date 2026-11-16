@@ -205,7 +205,7 @@ function UserProfileViewComponent({
                 )}
               </div>
             )}
-            {hasRole(loggedUser, ['admin']) && (
+            {hasRole(loggedUser, ['admin', 'grafik']) && (
               <div className={styles.inputWrapper}>
                 <ColorPicker
                   value={profileData.color}

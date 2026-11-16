@@ -28,8 +28,7 @@ function UserInitialBatch({
 }: Props) {
   const { labelState, handleMouseEnter, handleMouseLeave } = useShowLabel();
   const { colorById } = useUsersContext();
-  // Embedded user copies (task participants, team members) don't carry the
-  // color, so prefer the one from the live users list.
+
   const backgroundColor = getUserColor({
     _id: String(user._id),
     color: colorById[String(user._id)] ?? user.color,
