@@ -1,0 +1,54 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.label {
+  font-size: 14px;
+  color: var(--color-navButton);
+  margin-bottom: 5px;
+  font-weight: 400;
+}
+
+.preview {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease;
+
+  p {
+    font-weight: 600;
+    color: #ffffff;
+  }
+}
+
+.preview:hover {
+  transform: scale(1.1);
+}
+
+.preview:focus-within {
+  box-shadow:
+    0 0 0 2px #ffffff,
+    0 0 0 4px #111111;
+}
+
+.nativeInput {
+  position: absolute;
+  color: #ffffff;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   deleteUser,
+  getAllUsers,
   getUserById,
   getUserClientsChart,
   getUserProfileSummary,
@@ -31,6 +32,8 @@ import Captcha from '../../components/Molecules/Captcha/Captcha';
 import useModal from '../../hooks/useModal';
 import useAuth from '../../hooks/useAuth';
 import hasRole from '../../utils/hasRole';
+import { getUserColor } from '../../utils/getUserColor';
+import useUsersContext from '../../hooks/Context/useUsersContext';
 
 const VIEW = {
   PROFILE: 'Profil',
@@ -46,6 +49,7 @@ const initialUserObject = {
   phone: 0,
   job: '',
   roles: [],
+  color: '',
 };
 
 const viewVariableSelectValue = ['Miesięczne', 'Roczne'];
@@ -71,6 +75,8 @@ function UserProfile() {
   const [dataReady, setDataReady] = useState(false);
   const navigate = useNavigate();
   const { user: loggedUser } = useAuth();
+  // @ts-ignore
+  const { dispatch: usersDispatch } = useUsersContext();
   const [viewVariable, setViewVariable] = useState(() => {
     return params.id === loggedUser[0]._id ? 'Profil' : 'Rozliczenie';
   });
@@ -169,6 +175,7 @@ function UserProfile() {
             phone: formUser.phone,
             job: formUser.job,
             roles: formUser.roles,
+            color: getUserColor(formUser),
           });
         }
       } else {
@@ -231,6 +238,10 @@ function UserProfile() {
     }));
   };
 
+  const handleColorChange = (color: string) => {
+    setFormValue((prev) => ({ ...prev, color }));
+  };
+
   const handleUpdateUser = async () => {
     try {
       setIsUpdateProfileLoading(true);
@@ -240,6 +251,9 @@ function UserProfile() {
       });
       if (Object.keys(updatedUser).length !== 0) {
         fetchUser();
+        getAllUsers().then((allUsers) => {
+          if (allUsers) usersDispatch({ type: 'SET_USERS', payload: allUsers });
+        });
       }
     } catch (error) {
       console.error('Error updating a user', error.message);
@@ -297,6 +311,7 @@ function UserProfile() {
         isLoading={isUserProfileLoading}
         profileData={formValue}
         handleFormChange={handleFormChange}
+        handleColorChange={handleColorChange}
         user={user}
         viewVariable={viewVariable}
         selectedMonth={selectedMonth}

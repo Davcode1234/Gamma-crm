@@ -16,6 +16,7 @@ import useMultiSelect from '../../../hooks/useMultiSelect';
 import MonthPerDaySummaryChart from '../Charts/MonthPerDaySummaryChart/MonthPerDaySummaryChart';
 import ClientsPerMonthsChart from '../Charts/ClientsPerMontsChart/ClientsPerMonthsChart';
 import SummaryTile from '../Charts/SummaryTile/SummaryTile';
+import ColorPicker from '../../Molecules/ColorPicker/ColorPicker';
 
 const RADIAN = Math.PI / 180;
 const COLORS = ['#22C55E', '#06B6D4'];
@@ -55,6 +56,7 @@ function UserProfileViewComponent({
   isLoading,
   profileData,
   handleFormChange,
+  handleColorChange,
   user,
   viewVariable,
   selectedMonth,
@@ -201,6 +203,17 @@ function UserProfileViewComponent({
                     })}
                   </MultiselectDropdown>
                 )}
+              </div>
+            )}
+            {hasRole(loggedUser, ['admin']) && (
+              <div className={styles.inputWrapper}>
+                <ColorPicker
+                  value={profileData.color}
+                  onChange={handleColorChange}
+                  previewText={`${(profileData.name ?? '').charAt(0)}${(
+                    profileData.lastname ?? ''
+                  ).charAt(0)}`.toUpperCase()}
+                />
               </div>
             )}
           </div>

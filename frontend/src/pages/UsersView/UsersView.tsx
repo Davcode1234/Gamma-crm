@@ -23,6 +23,8 @@ import CTA from '../../components/Atoms/CTA/CTA';
 import MultiselectDropdown from '../../components/Molecules/MultiselectDropdown/MultiselectDropdown';
 import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterCheckbox';
 import UserInitialBatch from '../../components/Atoms/UserInitialsBatch/UserInitialsBatch';
+import ColorPicker from '../../components/Molecules/ColorPicker/ColorPicker';
+import { getFirstFreeColor } from '../../utils/getUserColor';
 // import useMultiSelect from '../../hooks/useMultiSelect';
 
 const createUserSchema = Yup.object({
@@ -35,6 +37,9 @@ const createUserSchema = Yup.object({
   password: Yup.string().required('Hasło jest wymagane'),
   job: Yup.string().required('Stanowisko jest wymagane'),
   img: Yup.string(),
+  color: Yup.string()
+    .matches(/^#[0-9a-fA-F]{6}$/, 'Nieprawidłowy kolor')
+    .required('Kolor jest wymagany'),
 });
 
 const roles = ['admin', 'grafik'];
@@ -89,6 +94,7 @@ function UsersView() {
       job: '',
       img: 'https://res.cloudinary.com/dpktrptfr/image/upload/v1701779173/Windows_10_Default_Profile_Picture.svg_o9zszg.png',
       roles: [],
+      color: '',
     },
     validationSchema: createUserSchema,
     onSubmit: (values) => {
@@ -99,6 +105,7 @@ function UsersView() {
       const { password } = values;
       const { job } = values;
       const { img } = values;
+      const { color } = values;
 
       formik.setStatus(null);
       return signUp({
@@ -110,6 +117,7 @@ function UsersView() {
         job,
         img,
         roles: assignedRoles,
+        color,
       }).catch(() => {
         formik.setStatus('error');
       });
@@ -295,6 +303,17 @@ function UsersView() {
             ) : null}
           </FormControl>
 
+          <ColorPicker
+            value={formik.values.color}
+            onChange={(color) => formik.setFieldValue('color', color)}
+            previewText={`${formik.values.name.charAt(
+              0
+            )}${formik.values.lastname.charAt(0)}`.toUpperCase()}
+          />
+          {formik.touched.color && formik.errors.color ? (
+            <p className={styles.error}>{formik.errors.color}</p>
+          ) : null}
+
           <SubmitButton
             disabled={formik.isSubmitting}
             buttonContent={formik.isSubmitting ? 'Dodawanie...' : 'Dodaj'}
@@ -309,6 +328,7 @@ function UsersView() {
         <div className={styles.buttonsWrapper}>
           <CTA
             onClick={() => {
+              formik.setFieldValue('color', getFirstFreeColor(users ?? []));
               openModal();
             }}
           >

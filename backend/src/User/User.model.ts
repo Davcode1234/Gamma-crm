@@ -33,6 +33,10 @@ export const UserModel = mongoose.model(
       type: String,
       required: true,
     },
+    color: {
+      type: String,
+      match: [/^#[0-9a-fA-F]{6}$/, 'Color must be a hex value like #1D4ED8'],
+    },
     roles: {
       type: [String],
       enum: rolesEnum,

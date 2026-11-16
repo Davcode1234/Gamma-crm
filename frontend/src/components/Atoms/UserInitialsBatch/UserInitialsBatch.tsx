@@ -35,7 +35,7 @@ function UserInitialBatch({
     >
       <div
         className={styles.userInitialsContainer}
-        style={{ backgroundColor: getUserColor(String(user._id)) }}
+        style={{ backgroundColor: getUserColor(user) }}
         onMouseEnter={(e) => {
           handleMouseEnter(user.name, data?.name, e);
         }}
@@ -61,7 +61,7 @@ function UserInitialBatch({
   ) : (
     <div
       className={`${isSmaller ? styles.smaller : styles.userInitialsContainer}`}
-      style={{ backgroundColor: getUserColor(String(user._id)) }}
+      style={{ backgroundColor: getUserColor(user) }}
     >
       {String(user.name ?? '')
         .charAt(0)

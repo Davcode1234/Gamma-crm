@@ -10,6 +10,7 @@ export type User = {
   password: string;
   phone: number;
   roles: string[];
+  color?: string;
 };
 
 export async function getAllUsers(): Promise<User[] | null> {
