@@ -4,6 +4,7 @@ import { getUserColor } from '../../../utils/getUserColor';
 import styles from './UserInitialsBatch.module.css';
 import HoverLabel from '../HoverLabel/HoverLabel';
 import { User } from '../../../services/users-service';
+import useUsersContext from '../../../hooks/Context/useUsersContext';
 
 type Props =
   | {
@@ -26,6 +27,13 @@ function UserInitialBatch({
   isSmaller = false,
 }: Props) {
   const { labelState, handleMouseEnter, handleMouseLeave } = useShowLabel();
+  const { colorById } = useUsersContext();
+  // Embedded user copies (task participants, team members) don't carry the
+  // color, so prefer the one from the live users list.
+  const backgroundColor = getUserColor({
+    _id: String(user._id),
+    color: colorById[String(user._id)] ?? user.color,
+  });
 
   return withLabel ? (
     <Link
@@ -35,7 +43,7 @@ function UserInitialBatch({
     >
       <div
         className={styles.userInitialsContainer}
-        style={{ backgroundColor: getUserColor(user) }}
+        style={{ backgroundColor }}
         onMouseEnter={(e) => {
           handleMouseEnter(user.name, data?.name, e);
         }}
@@ -61,7 +69,7 @@ function UserInitialBatch({
   ) : (
     <div
       className={`${isSmaller ? styles.smaller : styles.userInitialsContainer}`}
-      style={{ backgroundColor: getUserColor(user) }}
+      style={{ backgroundColor }}
     >
       {String(user.name ?? '')
         .charAt(0)

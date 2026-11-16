@@ -1,5 +1,12 @@
-import { createContext, useMemo, useReducer, ReactNode } from 'react';
-import { User } from '../services/users-service';
+import {
+  createContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  ReactNode,
+} from 'react';
+import { getAllUsers, User } from '../services/users-service';
+import useAuth from '../hooks/useAuth';
 
 type UsersStateType = {
   users: User[];
@@ -7,6 +14,8 @@ type UsersStateType = {
 
 type UsersContextType = UsersStateType & {
   dispatch: React.Dispatch<any>;
+  /** Stored color per user id, from the live users list. */
+  colorById: Record<string, string>;
 };
 
 export const UsersContext = createContext<UsersContextType | undefined>(
@@ -43,9 +52,33 @@ export function UsersContextProvider({ children }: { children: ReactNode }) {
     users: [],
   });
 
+  const { user: loggedUser } = useAuth();
+
+  // Load users once after login, so components showing embedded user
+  // copies (task participants, company team members) can look up the
+  // current color by id.
+  useEffect(() => {
+    if (!loggedUser) return;
+    getAllUsers()
+      .then((allUsers) => {
+        if (allUsers) dispatch({ type: 'SET_USERS', payload: allUsers });
+      })
+      .catch(() => {});
+  }, [loggedUser]);
+
+  const colorById = useMemo(
+    () =>
+      Object.fromEntries(
+        (state.users ?? [])
+          .filter((u) => u.color)
+          .map((u) => [String(u._id), u.color as string])
+      ),
+    [state.users]
+  );
+
   const contextValue = useMemo(
-    () => ({ ...state, dispatch }),
-    [state, dispatch]
+    () => ({ ...state, dispatch, colorById }),
+    [state, dispatch, colorById]
   );
 
   return (
