@@ -1,28 +1,103 @@
+import { useState } from 'react';
 import DOMPurify from 'dompurify';
-import { ReckoningTaskTypes } from '../../../../services/reckoning-view-service';
+import {
+  ReckoningTaskTypes,
+  updateReckoningTask,
+} from '../../../../services/reckoning-view-service';
+import {
+  getStudioTask,
+  UpdateStudioTask,
+} from '../../../../services/studio-tasks-service';
+import {
+  getArchivedStudioTask,
+  updateArchivedStudioTask,
+} from '../../../../services/archived-studio-tasks-service';
+import socket from '../../../../socket';
+import useStudioTasksContext from '../../../../hooks/Context/useStudioTasksContext';
 import ModalSectionTitle from '../../../Atoms/ModalSectionTitle/ModalSectionTitle';
 import ModalMetaInfoSection from '../../../Molecules/ModalMetaInfoSection/ModalMetaInfoSection';
 import StudioTaskReckoTable from '../../StudioTaskReckoTable/StudioTaskReckoTable';
 import styles from './CompanyProfileModalTaskDetails.module.css';
-import useStudioTaskUpdate from '../../../../hooks/useStudioTaskUpdate';
 
 type CompanyProfileModalTaskDetailsProp = {
   task: ReckoningTaskTypes;
   companyClass: string;
-  closeModal: () => void;
+  onTitleChange?: (newTitle: string) => void;
 };
 
 function CompanyProfileModalTaskDetails({
   task,
   companyClass,
-  closeModal,
+  onTitleChange,
 }: CompanyProfileModalTaskDetailsProp) {
   const sanitizedDescription = task.description
     ? DOMPurify.sanitize(task.description)
     : '';
 
-  const { isEditing, formValue, setIsEditing, handleFormChange, handleBlur } =
-    useStudioTaskUpdate(task, closeModal, false);
+  const { dispatch: studioTasksDispatch } = useStudioTasksContext();
+  const [isEditing, setIsEditing] = useState(false);
+  const [title, setTitle] = useState(task.title);
+  const [savedTitle, setSavedTitle] = useState(task.title);
+
+  const updateRelatedStudioTask = async (newTitle: string) => {
+    const studioTaskId = task.idOfAssignedStudioTask;
+    if (!studioTaskId) return;
+
+    const studioTask = await getStudioTask(studioTaskId);
+    if (studioTask) {
+      const updatedStudioTask = await UpdateStudioTask({
+        id: studioTaskId,
+        studioTaskData: { ...studioTask, title: newTitle },
+      });
+      if (updatedStudioTask) {
+        const freshStudioTask = await getStudioTask(studioTaskId);
+        if (freshStudioTask) {
+          studioTasksDispatch({
+            type: 'UPDATE_STUDIOTASK',
+            payload: freshStudioTask,
+          });
+          socket.emit('tasksUpdated', freshStudioTask);
+        }
+      }
+      return;
+    }
+
+    const archivedStudioTask = await getArchivedStudioTask(studioTaskId);
+    if (archivedStudioTask) {
+      await updateArchivedStudioTask({
+        id: studioTaskId,
+        value: { title: newTitle },
+      });
+    }
+  };
+
+  const handleTitleBlur = async () => {
+    setIsEditing(false);
+    const trimmedTitle = title.trim();
+
+    if (!trimmedTitle || trimmedTitle === savedTitle) {
+      setTitle(savedTitle);
+      return;
+    }
+
+    try {
+      const updatedReckoTask = await updateReckoningTask({
+        taskId: task._id,
+        value: { title: trimmedTitle },
+      });
+      if (!updatedReckoTask) {
+        setTitle(savedTitle);
+        return;
+      }
+      setTitle(trimmedTitle);
+      setSavedTitle(trimmedTitle);
+      onTitleChange?.(trimmedTitle);
+
+      await updateRelatedStudioTask(trimmedTitle);
+    } catch (error) {
+      console.error('Error updating task title:', error);
+    }
+  };
 
   return (
     <>
@@ -31,20 +106,15 @@ function CompanyProfileModalTaskDetails({
       <div className={styles.modalContainer}>
         <div className={styles.infoColumn}>
           <ModalSectionTitle iconName="line-md:monitor-screenshot-twotone">
-            {/* <p className={styles.title}>{task.title}</p> */}
             <input
               type="text"
               name="taskTitle"
               id="taskTitle"
-              onChange={(e) => {
-                handleFormChange(e, 'title');
-              }}
-              onBlur={handleBlur}
-              onClick={() => setIsEditing(true)}
-              value={formValue.title}
-              className={`${styles.input} ${
-                isEditing ? styles.editMode : styles.noEditMode
-              }`}
+              onChange={(e) => setTitle(e.target.value)}
+              onBlur={handleTitleBlur}
+              onFocus={() => setIsEditing(true)}
+              value={title}
+              className={isEditing ? styles.editMode : styles.noEditMode}
             />
           </ModalSectionTitle>
           <div className={styles.sectionContainer}>

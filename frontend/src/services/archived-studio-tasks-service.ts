@@ -52,6 +52,32 @@ export async function getArchivedStudioTask(id: string) {
   }
 }
 
+export async function updateArchivedStudioTask({ id, value }) {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/archivedstudiotasks/${id}`,
+      {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(value),
+      }
+    );
+    if (response.ok) {
+      return await response.json();
+    }
+    throw new Error(`${response.status} ${response.statusText}`);
+  } catch (error) {
+    if (Config.isDev) {
+      throw new Error('Update archived task', error.message);
+    }
+    console.error(error.message);
+    return null;
+  }
+}
+
 export async function archiveStudioTask(id: string) {
   try {
     const response = await fetch(

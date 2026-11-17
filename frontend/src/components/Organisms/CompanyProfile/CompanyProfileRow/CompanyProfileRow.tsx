@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   ReckoningTaskTypes,
   updateReckoningTask,
@@ -47,6 +47,12 @@ function CompanyProfileRow({
     closeModal: taskCloseModal,
   } = useModal();
 
+  const [title, setTitle] = useState(task.title);
+  const taskWithCurrentTitle = useMemo(
+    () => ({ ...task, title }),
+    [task, title]
+  );
+
   const companyClass = task.client.split(' ').join('');
 
   const handleCheckboxChange = async (e, taskId) => {
@@ -80,9 +86,9 @@ function CompanyProfileRow({
         exitAnim={taskExitAnim}
       >
         <CompanyProfileModalTaskDetails
-          task={task}
+          task={taskWithCurrentTitle}
           companyClass={companyClass}
-          closeModal={taskCloseModal}
+          onTitleChange={setTitle}
         />
       </ModalTemplate>
       <div
@@ -124,7 +130,7 @@ function CompanyProfileRow({
           <UsersDisplay data={task} usersArray={task.participants} />
         </div>
         <div className={styles.reckoningTaskListElementTile}>
-          <p>{task.title}</p>
+          <p>{title}</p>
         </div>
 
         <div className={styles.reckoningTaskListElementTile}>
