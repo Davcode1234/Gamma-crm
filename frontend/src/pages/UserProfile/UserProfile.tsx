@@ -389,7 +389,8 @@ function UserProfile() {
               )}
 
               {viewVariable === 'Profil' &&
-                hasRole(loggedUser, ['admin', 'grafik']) && (
+                hasRole(loggedUser, ['grafik']) &&
+                !hasRole(loggedUser, ['admin']) && (
                   <div className={styles.buttonsWrapper}>
                     <div className={styles.loaderWrapper}>
                       {isUpdateProfileLoading && <CheckboxLoader />}
