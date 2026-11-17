@@ -4,19 +4,25 @@ import ModalSectionTitle from '../../../Atoms/ModalSectionTitle/ModalSectionTitl
 import ModalMetaInfoSection from '../../../Molecules/ModalMetaInfoSection/ModalMetaInfoSection';
 import StudioTaskReckoTable from '../../StudioTaskReckoTable/StudioTaskReckoTable';
 import styles from './CompanyProfileModalTaskDetails.module.css';
+import useStudioTaskUpdate from '../../../../hooks/useStudioTaskUpdate';
 
 type CompanyProfileModalTaskDetailsProp = {
   task: ReckoningTaskTypes;
   companyClass: string;
+  closeModal: () => void;
 };
 
 function CompanyProfileModalTaskDetails({
   task,
   companyClass,
+  closeModal,
 }: CompanyProfileModalTaskDetailsProp) {
   const sanitizedDescription = task.description
     ? DOMPurify.sanitize(task.description)
     : '';
+
+  const { isEditing, formValue, setIsEditing, handleFormChange, handleBlur } =
+    useStudioTaskUpdate(task, closeModal, false);
 
   return (
     <>
@@ -25,7 +31,21 @@ function CompanyProfileModalTaskDetails({
       <div className={styles.modalContainer}>
         <div className={styles.infoColumn}>
           <ModalSectionTitle iconName="line-md:monitor-screenshot-twotone">
-            <p className={styles.title}>{task.title}</p>
+            {/* <p className={styles.title}>{task.title}</p> */}
+            <input
+              type="text"
+              name="taskTitle"
+              id="taskTitle"
+              onChange={(e) => {
+                handleFormChange(e, 'title');
+              }}
+              onBlur={handleBlur}
+              onClick={() => setIsEditing(true)}
+              value={formValue.title}
+              className={`${styles.input} ${
+                isEditing ? styles.editMode : styles.noEditMode
+              }`}
+            />
           </ModalSectionTitle>
           <div className={styles.sectionContainer}>
             <ModalMetaInfoSection task={task} companyClass={companyClass} />

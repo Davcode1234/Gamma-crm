@@ -47,8 +47,6 @@ function UpdateTaskModalContent({
     user: '',
   });
 
-  console.log(task, closeModal, setDeleteCaptcha, companyClass, isPlacker);
-
   const [searchIDCopied, setSearchIDCopied] = useState(false);
 
   const { isCalendarEditOpen, setIsCalendarEditOpen } = useCalendar(task);

@@ -82,6 +82,7 @@ function CompanyProfileRow({
         <CompanyProfileModalTaskDetails
           task={task}
           companyClass={companyClass}
+          closeModal={taskCloseModal}
         />
       </ModalTemplate>
       <div
