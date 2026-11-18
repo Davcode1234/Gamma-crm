@@ -21,6 +21,15 @@ export const UserController = {
     return await UserModel.findByIdAndRemove(id);
   },
 
+  // A client account must have a company and cannot have any other role.
+  // Returns an error message, or null when the roles are fine.
+  validateClientRoles(roles: string[] = [], company?: string) {
+    if (!roles.includes('client')) return null;
+    if (roles.length > 1) return 'Client cannot have other roles';
+    if (!company) return 'Client must be assigned to a company';
+    return null;
+  },
+
   permitOwnerOrAdmin(req, res, next) {
     const requestedId = req.params.id;
     const loggedUser = req.user;

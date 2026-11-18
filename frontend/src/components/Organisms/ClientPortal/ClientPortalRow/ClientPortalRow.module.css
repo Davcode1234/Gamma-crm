@@ -1,0 +1,88 @@
+.row {
+  width: 100%;
+  min-height: 35px;
+  font-size: 12px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: appear 0.3s ease forwards;
+}
+
+.darkerRow {
+  background-color: var(--color-shadow);
+}
+
+.settled {
+  background-color: var(--color-green);
+  opacity: 0.8;
+}
+
+.row:hover {
+  background-color: var(--color-orange);
+  color: var(--color-lighter);
+  opacity: 1;
+}
+
+.tile {
+  width: 10%;
+  padding: 0 5px;
+  text-align: center;
+  overflow: hidden;
+  border-right: 1px solid var(--color-shadow);
+  border-bottom: 1px solid var(--color-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
+.tile:nth-child(1) {
+  width: 7%;
+  font-weight: 600;
+}
+
+.tile:nth-child(2) {
+  width: 13%;
+  font-weight: 600;
+}
+
+.tile:nth-child(3) {
+  width: 30%;
+  justify-content: flex-start;
+}
+
+/* Graficy, Suma and Rozliczone are left-aligned */
+.tile:nth-child(n + 4) {
+  justify-content: flex-start;
+  padding-left: 10px;
+}
+
+.participantsTile {
+  width: 30%;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.participantHours {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -18,9 +18,23 @@ import ClientProfile from '../ClientProfile/ClientProfile';
 import RouteProtection from '../../components/Templates/RouteProtection/RouteProtection';
 import hasRole from '../../utils/hasRole';
 import UserProfileGuard from '../../components/Templates/UserProfileGuard/UserProfileGuard';
+import ClientPortalView from '../ClientPortalView/ClientPortalView';
 
 function App() {
   const { user } = useAuth();
+
+  // Client accounts only get their read-only portal; every other path
+  // redirects there.
+  if (user && hasRole(user, ['client'])) {
+    return (
+      <MainTemplate>
+        <Routes>
+          <Route path="/moje-zlecenia" element={<ClientPortalView />} />
+          <Route path="*" element={<Navigate to="/moje-zlecenia" replace />} />
+        </Routes>
+      </MainTemplate>
+    );
+  }
 
   return user ? (
     <MainTemplate>

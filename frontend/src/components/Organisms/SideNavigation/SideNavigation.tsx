@@ -51,6 +51,11 @@ const sideNavButtons = [
     icon: 'material-symbols:warehouse-outline-rounded',
     roles: ['admin'],
   },
+  {
+    name: 'moje-zlecenia',
+    icon: 'fluent:tasks-app-24-regular',
+    roles: ['client'],
+  },
 ];
 
 function SideNavigation() {

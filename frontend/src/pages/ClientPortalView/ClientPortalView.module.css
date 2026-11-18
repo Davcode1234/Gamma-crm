@@ -1,0 +1,72 @@
+.headerRow {
+  width: 100%;
+  display: flex;
+  font-size: 13px;
+  font-weight: 600;
+  border-bottom: 3px solid var(--color-orange);
+  background-color: var(--color-navButton);
+  color: var(--color-bg);
+}
+
+/* Widths match the columns in ClientPortalRow.module.css */
+.headerTile {
+  width: 10%;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--color-shadow);
+}
+
+.headerTile:nth-child(1) {
+  width: 7%;
+}
+
+.headerTile:nth-child(2) {
+  width: 13%;
+}
+
+.headerTile:nth-child(3),
+.headerTile:nth-child(4) {
+  width: 30%;
+}
+
+/* Graficy, Suma and Rozliczone are left-aligned, like in the rows */
+.headerTile:nth-child(n + 4) {
+  justify-content: flex-start;
+  padding-left: 10px;
+}
+
+.sortableTile {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sortableTile:hover {
+  color: var(--color-orange);
+}
+
+.rows {
+  width: 100%;
+  overflow-y: auto;
+}
+
+.stateWrapper {
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+
+  p {
+    font-weight: 600;
+  }
+}
+
+.loadingIcon {
+  color: var(--color-orange);
+}
+
+.errorIcon {
+  color: var(--color-error);
+}

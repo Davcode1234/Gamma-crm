@@ -1,6 +1,10 @@
 import { StatusCodes } from 'http-status-codes';
 import { Router } from 'express';
 import { AuthController } from './Auth.controller';
+import passport from 'passport';
+import './Passport';
+import { permit } from './permit';
+import { UserController } from '../User/User.controller';
 
 export const AuthRouter = Router();
 
@@ -37,16 +41,31 @@ AuthRouter.post('/signin', async (req, res) => {
   }
 });
 
-AuthRouter.post('/signup', async (req, res) => {
-  try {
-    const newUser = await AuthController.addUser(req.body);
-    res.status(StatusCodes.CREATED).json(newUser);
-  } catch (error) {
-    res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ error: { message: error.message } });
-  }
-});
+AuthRouter.post(
+  '/signup',
+  passport.authenticate('jwt', { session: false }),
+  permit('admin'),
+  async (req, res) => {
+    try {
+      const clientRoleError = UserController.validateClientRoles(
+        req.body.roles,
+        req.body.company,
+      );
+      if (clientRoleError) {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ error: { message: clientRoleError } });
+        return;
+      }
+      const newUser = await AuthController.addUser(req.body);
+      res.status(StatusCodes.CREATED).json(newUser);
+    } catch (error) {
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: { message: error.message } });
+    }
+  },
+);
 
 AuthRouter.post('/signout', async (req, res) => {
   try {
