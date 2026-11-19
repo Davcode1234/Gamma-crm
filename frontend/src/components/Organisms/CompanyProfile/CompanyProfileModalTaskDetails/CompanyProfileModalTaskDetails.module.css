@@ -99,3 +99,34 @@
   padding: 0;
   color: #777;
 }
+
+.clientFields {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.clientField {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+
+  input {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 14px;
+    font-weight: 400;
+    border: 1px solid var(--color-shadow);
+    border-radius: 5px;
+    background-color: var(--color-lighter);
+    transition: all 0.3s ease;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--color-orange);
+  }
+}

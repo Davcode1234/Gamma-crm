@@ -22,13 +22,13 @@ import styles from './CompanyProfileModalTaskDetails.module.css';
 type CompanyProfileModalTaskDetailsProp = {
   task: ReckoningTaskTypes;
   companyClass: string;
-  onTitleChange?: (newTitle: string) => void;
+  onTaskChange?: (changes: Partial<ReckoningTaskTypes>) => void;
 };
 
 function CompanyProfileModalTaskDetails({
   task,
   companyClass,
-  onTitleChange,
+  onTaskChange,
 }: CompanyProfileModalTaskDetailsProp) {
   const sanitizedDescription = task.description
     ? DOMPurify.sanitize(task.description)
@@ -38,6 +38,10 @@ function CompanyProfileModalTaskDetails({
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(task.title);
   const [savedTitle, setSavedTitle] = useState(task.title);
+  const [clientFields, setClientFields] = useState({
+    agreedHours: task.agreedHours?.toString() ?? '',
+    clientOrderId: task.clientOrderId ?? '',
+  });
 
   const updateRelatedStudioTask = async (newTitle: string) => {
     const studioTaskId = task.idOfAssignedStudioTask;
@@ -91,11 +95,45 @@ function CompanyProfileModalTaskDetails({
       }
       setTitle(trimmedTitle);
       setSavedTitle(trimmedTitle);
-      onTitleChange?.(trimmedTitle);
+      onTaskChange?.({ title: trimmedTitle });
 
       await updateRelatedStudioTask(trimmedTitle);
     } catch (error) {
       console.error('Error updating task title:', error);
+    }
+  };
+
+  // Saves "Ustalone godziny" and "Nr zamówienia klienta" when the input
+  // loses focus. An empty hours input clears the value.
+  const handleClientFieldBlur = async (
+    field: 'agreedHours' | 'clientOrderId'
+  ) => {
+    const inputValue = clientFields[field].trim();
+    const savedValue = task[field]?.toString() ?? '';
+
+    const isInvalidHours =
+      field === 'agreedHours' && Number.isNaN(Number(inputValue));
+
+    if (inputValue === savedValue || isInvalidHours) {
+      setClientFields((prev) => ({ ...prev, [field]: savedValue }));
+      return;
+    }
+
+    let value: string | number | null = inputValue;
+    if (field === 'agreedHours') {
+      value = inputValue === '' ? null : Number(inputValue);
+    }
+
+    try {
+      const updatedReckoTask = await updateReckoningTask({
+        taskId: task._id,
+        value: { [field]: value },
+      });
+      if (updatedReckoTask) {
+        onTaskChange?.({ [field]: value ?? undefined });
+      }
+    } catch (error) {
+      console.error(`Error updating ${field}:`, error);
     }
   };
 
@@ -119,6 +157,43 @@ function CompanyProfileModalTaskDetails({
           </ModalSectionTitle>
           <div className={styles.sectionContainer}>
             <ModalMetaInfoSection task={task} companyClass={companyClass} />
+          </div>
+          <ModalSectionTitle iconName="mdi:account-tie-outline">
+            <p className={styles.title}>Dane klienta</p>
+          </ModalSectionTitle>
+          <div className={`${styles.sectionContainer} ${styles.clientFields}`}>
+            <label htmlFor="agreedHours" className={styles.clientField}>
+              Ustalone godziny
+              <input
+                type="number"
+                min="0"
+                step="0.5"
+                id="agreedHours"
+                value={clientFields.agreedHours}
+                onChange={(e) =>
+                  setClientFields((prev) => ({
+                    ...prev,
+                    agreedHours: e.target.value,
+                  }))
+                }
+                onBlur={() => handleClientFieldBlur('agreedHours')}
+              />
+            </label>
+            <label htmlFor="clientOrderId" className={styles.clientField}>
+              Nr zamówienia klienta
+              <input
+                type="text"
+                id="clientOrderId"
+                value={clientFields.clientOrderId}
+                onChange={(e) =>
+                  setClientFields((prev) => ({
+                    ...prev,
+                    clientOrderId: e.target.value,
+                  }))
+                }
+                onBlur={() => handleClientFieldBlur('clientOrderId')}
+              />
+            </label>
           </div>
           <ModalSectionTitle iconName="pajamas:task-done">
             <p className={styles.title}>Rozliczenie</p>

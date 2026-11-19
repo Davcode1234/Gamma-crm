@@ -1,7 +1,11 @@
 import { ReckoningTaskTypes } from './reckoning-view-service';
 
-// Read-only data for users with the 'client' role. The backend resolves the
-// company from the logged-in account, so no company is sent from here.
+// Data for users with the 'client' role. The backend resolves the company
+// from the logged-in account, so no company is sent from here.
+
+// First month the client can see (November 2026, monthIndex is 0-based).
+// Keep in sync with CLIENT_PORTAL_START in backend ClientPortal.controller.ts.
+export const CLIENT_PORTAL_START = { year: 2026, monthIndex: 10 };
 
 export type ClientReckoTask = Pick<
   ReckoningTaskTypes,
@@ -11,9 +15,15 @@ export type ClientReckoTask = Pick<
   | 'clientPerson'
   | 'title'
   | 'isSettled'
+  | 'isReadyForInvoice'
+  | 'clientOrderId'
+  | 'agreedHours'
   | 'participants'
   | 'startDate'
-> & { taskType?: string };
+> & {
+  // All hours ever logged on the task (the backend sums every month).
+  usedHours: number;
+};
 
 export type ClientCompany = {
   _id: string;
@@ -61,4 +71,28 @@ export async function getClientReckoTasks({
   }
   const data = await response.json();
   return data.reckoTasks ?? [];
+}
+
+export async function updateClientReckoTask({
+  taskId,
+  value,
+}: {
+  taskId: string;
+  value: { isReadyForInvoice?: boolean; clientOrderId?: string };
+}) {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/api/client-portal/reckoning/${taskId}`,
+    {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(value),
+    }
+  );
+  if (!response.ok) {
+    throw new Error(`${response.status} ${response.statusText}`);
+  }
+  return response.json();
 }

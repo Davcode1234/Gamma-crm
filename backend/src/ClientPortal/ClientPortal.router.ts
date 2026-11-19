@@ -63,3 +63,47 @@ ClientPortalRouter.get(
     }
   },
 );
+
+// The client can mark a task as ready for invoicing and fill in their own
+// order number. Any other field in the body is ignored.
+ClientPortalRouter.patch(
+  '/reckoning/:id',
+  passport.authenticate('jwt', { session: false }),
+  permit('client'),
+  async (req, res) => {
+    try {
+      const company = await ClientPortalController.getClientCompany(
+        (req.user as any).company,
+      );
+      if (!company) {
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ message: 'Company not found' });
+        return;
+      }
+
+      const { isReadyForInvoice, clientOrderId } = req.body;
+      const changes: { isReadyForInvoice?: boolean; clientOrderId?: string } =
+        {};
+      if (typeof isReadyForInvoice === 'boolean') {
+        changes.isReadyForInvoice = isReadyForInvoice;
+      }
+      if (typeof clientOrderId === 'string') {
+        changes.clientOrderId = clientOrderId.trim();
+      }
+
+      const updatedTask = await ClientPortalController.updateClientReckoTask(
+        company.name,
+        req.params.id,
+        changes,
+      );
+      if (!updatedTask) {
+        res.status(StatusCodes.NOT_FOUND).json({ message: 'Task not found' });
+        return;
+      }
+      res.status(StatusCodes.OK).json(updatedTask);
+    } catch (error) {
+      res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
+    }
+  },
+);

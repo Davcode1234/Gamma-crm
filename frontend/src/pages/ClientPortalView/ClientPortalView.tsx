@@ -5,9 +5,10 @@ import ViewContainer from '../../components/Atoms/ViewContainer/ViewContainer';
 import ListContainer from '../../components/Atoms/ListContainer/ListContainer';
 import ClientPortalRow from '../../components/Organisms/ClientPortal/ClientPortalRow/ClientPortalRow';
 import ClientPortalControlBar from '../../components/Organisms/ClientPortal/ClientPortalControlBar/ClientPortalControlBar';
-import useCurrentDate from '../../hooks/useCurrentDate';
+import { months } from '../../hooks/useCurrentDate';
 import useSort from '../../hooks/useSort';
 import {
+  CLIENT_PORTAL_START,
   ClientReckoTask,
   getClientCompany,
   getClientReckoTasks,
@@ -22,21 +23,63 @@ const columns = [
   { label: 'Tytuł', sortKey: 'title' },
   { label: 'Graficy (godziny)', sortKey: '' },
   { label: 'Suma', sortKey: 'participants' },
+  { label: 'Budżet', sortKey: '' },
+  { label: 'Nr zamówienia', sortKey: '' },
+  { label: 'Zafakturowanie', sortKey: '' },
   { label: 'Rozliczone', sortKey: '' },
 ];
 
-// Read-only view for users with the 'client' role: their company's
-// reckoning tasks with hours per graphic designer for the selected month.
+const isBeforeStart = (monthIndex: number, year: number) =>
+  year < CLIENT_PORTAL_START.year ||
+  (year === CLIENT_PORTAL_START.year &&
+    monthIndex < CLIENT_PORTAL_START.monthIndex);
+
+// Years from the start of the portal up to the current one.
+const years = Array.from(
+  {
+    length:
+      Math.max(new Date().getFullYear() - CLIENT_PORTAL_START.year, 0) + 1,
+  },
+  (_, i) => CLIENT_PORTAL_START.year + i
+);
+
+// The client cannot pick months before the start of the portal.
+const monthsOfYear = (year: number) =>
+  year === CLIENT_PORTAL_START.year
+    ? months.slice(CLIENT_PORTAL_START.monthIndex)
+    : months;
+
+// Today, or the start of the portal if today is before it.
+const getInitialDate = () => {
+  const today = new Date();
+  return isBeforeStart(today.getMonth(), today.getFullYear())
+    ? CLIENT_PORTAL_START
+    : { year: today.getFullYear(), monthIndex: today.getMonth() };
+};
+
+// View for users with the 'client' role: their company's reckoning tasks with
+// hours per graphic designer for the selected month. The client can only fill
+// in their order number and mark a task as ready for invoicing.
 function ClientPortalView() {
-  const {
-    selectedMonth,
-    selectedYear,
-    handleMonthChange,
-    handleYearChange,
-    months,
-    years,
-  } = useCurrentDate();
+  const [selectedYear, setSelectedYear] = useState(getInitialDate().year);
+  const [selectedMonth, setSelectedMonth] = useState(
+    months[getInitialDate().monthIndex]
+  );
   const currentMonthIndex = months.indexOf(selectedMonth);
+
+  const handleMonthChange = (e) => {
+    setSelectedMonth(e.target.value);
+  };
+
+  // Moving to an earlier year can land before the start, so jump to the
+  // first visible month then.
+  const handleYearChange = (e) => {
+    const year = Number(e.target.value);
+    setSelectedYear(year);
+    if (isBeforeStart(currentMonthIndex, year)) {
+      setSelectedMonth(months[CLIENT_PORTAL_START.monthIndex]);
+    }
+  };
 
   const [companyName, setCompanyName] = useState('');
   const [tasks, setTasks] = useState<ClientReckoTask[]>([]);
@@ -177,7 +220,7 @@ function ClientPortalView() {
           selectedYear={selectedYear}
           handleMonthChange={handleMonthChange}
           handleYearChange={handleYearChange}
-          months={months}
+          months={monthsOfYear(selectedYear)}
           years={years}
           clientPersons={clientPersons}
           designers={designers}

@@ -6,11 +6,7 @@ import { months } from '../../../hooks/useCurrentDate';
 import summarizeHours from '../../../utils/SummarizeHours';
 import UserInitialBatch from '../../Atoms/UserInitialsBatch/UserInitialsBatch';
 
-function StudioTaskReckoTable({
-  assignedReckoTask,
-  isReckoTaskLoading,
-  disableUserLinks = false,
-}) {
+function StudioTaskReckoTable({ assignedReckoTask, isReckoTaskLoading }) {
   if (isReckoTaskLoading) {
     return (
       <div className={styles.checkboxLoaderContainer}>
@@ -28,21 +24,14 @@ function StudioTaskReckoTable({
       {assignedReckoTask.participants.map((art) =>
         art.isVisible ? (
           <div className={styles.reckoTableRow} key={art._id}>
-            {disableUserLinks ? (
-              <div className={styles.reckoUserCell}>
-                <UserInitialBatch user={art} />
-                <p className={styles.reckoSectionPartName}>{art.name}:</p>
-              </div>
-            ) : (
-              <Link
-                className={styles.reckoUserCell}
-                to={`/użytkownicy/${art._id}`}
-              >
-                {/* <img className={styles.heroImg} src={`${art.img}`} alt="" /> */}
-                <UserInitialBatch user={art} />
-                <p className={styles.reckoSectionPartName}>{art.name}:</p>
-              </Link>
-            )}
+            <Link
+              className={styles.reckoUserCell}
+              to={`/użytkownicy/${art._id}`}
+            >
+              {/* <img className={styles.heroImg} src={`${art.img}`} alt="" /> */}
+              <UserInitialBatch user={art} />
+              <p className={styles.reckoSectionPartName}>{art.name}:</p>
+            </Link>
             <div className={styles.tileSummWrapper}>
               <Icon
                 icon="line-md:calendar"
