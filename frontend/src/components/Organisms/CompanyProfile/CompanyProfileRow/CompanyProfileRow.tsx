@@ -83,7 +83,7 @@ function CompanyProfileRow({
       console.error(error);
     }
   };
-  // Green when settled, blue when the client marked it ready for invoicing.
+  // Blue when settled, green when the client marked it ready for invoicing.
   const rowColorClass = () => {
     if (isChecked.checkedValue && isChecked.checkedID === task._id) {
       return styles.checked;

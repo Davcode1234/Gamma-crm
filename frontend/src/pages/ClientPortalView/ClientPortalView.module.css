@@ -19,23 +19,23 @@
 }
 
 .headerTile:nth-child(1) {
-  width: 7%;
+  width: 7.25%;
 }
 
 .headerTile:nth-child(2) {
-  width: 11%;
+  width: 11.25%;
 }
 
 .headerTile:nth-child(3) {
-  width: 18%;
+  width: 30.75%;
 }
 
 .headerTile:nth-child(4) {
-  width: 22%;
+  width: 9.5%;
 }
 
 .headerTile:nth-child(5) {
-  width: 6%;
+  width: 4%;
 }
 
 .headerTile:nth-child(6) {
@@ -43,7 +43,7 @@
 }
 
 .headerTile:nth-child(7) {
-  width: 10%;
+  width: 8.5%;
 }
 
 .headerTile:nth-child(8),
@@ -55,6 +55,13 @@
 .headerTile:nth-child(n + 4) {
   justify-content: flex-start;
   padding-left: 10px;
+}
+
+/* Zafakturowanie and Rozliczone are centered, like in the rows */
+.headerTile:nth-child(8),
+.headerTile:nth-child(9) {
+  justify-content: center;
+  padding-left: 0;
 }
 
 .sortableTile {
