@@ -22,12 +22,12 @@
 }
 
 .checked {
-  background-color: var(--color-green);
-  opacity: 0.8;
+  background-color: var(--color-lightBlue);
 }
 
 .readyForInvoice {
-  background-color: var(--color-lightBlue);
+  background-color: var(--color-green);
+  opacity: 0.8;
 }
 
 .reckoningTaskListElement:not(:first-child),

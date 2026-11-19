@@ -39,6 +39,14 @@ function ClientPortalRow({
     }))
     .filter(({ hours }) => hours > 0);
 
+  // Green when the client marked it ready for invoicing, blue when it is
+  // settled. Same colors as the company profile.
+  const rowColorClass = () => {
+    if (task.isSettled) return styles.settled;
+    if (isReadyForInvoice) return styles.readyForInvoice;
+    return '';
+  };
+
   // Share of the agreed hours already used, e.g. 6 of 12h = 50%.
   const budgetPercent = task.agreedHours
     ? Math.round((task.usedHours / task.agreedHours) * 100)
@@ -81,7 +89,7 @@ function ClientPortalRow({
     <div
       className={`${
         index % 2 === 0 ? styles.row : `${styles.row} ${styles.darkerRow}`
-      } ${isReadyForInvoice || task.isSettled ? styles.checked : ''}`}
+      } ${rowColorClass()}`}
     >
       <div className={styles.tile}>
         <p>{task.searchID}</p>
@@ -93,19 +101,14 @@ function ClientPortalRow({
         <p>{task.title}</p>
       </div>
       <div className={`${styles.tile} ${styles.participantsTile}`}>
-        {participantsWithHours.map(({ participant, hours }) => (
+        {participantsWithHours.map(({ participant }) => (
           <div className={styles.participantHours} key={participant._id}>
             <UserInitialBatch user={participant as unknown as User} isSmaller />
-            <p>
-              {participant.name}: {hours}h
-            </p>
           </div>
         ))}
       </div>
       <div className={styles.tile}>
-        <p>
-          {summarizeCompanyProfHours(task, currentMonthIndex, selectedYear)}h
-        </p>
+        <p>{task.usedHours}h</p>
       </div>
       <div className={`${styles.tile} ${styles.budgetTile}`}>
         {budgetPercent === null ? (

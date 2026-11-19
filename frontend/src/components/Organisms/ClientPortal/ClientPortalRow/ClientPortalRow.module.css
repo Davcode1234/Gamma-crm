@@ -13,9 +13,13 @@
   background-color: var(--color-shadow);
 }
 
-.checked {
+.readyForInvoice {
   background-color: var(--color-green);
   opacity: 0.8;
+}
+
+.settled {
+  background-color: var(--color-lightBlue);
 }
 
 .tile {
@@ -47,12 +51,12 @@
 }
 
 .tile:nth-child(3) {
-  width: 18%;
+  width: 32%;
   justify-content: flex-start;
 }
 
 .tile:nth-child(5) {
-  width: 6%;
+  width: 4%;
 }
 
 .tile:nth-child(6) {
@@ -74,8 +78,15 @@
   padding-left: 10px;
 }
 
+/* Zafakturowanie and Rozliczone are centered */
+.tile:nth-child(8),
+.tile:nth-child(9) {
+  justify-content: center;
+  padding-left: 5px;
+}
+
 .participantsTile {
-  width: 22%;
+  width: 10%;
   flex-wrap: wrap;
   gap: 4px 12px;
   padding-top: 4px;

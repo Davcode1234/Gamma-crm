@@ -21,8 +21,8 @@ const columns = [
   { label: 'ID', sortKey: 'searchID' },
   { label: 'Klient', sortKey: 'clientPerson' },
   { label: 'Tytuł', sortKey: 'title' },
-  { label: 'Graficy (godziny)', sortKey: '' },
-  { label: 'Suma', sortKey: 'participants' },
+  { label: 'Graficy', sortKey: '' },
+  { label: 'Suma', sortKey: 'usedHours' },
   { label: 'Budżet', sortKey: '' },
   { label: 'Nr zamówienia', sortKey: '' },
   { label: 'Zafakturowanie', sortKey: '' },
@@ -159,9 +159,9 @@ function ClientPortalView() {
     undefined
   );
 
+  // Hours from all months of the shown tasks, same as the Suma column.
   const totalHours = filteredTasks.reduce(
-    (sum, task) =>
-      sum + summarizeCompanyProfHours(task, currentMonthIndex, selectedYear),
+    (sum, task) => sum + task.usedHours,
     0
   );
 
