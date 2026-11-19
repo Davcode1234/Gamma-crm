@@ -26,6 +26,10 @@
   opacity: 0.8;
 }
 
+.readyForInvoice {
+  background-color: var(--color-lightBlue);
+}
+
 .reckoningTaskListElement:not(:first-child),
 .darkerReckoningTaskListElement:not(:first-child) {
   cursor: pointer;

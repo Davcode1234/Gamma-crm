@@ -18,6 +18,9 @@ export type ReckoningTaskTypes = {
   description: string;
   comment: string;
   isSettled?: boolean;
+  isReadyForInvoice?: boolean;
+  agreedHours?: number;
+  clientOrderId?: string;
   author: Omit<User, 'password'>;
   printWhat: string;
   printWhere: string;

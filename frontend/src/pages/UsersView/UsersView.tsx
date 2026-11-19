@@ -25,6 +25,10 @@ import FilterCheckbox from '../../components/Molecules/FilterCheckbox/FilterChec
 import UserInitialBatch from '../../components/Atoms/UserInitialsBatch/UserInitialsBatch';
 import ColorPicker from '../../components/Molecules/ColorPicker/ColorPicker';
 import { getFirstFreeColor } from '../../utils/getUserColor';
+import {
+  CompaniesType,
+  getAllCompanies,
+} from '../../services/companies-service';
 // import useMultiSelect from '../../hooks/useMultiSelect';
 
 const createUserSchema = Yup.object({
@@ -42,7 +46,7 @@ const createUserSchema = Yup.object({
     .required('Kolor jest wymagany'),
 });
 
-const roles = ['admin', 'grafik'];
+const roles = ['admin', 'grafik', 'client'];
 
 function UsersView() {
   const { signUp } = useAuth();
@@ -51,6 +55,17 @@ function UsersView() {
   const [assignedRoles, setAssignedRoles] = useState(() => ['grafik']);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [selectFilterValue, setSelectFilterValue] = useState('');
+  const [companies, setCompanies] = useState<CompaniesType[]>([]);
+  const [assignedCompany, setAssignedCompany] = useState('');
+  const [companyError, setCompanyError] = useState(false);
+  const isClientSelected = assignedRoles.includes('client');
+
+  useEffect(() => {
+    if (!isClientSelected || companies.length > 0) return;
+    getAllCompanies()
+      .then((allCompanies) => setCompanies(allCompanies ?? []))
+      .catch(() => setCompanies([]));
+  }, [isClientSelected, companies.length]);
 
   // const {
   //   isSelectOpen,
@@ -72,9 +87,16 @@ function UsersView() {
 
   const handleRoleAssign = async (role) => {
     // compute next value without relying on state having updated yet
-    const nextRoles = assignedRoles.includes(role)
+    let nextRoles = assignedRoles.includes(role)
       ? assignedRoles.filter((r) => r !== role)
       : [...assignedRoles, role];
+
+    // A client account cannot have any other role.
+    if (role === 'client' && nextRoles.includes('client')) {
+      nextRoles = ['client'];
+    } else if (role !== 'client') {
+      nextRoles = nextRoles.filter((r) => r !== 'client');
+    }
 
     // update local state
     setAssignedRoles(nextRoles);
@@ -108,6 +130,11 @@ function UsersView() {
       const { color } = values;
 
       formik.setStatus(null);
+      if (isClientSelected && !assignedCompany) {
+        setCompanyError(true);
+        return undefined;
+      }
+      setCompanyError(false);
       return signUp({
         name,
         lastname,
@@ -118,6 +145,7 @@ function UsersView() {
         img,
         roles: assignedRoles,
         color,
+        company: isClientSelected ? assignedCompany : undefined,
       }).catch(() => {
         formik.setStatus('error');
       });
@@ -244,6 +272,36 @@ function UsersView() {
               );
             })}
           </MultiselectDropdown>
+          {isClientSelected ? (
+            <FormControl>
+              <select
+                id="company"
+                name="company"
+                className={
+                  companyError ? `${styles.errorBorder}` : `${inputStyle.input}`
+                }
+                value={assignedCompany}
+                onChange={(e) => {
+                  setAssignedCompany(e.target.value);
+                  setCompanyError(false);
+                }}
+              >
+                <option value="">Firma klienta</option>
+                {companies.map((company) => (
+                  <option key={company._id} value={company._id}>
+                    {company.name}
+                  </option>
+                ))}
+              </select>
+              {companyError ? (
+                <p className={styles.error}>Wybierz firmę klienta</p>
+              ) : (
+                <span />
+              )}
+            </FormControl>
+          ) : (
+            <span />
+          )}
           <FormControl>
             <Input
               id="phone"

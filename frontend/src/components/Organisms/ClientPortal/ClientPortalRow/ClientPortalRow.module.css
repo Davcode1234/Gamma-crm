@@ -1,0 +1,191 @@
+.row {
+  width: 100%;
+  min-height: 35px;
+  font-size: 12px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  transition: all 0.3s ease;
+  animation: appear 0.3s ease forwards;
+}
+
+.darkerRow {
+  background-color: var(--color-shadow);
+}
+
+.checked {
+  background-color: var(--color-green);
+  opacity: 0.8;
+}
+
+.tile {
+  width: 10%;
+  padding: 0 5px;
+  text-align: center;
+  overflow: hidden;
+  border-right: 1px solid var(--color-shadow);
+  border-bottom: 1px solid var(--color-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
+.tile:nth-child(1) {
+  width: 7%;
+  font-weight: 600;
+}
+
+.tile:nth-child(2) {
+  width: 11%;
+  font-weight: 600;
+}
+
+.tile:nth-child(3) {
+  width: 18%;
+  justify-content: flex-start;
+}
+
+.tile:nth-child(5) {
+  width: 6%;
+}
+
+.tile:nth-child(6) {
+  width: 12%;
+}
+
+.tile:nth-child(7) {
+  width: 10%;
+}
+
+.tile:nth-child(8),
+.tile:nth-child(9) {
+  width: 7%;
+}
+
+/* Columns from Graficy on are left-aligned */
+.tile:nth-child(n + 4) {
+  justify-content: flex-start;
+  padding-left: 10px;
+}
+
+.participantsTile {
+  width: 22%;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.participantHours {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Icon, bar and percentage in one line; hours show on hover */
+.tile.budgetTile {
+  position: relative;
+  gap: 8px;
+  padding: 0 10px;
+  justify-content: flex-start;
+  overflow: visible;
+
+  p {
+    margin: 0;
+  }
+}
+
+.budgetIcon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--color-orange);
+}
+
+.budgetBar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background-color: var(--color-shadow);
+  overflow: hidden;
+}
+
+.budgetBarFill {
+  height: 100%;
+  border-radius: 3px;
+  background-color: var(--color-orange);
+  transition: width 0.3s ease;
+}
+
+.budgetPercent {
+  flex-shrink: 0;
+  min-width: 32px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.budgetTooltip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 10;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background-color: var(--color-title);
+  color: var(--color-lighter);
+  font-size: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.95);
+  transition: all 0.2s ease;
+}
+
+.budgetTile:hover .budgetTooltip {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.orderIdInput {
+  width: 100%;
+  height: 25px;
+  padding: 0 8px;
+  font-size: 12px;
+  border: 1px solid var(--color-shadow);
+  border-radius: 5px;
+  background-color: var(--color-bg);
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-orange);
+  }
+}
+
+.checkbox {
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.1);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -11,6 +11,8 @@ type SignUpProps = {
   phone: number;
   roles: string[];
   color: string;
+  // Required when roles contain 'client': id of the client's company.
+  company?: string;
 };
 
 export async function signUp({
@@ -23,6 +25,7 @@ export async function signUp({
   img,
   roles,
   color,
+  company,
 }: SignUpProps): Promise<void> {
   const formInfo = {
     name,
@@ -34,12 +37,14 @@ export async function signUp({
     img,
     roles,
     color,
+    ...(company ? { company } : {}),
   };
 
   const response = await fetch(
     `${import.meta.env.VITE_API_URL}/api/auth/signup`,
     {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },

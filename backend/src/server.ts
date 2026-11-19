@@ -22,6 +22,9 @@ import { ReckoningTaskRouter } from './Reckoning/Reckoning.router';
 import { ChartsRouter } from './Charts/Charts.router';
 import { ClientRouter } from './Client/Client.router';
 import { AIRouter } from './AI/AI.router';
+import { ClientPortalRouter } from './ClientPortal/ClientPortal.router';
+import passport from 'passport';
+import { permit } from './Auth/permit';
 
 var corsOptions = {
   origin: [
@@ -77,17 +80,25 @@ app.use(cors(corsOptions));
 app.use(morgan('tiny'));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
+// Routers used only by the studio staff. Client accounts get 403 here and use
+// /api/client-portal instead.
+const staffOnly = [
+  passport.authenticate('jwt', { session: false }),
+  permit('admin', 'grafik', 'marketing'),
+];
+
 app.use('/api/auth', AuthRouter);
 app.use('/api/users', UserRouter);
-app.use('/api/tasks', TaskRouter);
-app.use('/api/companies', CompanyRouter);
-app.use('/api/studiotasks', StudioTaskRouter);
-app.use('/api/reckoningtasks', ReckoningTaskRouter);
-app.use('/api/archivedstudiotasks', ArchivedStudioTaskRouter);
-app.use('/api/move-studiotask', MoveStudioTaskRouter);
-app.use('/api/unarchive-sudiotask', unArchiveStudioTaskRouter);
-app.use('/api/dashboard', ChartsRouter);
-app.use('/api/clients', ClientRouter);
+app.use('/api/tasks', staffOnly, TaskRouter);
+app.use('/api/companies', staffOnly, CompanyRouter);
+app.use('/api/studiotasks', staffOnly, StudioTaskRouter);
+app.use('/api/reckoningtasks', staffOnly, ReckoningTaskRouter);
+app.use('/api/archivedstudiotasks', staffOnly, ArchivedStudioTaskRouter);
+app.use('/api/move-studiotask', staffOnly, MoveStudioTaskRouter);
+app.use('/api/unarchive-sudiotask', staffOnly, unArchiveStudioTaskRouter);
+app.use('/api/dashboard', staffOnly, ChartsRouter);
+app.use('/api/clients', staffOnly, ClientRouter);
+app.use('/api/client-portal', ClientPortalRouter);
 app.use('/api/ai', AIRouter);
 app.get('/api/status', (req, res) => res.status(200).json({ ok: true }));
 

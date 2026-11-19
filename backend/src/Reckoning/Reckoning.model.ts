@@ -29,6 +29,19 @@ export const ReckoningTaskModel = mongoose.model(
 
     isSettled: Boolean,
 
+    // Set by the client in the client portal when the task can be invoiced.
+    isReadyForInvoice: Boolean,
+
+    // Hours agreed with the client for this task.
+    agreedHours: {
+      type: Number,
+    },
+
+    // The client's own order number (e.g. PCC order ID).
+    clientOrderId: {
+      type: String,
+    },
+
     author: {
       _id: {
         type: String,

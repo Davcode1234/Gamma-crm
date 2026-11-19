@@ -47,11 +47,18 @@ function CompanyProfileRow({
     closeModal: taskCloseModal,
   } = useModal();
 
-  const [title, setTitle] = useState(task.title);
-  const taskWithCurrentTitle = useMemo(
-    () => ({ ...task, title }),
-    [task, title]
+  // Fields edited in the task details modal, so they are still there when
+  // the modal is opened again.
+  const [taskChanges, setTaskChanges] = useState<Partial<ReckoningTaskTypes>>(
+    {}
   );
+  const currentTask = useMemo(
+    () => ({ ...task, ...taskChanges }),
+    [task, taskChanges]
+  );
+  const handleTaskChange = (changes: Partial<ReckoningTaskTypes>) => {
+    setTaskChanges((prev) => ({ ...prev, ...changes }));
+  };
 
   const companyClass = task.client.split(' ').join('');
 
@@ -76,6 +83,15 @@ function CompanyProfileRow({
       console.error(error);
     }
   };
+  // Green when settled, blue when the client marked it ready for invoicing.
+  const rowColorClass = () => {
+    if (isChecked.checkedValue && isChecked.checkedID === task._id) {
+      return styles.checked;
+    }
+    if (task.isReadyForInvoice) return styles.readyForInvoice;
+    return '';
+  };
+
   return (
     <>
       <ModalTemplate
@@ -86,18 +102,16 @@ function CompanyProfileRow({
         exitAnim={taskExitAnim}
       >
         <CompanyProfileModalTaskDetails
-          task={taskWithCurrentTitle}
+          task={currentTask}
           companyClass={companyClass}
-          onTitleChange={setTitle}
+          onTaskChange={handleTaskChange}
         />
       </ModalTemplate>
       <div
         key={task._id}
-        className={`${tileClass(index)}  ${
-          isChecked.checkedValue && isChecked.checkedID === task._id
-            ? styles.checked
-            : null
-        } ${tileHeight(task.participants.length)}`}
+        className={`${tileClass(index)}  ${rowColorClass()} ${tileHeight(
+          task.participants.length
+        )}`}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
@@ -130,7 +144,7 @@ function CompanyProfileRow({
           <UsersDisplay data={task} usersArray={task.participants} />
         </div>
         <div className={styles.reckoningTaskListElementTile}>
-          <p>{title}</p>
+          <p>{currentTask.title}</p>
         </div>
 
         <div className={styles.reckoningTaskListElementTile}>
