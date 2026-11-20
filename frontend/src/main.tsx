@@ -11,7 +11,7 @@ import { CompaniesContextProvider } from './context/CompaniesContext';
 import { StudioTasksContextProvider } from './context/StudioTasksContext';
 import { ReckoTasksContextProvider } from './context/ReckoTasksContext';
 import { ClientsContextProvider } from './context/ClientsContext';
-import EasterEgg from './components/Templates/EasterEgg/EasterEgg';
+// import EasterEgg from './components/Templates/EasterEgg/EasterEgg';
 import { PlackerTasksContextProvider } from './context/PlackerContext';
 
 const queryClient = new QueryClient();
@@ -28,7 +28,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                   <CompaniesContextProvider>
                     <TasksContextProvder>
                       <UsersContextProvider>
-                        <EasterEgg />
+                        {/* <EasterEgg /> */}
                         <App />
                       </UsersContextProvider>
                     </TasksContextProvder>

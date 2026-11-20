@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styles from './ClientPortalControlBar.module.css';
 import CTA from '../../../Atoms/CTA/CTA';
 import Select from '../../../Atoms/Select/Select';
+import SearchInput from '../../../Atoms/ControlBar/SearchInput/SearchInput';
 import Overlay from '../../../Atoms/Overlay/Overlay';
 import FilterDropdownContainer from '../../../Atoms/FilterDropdownContainer/FilterDropdownContainer';
 import DropdownHeader from '../../../Atoms/DropdownHeader/DropdownHeader';
@@ -30,6 +31,8 @@ function ClientPortalControlBar({
   setClientPersonToFilter,
   designerToFilter,
   setDesignerToFilter,
+  searchInputValue,
+  setSearchInputValue,
 }) {
   const [filterDropdown, setFilterDropdown] = useState(false);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
@@ -90,6 +93,12 @@ function ClientPortalControlBar({
           value={selectedYear}
           handleValueChange={handleYearChange}
           optionData={years}
+        />
+        <SearchInput
+          value={searchInputValue}
+          onChange={(e) => {
+            setSearchInputValue(e.target.value);
+          }}
         />
       </div>
 

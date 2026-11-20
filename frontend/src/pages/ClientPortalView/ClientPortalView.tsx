@@ -89,6 +89,7 @@ function ClientPortalView() {
     []
   );
   const [designerToFilter, setDesignerToFilter] = useState<string[]>([]);
+  const [searchInputValue, setSearchInputValue] = useState('');
 
   useEffect(() => {
     getClientCompany()
@@ -137,6 +138,21 @@ function ClientPortalView() {
     ).values(),
   ];
 
+  const matchesSearch = (task: ClientReckoTask) => {
+    const searchValue = searchInputValue.toLowerCase();
+    return (
+      task.searchID.toString().includes(searchValue) ||
+      task.title.toLowerCase().includes(searchValue) ||
+      (task.clientPerson ?? '').toLowerCase().includes(searchValue) ||
+      (task.clientOrderId ?? '').toLowerCase().includes(searchValue) ||
+      task.participants.some((participant) =>
+        `${participant.name} ${participant.lastname}`
+          .toLowerCase()
+          .includes(searchValue)
+      )
+    );
+  };
+
   const filteredTasks = tasks
     .filter(
       (task) =>
@@ -151,7 +167,8 @@ function ClientPortalView() {
             designerToFilter.includes(participant._id) &&
             hasHoursInMonth(participant)
         )
-    );
+    )
+    .filter((task) => matchesSearch(task));
 
   const { sortedData, sortColumn, sortOrder, handleSortChange } = useSort(
     filteredTasks,
@@ -228,6 +245,8 @@ function ClientPortalView() {
           setClientPersonToFilter={setClientPersonToFilter}
           designerToFilter={designerToFilter}
           setDesignerToFilter={setDesignerToFilter}
+          searchInputValue={searchInputValue}
+          setSearchInputValue={setSearchInputValue}
         />
       </ControlBar>
 

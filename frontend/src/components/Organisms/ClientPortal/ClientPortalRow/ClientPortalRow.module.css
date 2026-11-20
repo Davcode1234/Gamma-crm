@@ -93,12 +93,6 @@
   padding-bottom: 4px;
 }
 
-.participantHours {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
 /* Icon, bar and percentage in one line; hours show on hover */
 .tile.budgetTile {
   position: relative;
