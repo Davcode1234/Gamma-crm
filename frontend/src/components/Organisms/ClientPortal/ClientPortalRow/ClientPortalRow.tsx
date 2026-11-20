@@ -5,8 +5,7 @@ import {
   updateClientReckoTask,
 } from '../../../../services/client-portal-service';
 import summarizeCompanyProfHours from '../../../../utils/summarizeCompanyProfHours';
-import UserInitialBatch from '../../../Atoms/UserInitialsBatch/UserInitialsBatch';
-import { User } from '../../../../services/users-service';
+import UsersDisplay from '../../UsersDisplay/UsersDisplay';
 import styles from './ClientPortalRow.module.css';
 
 type ClientPortalRowProps = {
@@ -28,16 +27,15 @@ function ClientPortalRow({
   const [orderId, setOrderId] = useState(task.clientOrderId ?? '');
   const [savedOrderId, setSavedOrderId] = useState(task.clientOrderId ?? '');
 
-  const participantsWithHours = task.participants
-    .map((participant) => ({
-      participant,
-      hours: summarizeCompanyProfHours(
+  // Designers who logged hours in the selected month.
+  const designers = task.participants.filter(
+    (participant) =>
+      summarizeCompanyProfHours(
         { participants: [participant] },
         currentMonthIndex,
         selectedYear
-      ),
-    }))
-    .filter(({ hours }) => hours > 0);
+      ) > 0
+  );
 
   // Green when the client marked it ready for invoicing, blue when it is
   // settled. Same colors as the company profile.
@@ -101,11 +99,7 @@ function ClientPortalRow({
         <p>{task.title}</p>
       </div>
       <div className={`${styles.tile} ${styles.participantsTile}`}>
-        {participantsWithHours.map(({ participant }) => (
-          <div className={styles.participantHours} key={participant._id}>
-            <UserInitialBatch user={participant as unknown as User} isSmaller />
-          </div>
-        ))}
+        <UsersDisplay data={task} usersArray={designers} />
       </div>
       <div className={styles.tile}>
         <p>{task.usedHours}h</p>
