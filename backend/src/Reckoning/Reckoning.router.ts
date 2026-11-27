@@ -3,6 +3,7 @@ import passport from 'passport';
 import { StatusCodes } from 'http-status-codes';
 import '../Auth/Passport';
 import { ReckoningTaskController } from './Reckoning.controller';
+import { generateNumericSearchId } from '../lib/generateSearchId';
 
 export const ReckoningTaskRouter = Router();
 
@@ -62,7 +63,8 @@ ReckoningTaskRouter.post(
   async (req, res) => {
     try {
       const newStudioTask = await ReckoningTaskController.addReckoningTask({
-        searchID: req.body.searchID,
+        // The number is always given by the server, never by the browser.
+        searchID: await generateNumericSearchId('ST'),
         client: req.body.client,
         clientPerson: req.body.clientPerson,
         title: req.body.title,

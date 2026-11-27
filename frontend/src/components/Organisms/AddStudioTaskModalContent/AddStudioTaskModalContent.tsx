@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { pl } from 'date-fns/locale';
 import { DayPicker, DateRange } from 'react-day-picker';
 import { Icon } from '@iconify/react';
@@ -8,10 +8,8 @@ import styles from './AddStudioTaskModalContent.module.css';
 import useAuth from '../../../hooks/useAuth';
 import {
   addStudioTask,
-  getHighestSearchID,
   StudioTaskTypes,
 } from '../../../services/studio-tasks-service';
-import generateSearchID from '../../../utils/generateSearchId';
 import Form from '../../Atoms/Form/Form';
 import Input from '../../Atoms/Input/Input';
 import useStudioTasksContext from '../../../hooks/Context/useStudioTasksContext';
@@ -70,24 +68,8 @@ function AddStudioTaskModalContent({
   const [participantsToAdd, setParticipantsToAdd] = useState([]);
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [range, setRange] = useState<DateRange | undefined>();
-  const [newSearchID, setNewSearchID] = useState<number>(0);
   const { dispatch } = useStudioTasksContext();
   const { user } = useAuth();
-
-  useEffect(() => {
-    const getNewSearchID = async () => {
-      const date = new Date();
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
-
-      const response = await getHighestSearchID(year, month);
-      if (response) {
-        setNewSearchID(response);
-      }
-    };
-
-    getNewSearchID();
-  }, []);
 
   const formik = useFormik<StudioTaskFormValues>({
     initialValues: {
@@ -114,7 +96,6 @@ function AddStudioTaskModalContent({
 
       const currentDate = new Date();
       const isRangeValid = !!(range?.from && range?.to);
-      const searchID = generateSearchID(newSearchID);
       const statusValue: StudioTaskTypes['status'] =
         status as StudioTaskTypes['status'];
 
@@ -132,7 +113,6 @@ function AddStudioTaskModalContent({
 
       try {
         const response = await addStudioTask({
-          searchID,
           reckoTaskID: '',
           title,
           client,

@@ -134,7 +134,6 @@ export async function getMyReckoningTasks(userId, year, month) {
 }
 
 export async function addReckoningTask({
-  searchID,
   client,
   clientPerson,
   title,
@@ -146,9 +145,8 @@ export async function addReckoningTask({
   participants,
   // deadline,
   startDate,
-}: ReckoningTaskTypes) {
+}: Omit<ReckoningTaskTypes, 'searchID'>) {
   const formData = {
-    searchID,
     client,
     clientPerson,
     title,

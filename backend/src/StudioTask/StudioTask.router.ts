@@ -3,6 +3,7 @@ import passport from 'passport';
 import { StudioTaskController } from './StudioTask.controller';
 import { StatusCodes } from 'http-status-codes';
 import '../Auth/Passport';
+import { generateNumericSearchId } from '../lib/generateSearchId';
 
 export const StudioTaskRouter = Router();
 
@@ -63,32 +64,14 @@ StudioTaskRouter.get(
   },
 );
 
-StudioTaskRouter.get(
-  '/:year/:month',
-  passport.authenticate('jwt', { session: false }),
-  async (req, res) => {
-    const year = req.params.year;
-    const month = req.params.month;
-    try {
-      const studioTask = await StudioTaskController.getHighestSearchIDByMonth(
-        year,
-        month,
-      );
-      res.status(StatusCodes.ACCEPTED).json(studioTask);
-    } catch (error) {
-      console.error(error);
-      res.status(StatusCodes.BAD_REQUEST).json({ message: error });
-    }
-  },
-);
-
 StudioTaskRouter.post(
   '/',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     try {
       const newStudioTask = await StudioTaskController.addStudioTask({
-        searchID: req.body.searchID,
+        // The number is always given by the server, never by the browser.
+        searchID: await generateNumericSearchId('ST'),
         reckoTaskID: req.body.reckoTaskID,
         title: req.body.title,
         client: req.body.client,
