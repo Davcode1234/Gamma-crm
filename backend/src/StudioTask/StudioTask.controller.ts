@@ -1,6 +1,5 @@
 // import { randomUUID } from 'crypto';
 // import { ReckoningTaskModel } from '../Reckoning/Reckoning.model';
-import { ArchivedStudioTaskModel } from '../ArchivedStudioTask/ArchivedStudioTask.model';
 import { StudioTaskModel } from './StudioTask.model';
 import mongoose from 'mongoose';
 
@@ -13,38 +12,6 @@ export const StudioTaskController = {
   async getStudioTask(id) {
     const studioTask = await StudioTaskModel.findById(id).exec();
     return studioTask;
-  },
-
-  async getHighestSearchIDByMonth(year, month) {
-    const startDate = new Date(Date.UTC(Number(year), Number(month) - 1, 1));
-    // const endDate = new Date(Date.UTC(Number(year), Number(month), 1));
-
-    const tasks = await StudioTaskModel.find({
-      createdAt: { $gte: startDate },
-    })
-      .sort({ searchID: 1 })
-      .exec();
-
-    const archivedTasks = await ArchivedStudioTaskModel.find({
-      createdAt: { $gte: startDate },
-    })
-      .sort({ searchID: 1 })
-      .exec();
-
-    if (tasks.length === 0 && archivedTasks.length === 0) {
-      return `${year.slice(2, 4)}${month.padStart(2, 0)}0000`;
-    }
-
-    const lastItem = tasks[tasks.length - 1];
-    const archivedLastItem = archivedTasks[archivedTasks.length - 1];
-
-    if (
-      archivedLastItem.searchID > lastItem.searchID ||
-      archivedLastItem.searchID === lastItem.searchID
-    ) {
-      return String(archivedLastItem.searchID);
-    }
-    return String(lastItem.searchID);
   },
 
   async getPlackerTasks() {

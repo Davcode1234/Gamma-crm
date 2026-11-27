@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import useReckoTasksContext from './Context/useReckoTasksContext';
-import generateSearchID from '../utils/generateSearchId';
 import generateDaysArray from '../utils/generateDaysArray';
 import {
   addReckoningTask,
@@ -28,7 +27,6 @@ const useReckoningActions = (user) => {
       const startDate = new Date();
 
       const addResponse = await addReckoningTask({
-        searchID: generateSearchID(),
         idOfAssignedStudioTask: '',
         client: 'Wybierz firme',
         clientPerson: 'Wybierz klienta',

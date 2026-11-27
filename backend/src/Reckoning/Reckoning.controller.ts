@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 import { ReckoningTaskModel } from './Reckoning.model';
+import { StudioTaskModel } from '../StudioTask/StudioTask.model';
 
 export const ReckoningTaskController = {
   async getReckoningTasks() {
@@ -40,6 +41,17 @@ export const ReckoningTaskController = {
   },
 
   async addReckoningTaskFromKanban(taskData, userId, monthCreated) {
+    // The reckoning task gets the number of its studio task, read from the
+    // database, so the browser cannot send a different one.
+    const studioTask = await StudioTaskModel.findById(
+      taskData.idOfAssignedStudioTask,
+      { searchID: 1 },
+    ).exec();
+    if (!studioTask) {
+      throw new Error('Studio task not found');
+    }
+    taskData.searchID = studioTask.searchID;
+
     const existingTask = await ReckoningTaskModel.findOne({
       searchID: taskData.searchID,
     }).exec();
